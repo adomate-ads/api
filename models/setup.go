@@ -40,4 +40,14 @@ func ConnectDatabase(dbConfig *DBConfig) {
 		fmt.Println("Connected to database.")
 	}
 
+	DB.AutoMigrate(&User{})
+	DB.AutoMigrate(&Company{})
+	DB.AutoMigrate(&Role{})
+	DB.AutoMigrate(&Industry{})
+	DB.AutoMigrate(&EmailTemplate{})
+	DB.AutoMigrate(&Email{})
+	DB.AutoMigrate(&Campaign{})
+	DB.AutoMigrate(&Billing{})
+	DB.AutoMigrate(&BiddingStrategy{})
+
 }
