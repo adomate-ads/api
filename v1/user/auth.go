@@ -22,7 +22,15 @@ func AuthRequired(c *gin.Context) {
 	c.Next()
 }
 
-// Login is a handler that parses a form and checks for specific data
+// Login
+// Post Login
+// @Summary Login User
+// @Tags user
+// @Success 200 {object} json
+// @Failure 400 {object} json
+// @Failure 401 {object} json
+// @Failure 500 {object} json
+// @Router /v1/user/login [POST]
 func Login(c *gin.Context) {
 	session := sessions.Default(c)
 	username := c.PostForm("username")
