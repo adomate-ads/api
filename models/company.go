@@ -13,3 +13,27 @@ type Company struct {
 	CreatedAt  time.Time `json:"created_at" example:"2020-01-01T00:00:00Z"`
 	UpdatedAt  time.Time `json:"updated_at" example:"2020-01-01T00:00:00Z"`
 }
+
+func GetCompanies() ([]Company, error) {
+	var companies []Company
+	if err := DB.Find(&companies).Error; err != nil {
+		return nil, err
+	}
+	return companies, nil
+}
+
+func GetCompany(id uint) (*Company, error) {
+	var company Company
+	if err := DB.First(&company, id).Error; err != nil {
+		return nil, err
+	}
+	return &company, nil
+}
+
+func GetCompanyByName(name string) (*Company, error) {
+	var company Company
+	if err := DB.Where("name = ?", name).First(&company).Error; err != nil {
+		return nil, err
+	}
+	return &company, nil
+}
