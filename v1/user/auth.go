@@ -1,6 +1,7 @@
 package user
 
 import (
+	"github.com/adomate-ads/api/models"
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -22,6 +23,11 @@ func AuthRequired(c *gin.Context) {
 	c.Next()
 }
 
+type LoginRequest struct {
+	Email    string `json:"email" binding:"required"`
+	Password string `json:"password" binding:"required"`
+}
+
 // Login
 // Post Login
 // @Summary Login User
@@ -33,24 +39,32 @@ func AuthRequired(c *gin.Context) {
 // @Router /v1/user/login [POST]
 func Login(c *gin.Context) {
 	session := sessions.Default(c)
-	username := c.PostForm("username")
-	password := c.PostForm("password")
+	var request LoginRequest
+	if err := c.ShouldBindJSON(&request); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
 	// Validate form input
-	if strings.Trim(username, " ") == "" || strings.Trim(password, " ") == "" {
+	if strings.Trim(request.Email, " ") == "" || strings.Trim(request.Password, " ") == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Parameters can't be empty"})
 		return
 	}
 
 	// Check for username and password match, usually from a database
-	// TODO - Implement Database
-	if username != "hello" || password != "itsme" {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication failed"})
+	u, err := models.GetUserByEmail(request.Email)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "An account by that email does not exist"})
 		return
 	}
 
-	// Save the username in the session
-	session.Set(userKey, username) // In real world usage you'd set this to the users ID
+	if err := models.VerifyPassword(request.Password, u.Password); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Incorrect password"})
+		return
+	}
+
+	// Save the ID in the session
+	session.Set(userKey, u.ID)
 	if err := session.Save(); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save session"})
 		return

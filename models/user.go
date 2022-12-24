@@ -36,3 +36,48 @@ func (u *User) HashPassword() error {
 func (u *User) RemovePassword() {
 	u.Password = ""
 }
+
+func (u *User) CreateUser() (*User, error) {
+	err := u.HashPassword()
+	if err != nil {
+		return nil, err
+	}
+	err = DB.Create(&u).Error
+	if err != nil {
+		return nil, err
+	}
+	return u, nil
+}
+
+func (u *User) GetUser() (*User, error) {
+	err := DB.Where("id = ?", u.ID).First(&u).Error
+	if err != nil {
+		return nil, err
+	}
+	return u, nil
+}
+
+func GetUserByEmail(email string) (*User, error) {
+	var user User
+	err := DB.Where("email = ?", email).First(&user).Error
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
+}
+
+func (u *User) UpdateUser() (*User, error) {
+	err := DB.Model(&u).Updates(&u).Error
+	if err != nil {
+		return nil, err
+	}
+	return u, nil
+}
+
+func (u *User) DeleteUser() error {
+	err := DB.Delete(&u).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
