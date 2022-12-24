@@ -37,3 +37,27 @@ func GetCompanyByName(name string) (*Company, error) {
 	}
 	return &company, nil
 }
+
+func (c *Company) CreateCompany() error {
+	err := DB.Create(&c).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (c *Company) UpdateCompany() (*Company, error) {
+	err := DB.Save(&c).Error
+	if err != nil {
+		return nil, err
+	}
+	return c, nil
+}
+
+func (c *Company) DeleteCompany() error {
+	err := DB.Delete(&c).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
