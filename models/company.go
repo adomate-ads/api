@@ -38,6 +38,14 @@ func GetCompanyByName(name string) (*Company, error) {
 	return &company, nil
 }
 
+func GetCompanyByEmail(email string) (*Company, error) {
+	var company Company
+	if err := DB.Where("email = ?", email).First(&company).Error; err != nil {
+		return nil, err
+	}
+	return &company, nil
+}
+
 func (c *Company) CreateCompany() error {
 	err := DB.Create(&c).Error
 	if err != nil {

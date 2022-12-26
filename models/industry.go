@@ -8,3 +8,27 @@ type Industry struct {
 	CreatedAt time.Time `json:"created_at" example:"2020-01-01T00:00:00Z"`
 	UpdatedAt time.Time `json:"updated_at" example:"2020-01-01T00:00:00Z"`
 }
+
+func GetIndustries() ([]Industry, error) {
+	var industries []Industry
+	if err := DB.Find(&industries).Error; err != nil {
+		return nil, err
+	}
+	return industries, nil
+}
+
+func GetIndustry(id uint) (*Industry, error) {
+	var industry Industry
+	if err := DB.First(&industry, id).Error; err != nil {
+		return nil, err
+	}
+	return &industry, nil
+}
+
+func GetIndustryByName(name string) (*Industry, error) {
+	var industry Industry
+	if err := DB.Where("industry = ?", name).First(&industry).Error; err != nil {
+		return nil, err
+	}
+	return &industry, nil
+}
