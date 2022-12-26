@@ -15,3 +15,51 @@ type Billing struct {
 	CreatedAt time.Time `json:"created_at" example:"2020-01-01T00:00:00Z"`
 	UpdatedAt time.Time `json:"updated_at" example:"2020-01-01T00:00:00Z"`
 }
+
+func GetBillings() ([]Billing, error) {
+	var billings []Billing
+	if err := DB.Find(&billings).Error; err != nil {
+		return nil, err
+	}
+	return billings, nil
+}
+
+func GetBilling(id uint) (*Billing, error) {
+	var billing Billing
+	if err := DB.First(&billing, id).Error; err != nil {
+		return nil, err
+	}
+	return &billing, nil
+}
+
+func GetBillingsByCompanyID(id uint) ([]Billing, error) {
+	var billings []Billing
+	if err := DB.Where("company_id = ?", id).Find(&billings).Error; err != nil {
+		return nil, err
+	}
+	return billings, nil
+}
+
+func (b *Billing) CreateBilling() error {
+	err := DB.Create(&b).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (b *Billing) UpdateBilling() (*Billing, error) {
+	err := DB.Save(&b).Error
+	if err != nil {
+		return nil, err
+	}
+	return b, nil
+}
+
+func (b *Billing) DeleteBilling() error {
+	err := DB.Delete(&b).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}

@@ -14,3 +14,51 @@ type Campaign struct {
 	CreatedAt         time.Time `json:"created_at" example:"2020-01-01T00:00:00Z"`
 	UpdatedAt         time.Time `json:"updated_at" example:"2020-01-01T00:00:00Z"`
 }
+
+func GetCampaigns() ([]Campaign, error) {
+	var campaigns []Campaign
+	if err := DB.Find(&campaigns).Error; err != nil {
+		return nil, err
+	}
+	return campaigns, nil
+}
+
+func GetCampaign(id uint) (*Campaign, error) {
+	var campaign Campaign
+	if err := DB.First(&campaign, id).Error; err != nil {
+		return nil, err
+	}
+	return &campaign, nil
+}
+
+func GetCampaignsByCompanyID(id uint) ([]Campaign, error) {
+	var campaigns []Campaign
+	if err := DB.Where("company_id = ?", id).Find(&campaigns).Error; err != nil {
+		return nil, err
+	}
+	return campaigns, nil
+}
+
+func (c *Campaign) CreateCampaign() error {
+	err := DB.Create(&c).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (c *Campaign) UpdateCampaign() (*Campaign, error) {
+	err := DB.Save(&c).Error
+	if err != nil {
+		return nil, err
+	}
+	return c, nil
+}
+
+func (c *Campaign) DeleteCampaign() error {
+	err := DB.Delete(&c).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}

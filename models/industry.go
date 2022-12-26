@@ -32,3 +32,27 @@ func GetIndustryByName(name string) (*Industry, error) {
 	}
 	return &industry, nil
 }
+
+func (i *Industry) CreateIndustry() error {
+	err := DB.Create(&i).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (i *Industry) UpdateIndustry() (*Industry, error) {
+	err := DB.Save(&i).Error
+	if err != nil {
+		return nil, err
+	}
+	return i, nil
+}
+
+func (i *Industry) DeleteIndustry() error {
+	err := DB.Delete(&i).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
