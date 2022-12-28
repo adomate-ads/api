@@ -4,6 +4,7 @@ import (
 	"github.com/adomate-ads/api/models"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 	"strings"
 )
 
@@ -54,4 +55,26 @@ func Register(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "Successfully registered company"})
+}
+
+func GetCompanies(c *gin.Context) {
+	companies, err := models.GetCompanies()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, companies)
+}
+
+func GetCompany(c *gin.Context) {
+	id := c.Param("id")
+	//Convert a string to uint
+	companyID, err := strconv.ParseUint(id, 10, 64)
+
+	company, err := models.GetCompany(uint(companyID))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, company)
 }

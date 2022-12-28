@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"github.com/adomate-ads/api/models"
+	"github.com/adomate-ads/api/v1/company"
+	"github.com/adomate-ads/api/v1/industry"
 	"github.com/adomate-ads/api/v1/user"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/contrib/sessions"
@@ -23,15 +25,32 @@ func main() {
 	r := engine()
 	r.Use(gin.Logger())
 
-	r.POST("/login", user.Login)
-	r.GET("/logout", user.Logout)
+	// TODO - At some point we should break down the router into smaller files
+
+	// Add router group for v1
+	v1 := r.Group("/v1")
+	v1.POST("/login", user.Login)
+	v1.GET("/logout", user.Logout)
 
 	// Protected routes, requires authentication
-	auth := r.Group("/auth")
+	// TODO - I need to change the auth to a middleware function that way we can determine user access level
+	auth := v1.Group("/auth")
 	auth.Use(user.AuthRequired)
 	{
+		// Some debug user routes
 		auth.GET("/me", user.Me)
 		auth.GET("/status", user.Status)
+
+		// Company Routes
+		auth.POST("/company", company.Register)
+		auth.GET("/company", company.GetCompanies)
+		auth.GET("/company/:id", company.GetCompany)
+
+		// Industry Routes
+		auth.POST("/industry", industry.Register)
+		auth.GET("/industry", industry.GetIndustries)
+		auth.GET("/industry/:industry", industry.GetIndustry)
+
 	}
 
 	if err := r.Run(fmt.Sprintf(":%s", os.Getenv("PORT"))); err != nil {
