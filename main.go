@@ -3,8 +3,11 @@ package main
 import (
 	"fmt"
 	"github.com/adomate-ads/api/models"
+	"github.com/adomate-ads/api/v1/billing"
+	"github.com/adomate-ads/api/v1/campaign"
 	"github.com/adomate-ads/api/v1/company"
 	"github.com/adomate-ads/api/v1/industry"
+	"github.com/adomate-ads/api/v1/role"
 	"github.com/adomate-ads/api/v1/user"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/contrib/sessions"
@@ -42,15 +45,37 @@ func main() {
 		auth.GET("/status", user.Status)
 
 		// Company Routes
-		auth.POST("/company", company.Register)
+		auth.POST("/company", company.CreateCompany)
 		auth.GET("/company", company.GetCompanies)
 		auth.GET("/company/:id", company.GetCompany)
+		auth.DELETE("/company/:id", company.DeleteCompany)
+
+		auth.GET("/company/billing/:id", billing.GetBillingsForCompany)
+		auth.GET("/company/campaign/:id", campaign.GetCampaignsForCompany)
 
 		// Industry Routes
-		auth.POST("/industry", industry.Register)
+		auth.POST("/industry", industry.CreateIndustry)
 		auth.GET("/industry", industry.GetIndustries)
 		auth.GET("/industry/:industry", industry.GetIndustry)
+		auth.DELETE("/industry/:id", industry.DeleteIndustry)
 
+		// Billing Routes
+		auth.POST("/billing", billing.CreateBilling)
+		auth.GET("/billing", billing.GetBillings)
+		auth.GET("/billing/:id", billing.GetBilling)
+		auth.DELETE("/billing/:id", billing.DeleteBilling)
+
+		// Role Routes
+		auth.POST("/role", role.CreateRole)
+		auth.GET("/role", role.GetRoles)
+		auth.GET("/role/:role", role.GetRole)
+		auth.DELETE("/role/:id", role.DeleteRole)
+
+		// Campaign Routes
+		auth.POST("/campaign", campaign.CreateCampaign)
+		auth.GET("/campaign", campaign.GetCampaigns)
+		auth.GET("/campaign/:id", campaign.GetCampaign)
+		auth.DELETE("/campaign/:id", campaign.DeleteCampaign)
 	}
 
 	if err := r.Run(fmt.Sprintf(":%s", os.Getenv("PORT"))); err != nil {

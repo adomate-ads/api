@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-type RegisterRequest struct {
+type CreateRequest struct {
 	Name     string `json:"name" binding:"required"`
 	Email    string `json:"email" binding:"required"`
 	Industry string `json:"industry" binding:"required"`
@@ -16,8 +16,8 @@ type RegisterRequest struct {
 	Budget   uint   `json:"budget" binding:"required"`
 }
 
-func Register(c *gin.Context) {
-	var request RegisterRequest
+func CreateCompany(c *gin.Context) {
+	var request CreateRequest
 	if err := c.ShouldBindJSON(&request); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -38,6 +38,10 @@ func Register(c *gin.Context) {
 
 	// Get Industry ID
 	industry, err := models.GetIndustryByName(request.Industry)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "An industry by that name does not exist"})
+		return
+	}
 
 	// Create company
 	company := models.Company{
@@ -68,8 +72,10 @@ func GetCompanies(c *gin.Context) {
 
 func GetCompany(c *gin.Context) {
 	id := c.Param("id")
-	//Convert a string to uint
 	companyID, err := strconv.ParseUint(id, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
 
 	company, err := models.GetCompany(uint(companyID))
 	if err != nil {
@@ -77,4 +83,25 @@ func GetCompany(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, company)
+}
+
+func DeleteCompany(c *gin.Context) {
+	id := c.Param("id")
+	companyID, err := strconv.ParseUint(id, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
+
+	company, err := models.GetCompany(uint(companyID))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if err := company.DeleteCompany(); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Company deleted successfully"})
 }

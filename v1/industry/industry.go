@@ -4,15 +4,16 @@ import (
 	"github.com/adomate-ads/api/models"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 	"strings"
 )
 
-type RegisterRequest struct {
+type CreateRequest struct {
 	Industry string `json:"industry" binding:"required"`
 }
 
-func Register(c *gin.Context) {
-	var request RegisterRequest
+func CreateIndustry(c *gin.Context) {
+	var request CreateRequest
 	if err := c.ShouldBindJSON(&request); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -63,4 +64,25 @@ func GetIndustry(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"industry": industry})
+}
+
+func DeleteIndustry(c *gin.Context) {
+	id := c.Param("id")
+	industryID, err := strconv.ParseUint(id, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
+
+	industry, err := models.GetIndustry(uint(industryID))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if err := industry.DeleteIndustry(); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Industry deleted successfully"})
 }

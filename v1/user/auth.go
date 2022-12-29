@@ -103,7 +103,7 @@ func Register(c *gin.Context) {
 	// Get company ID
 	company, err := models.GetCompanyByName(request.Company)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "An account by that company does not exist"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "That company does not exist"})
 		return
 	}
 
