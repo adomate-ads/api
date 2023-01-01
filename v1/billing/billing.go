@@ -99,8 +99,84 @@ func GetBilling(c *gin.Context) {
 	c.JSON(http.StatusOK, billing)
 }
 
+// This will need to be tested with unit tests or something cause honestly i've never handled a patch request before
+type UpdateRequest struct {
+	Company  string    `json:"company"`
+	Amount   float64   `json:"amount"`
+	Status   string    `json:"status"`
+	Comments string    `json:"comments"`
+	DueAt    time.Time `json:"due_at"`
+	IssuedAt time.Time `json:"issued_at"`
+}
+
+func UpdateBilling(c *gin.Context) {
+	id := c.Param("id")
+	billingID, err := strconv.ParseUint(id, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
+
+	billing, err := models.GetBilling(uint(billingID))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	var request UpdateRequest
+	if err := c.ShouldBindJSON(&request); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Validate form input
+	// TODO - This needs to be verified, we might need to add another flag for if it is not passed there for not changed.
+	if request.Status != "paid" && request.Status != "unpaid" && request.Status != "pending" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Status input"})
+		return
+	}
+
+	// Get company ID
+	if request.Company != "" {
+		company, err := models.GetCompanyByName(request.Company)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "That company does not exist"})
+			return
+		}
+		billing.CompanyID = company.ID
+		billing.Company = *company
+	}
+
+	if request.Amount != 0 {
+		billing.Amount = request.Amount
+	}
+
+	if request.Status != "" {
+		billing.Status = request.Status
+	}
+
+	if request.Comments != "" {
+		billing.Comments = request.Comments
+	}
+
+	if !request.DueAt.IsZero() {
+		billing.DueAt = request.DueAt
+	}
+
+	if !request.IssuedAt.IsZero() {
+		billing.IssuedAt = request.IssuedAt
+	}
+
+	updatedBilling, err := billing.UpdateBilling()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, updatedBilling)
+}
+
 func PayBill(c *gin.Context) {
-	// Some Stripe magic here...
+	// TODO - Some Stripe magic here...
 
 }
 

@@ -49,7 +49,7 @@ func (b *Billing) CreateBilling() error {
 }
 
 func (b *Billing) UpdateBilling() (*Billing, error) {
-	err := DB.Save(&b).Error
+	err := DB.Updates(&b).Error
 	if err != nil {
 		return nil, err
 	}

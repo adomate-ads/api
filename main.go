@@ -63,6 +63,8 @@ func main() {
 		auth.POST("/billing", billing.CreateBilling)
 		auth.GET("/billing", billing.GetBillings)
 		auth.GET("/billing/:id", billing.GetBilling)
+		// Just test this one patch request for now... we can add more later once we know this one works
+		auth.PATCH("/billing/:id", billing.UpdateBilling)
 		auth.DELETE("/billing/:id", billing.DeleteBilling)
 
 		// Role Routes
