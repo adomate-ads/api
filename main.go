@@ -14,8 +14,13 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"log"
+	"net/http"
 	"os"
 )
+
+func OnlineCheck(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{"message": "Adomate Ads API Online."})
+}
 
 func main() {
 	err := godotenv.Load(".env")
@@ -32,6 +37,10 @@ func main() {
 
 	// Add router group for v1
 	v1 := r.Group("/v1")
+
+	// Online Handler - Primarily for testing purposes
+	v1.GET("/", OnlineCheck)
+
 	v1.POST("/login", user.Login)
 	v1.GET("/logout", user.Logout)
 
