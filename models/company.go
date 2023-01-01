@@ -1,6 +1,8 @@
 package models
 
-import "time"
+import (
+	"time"
+)
 
 type Company struct {
 	ID         uint   `json:"id" gorm:"primaryKey;autoIncrement" example:"1"`
