@@ -59,6 +59,9 @@ To run locally, you'll need to setup a MySQL instance.
 Coming Soon...
 Yes, we have Swagger (OpenAPI 2.0) documentation available. When you start the API, the documentation can be found by visiting the root directory.  For example, if you are running the API on localhost on port 3000, you can visit <http://localhost:3000/> to view the documentation.
 
+## Unit Testing
+Unit Testing is under development using the standard go testing pkg.  To run the tests, simply run `go test` in the root directory. I highly suggest setting gin to release and using verbose output for local testing, this can be done by setting the environment variable `GIN_MODE=release` and `go test -v` or as a single command `GIN_MODE=release go test -v`.
+
 ## Email Templates
 
 The following are the coded email templates and available variables:
