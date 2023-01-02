@@ -28,7 +28,7 @@ func Config() *DBConfig {
 	}
 }
 
-func ConnectDatabase(dbConfig *DBConfig) {
+func ConnectDatabase(dbConfig *DBConfig, clearDB bool) {
 	DBURL := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local", dbConfig.User, dbConfig.Password, dbConfig.Host, dbConfig.Port, dbConfig.Database)
 
 	var err error
@@ -40,6 +40,18 @@ func ConnectDatabase(dbConfig *DBConfig) {
 		fmt.Println("Connected to database.")
 	}
 
+	if clearDB {
+		DB.DropTableIfExists(&User{})
+		DB.DropTableIfExists(&Company{})
+		DB.DropTableIfExists(&Role{})
+		DB.DropTableIfExists(&Industry{})
+		DB.DropTableIfExists(&EmailTemplate{})
+		DB.DropTableIfExists(&Email{})
+		DB.DropTableIfExists(&Campaign{})
+		DB.DropTableIfExists(&Billing{})
+		DB.DropTableIfExists(&BiddingStrategy{})
+	}
+
 	DB.AutoMigrate(&User{})
 	DB.AutoMigrate(&Company{})
 	DB.AutoMigrate(&Role{})
@@ -49,5 +61,4 @@ func ConnectDatabase(dbConfig *DBConfig) {
 	DB.AutoMigrate(&Campaign{})
 	DB.AutoMigrate(&Billing{})
 	DB.AutoMigrate(&BiddingStrategy{})
-
 }

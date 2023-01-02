@@ -28,7 +28,7 @@ func main() {
 		log.Fatalf("Error loading .env file.")
 	}
 
-	models.ConnectDatabase(models.Config())
+	models.ConnectDatabase(models.Config(), false)
 
 	r := engine()
 	r.Use(gin.Logger())

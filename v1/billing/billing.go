@@ -57,7 +57,7 @@ func CreateBilling(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Successfully created bill."})
+	c.JSON(http.StatusOK, gin.H{"message": "Successfully created bill"})
 }
 
 func GetBillings(c *gin.Context) {
