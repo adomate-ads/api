@@ -74,7 +74,6 @@ func SetUpRouter() *gin.Engine {
 
 func TestOnlineCheck(t *testing.T) {
 	mockResponse := `{"message":"Adomate Ads API Online."}`
-	//r.GET("/", OnlineCheck)
 	req, _ := http.NewRequest("GET", "/", nil)
 	w := httptest.NewRecorder()
 	r.ServeHTTP(w, req)
@@ -86,7 +85,6 @@ func TestOnlineCheck(t *testing.T) {
 
 func TestCreateIndustryHandler(t *testing.T) {
 	mockResponse := `{"message":"Successfully created industry"}`
-	//r.POST("/industry", industry.CreateIndustry)
 
 	industry := industry.CreateRequest{
 		Industry: "Software",
@@ -113,7 +111,6 @@ func TestCreateIndustryHandler(t *testing.T) {
 
 func TestCreateCompanyHandler(t *testing.T) {
 	mockResponse := `{"message":"Successfully registered company"}`
-	//r.POST("/company", company.CreateCompany) // I think we need to move these into the setup function
 
 	company := company.CreateRequest{
 		Name:     "Raaj Inc.",
@@ -144,7 +141,6 @@ func TestCreateCompanyHandler(t *testing.T) {
 
 func TestCreateBillingHandler(t *testing.T) {
 	mockResponse := `{"error":"That company does not exist"}`
-	//r.POST("/billing", billing.CreateBilling)
 
 	billing := billing.CreateRequest{
 		Company:  "Raaj123 Inc.",
