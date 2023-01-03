@@ -1,11 +1,12 @@
 package user
 
 import (
+	"net/http"
+	"strings"
+
 	"github.com/adomate-ads/api/models"
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
-	"net/http"
-	"strings"
 )
 
 const userKey = "user"
@@ -32,10 +33,10 @@ type LoginRequest struct {
 // Post Login
 // @Summary Login User
 // @Tags user
-// @Success 200 {object} json
-// @Failure 400 {object} json
-// @Failure 401 {object} json
-// @Failure 500 {object} json
+// @Success 200 {String} Login.json
+// @Failure 400 {String} Login.json
+// @Failure 401 {String} Login.json
+// @Failure 500 {String} Login.json
 // @Router /v1/user/login [POST]
 func Login(c *gin.Context) {
 	session := sessions.Default(c)
