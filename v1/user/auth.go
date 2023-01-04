@@ -33,10 +33,7 @@ type LoginRequest struct {
 // Post Login
 // @Summary Login User
 // @Tags user
-// @Success 200 {String} Login.json
-// @Failure 400 {String} Login.json
-// @Failure 401 {String} Login.json
-// @Failure 500 {String} Login.json
+// @success 200 {object}  []model.Login
 // @Router /v1/user/login [POST]
 func Login(c *gin.Context) {
 	session := sessions.Default(c)
@@ -81,6 +78,12 @@ type RegisterRequest struct {
 	Company   string `json:"company" binding:"required"`
 }
 
+// Register
+// Post Register
+// @Summary Register User
+// @Tags user
+// @success 200 {object}  []model.Register
+// @Router /v1/user/register [POST]
 func Register(c *gin.Context) {
 	var request RegisterRequest
 	if err := c.ShouldBindJSON(&request); err != nil {
@@ -128,6 +131,12 @@ func Register(c *gin.Context) {
 	// TODO - In the future, we should possibly send a session token back to the user
 }
 
+// Logout
+// Post Logout
+// @Summary Logout User
+// @Tags user
+// @success 200 {object}  []model.Logout
+// @Router /v1/user/logout [POST]
 func Logout(c *gin.Context) {
 	session := sessions.Default(c)
 	user := session.Get(userKey)
