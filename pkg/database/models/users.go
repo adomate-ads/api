@@ -1,8 +1,6 @@
 package models
 
-import (
-	"time"
-)
+
 
 type Login struct {
 	UserKey   string    `json:"userkey" example:"keyName"`
