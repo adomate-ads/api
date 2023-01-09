@@ -8,21 +8,6 @@ import (
 	"strings"
 )
 
-const userKey = "user"
-
-// AuthRequired is a simple middleware to check the session
-func AuthRequired(c *gin.Context) {
-	session := sessions.Default(c)
-	user := session.Get(userKey)
-	if user == nil {
-		// Abort the request with the appropriate error code
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
-		return
-	}
-	// Continue down the chain to handler
-	c.Next()
-}
-
 type LoginRequest struct {
 	Email    string `json:"email" binding:"required"`
 	Password string `json:"password" binding:"required"`
@@ -51,7 +36,7 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	// Check for username and password match, usually from a database
+	// Check for username and password match
 	u, err := models.GetUserByEmail(request.Email)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "An account by that email does not exist"})
@@ -64,7 +49,7 @@ func Login(c *gin.Context) {
 	}
 
 	// Save the ID in the session
-	session.Set(userKey, u.ID)
+	session.Set("user-id", u.ID)
 	if err := session.Save(); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save session"})
 		return
@@ -129,12 +114,12 @@ func Register(c *gin.Context) {
 
 func Logout(c *gin.Context) {
 	session := sessions.Default(c)
-	user := session.Get(userKey)
+	user := session.Get("user-id")
 	if user == nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid session token"})
 		return
 	}
-	session.Delete(userKey)
+	session.Delete("user-id")
 	if err := session.Save(); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save session"})
 		return
@@ -144,7 +129,7 @@ func Logout(c *gin.Context) {
 
 func Me(c *gin.Context) {
 	session := sessions.Default(c)
-	user := session.Get(userKey)
+	user := session.Get("user-id")
 	c.JSON(http.StatusOK, gin.H{"user": user})
 }
 

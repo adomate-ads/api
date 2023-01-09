@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/adomate-ads/api/middleware/auth"
 	"github.com/adomate-ads/api/models"
 	"github.com/adomate-ads/api/v1/billing"
 	"github.com/adomate-ads/api/v1/campaign"
@@ -33,6 +34,8 @@ func main() {
 	r := engine()
 	r.Use(gin.Logger())
 
+	r.Use(auth.Auth)
+
 	// TODO - At some point we should break down the router into smaller files
 
 	// Add router group for v1
@@ -42,52 +45,18 @@ func main() {
 	v1.GET("/", OnlineCheck)
 
 	v1.POST("/login", user.Login)
-	v1.GET("/logout", user.Logout)
+	v1.POST("/register", user.Register)
+	v1.GET("/logout", auth.NotGuest, user.Logout)
 
 	// Protected routes, requires authentication
-	// TODO - I need to change the auth to a middleware function that way we can determine user access level
-	auth := v1.Group("/auth")
-	auth.Use(user.AuthRequired)
-	{
-		// Some debug user routes
-		auth.GET("/me", user.Me)
-		auth.GET("/status", user.Status)
+	v1.GET("/me", auth.NotGuest, user.Me)
+	v1.GET("/status", auth.NotGuest, user.Status)
 
-		// Company Routes
-		auth.POST("/company", company.CreateCompany)
-		auth.GET("/company", company.GetCompanies)
-		auth.GET("/company/:id", company.GetCompany)
-		auth.DELETE("/company/:id", company.DeleteCompany)
-
-		auth.GET("/company/billing/:id", billing.GetBillingsForCompany)
-		auth.GET("/company/campaign/:id", campaign.GetCampaignsForCompany)
-
-		// Industry Routes
-		auth.POST("/industry", industry.CreateIndustry)
-		auth.GET("/industry", industry.GetIndustries)
-		auth.GET("/industry/:industry", industry.GetIndustry)
-		auth.DELETE("/industry/:id", industry.DeleteIndustry)
-
-		// Billing Routes
-		auth.POST("/billing", billing.CreateBilling)
-		auth.GET("/billing", billing.GetBillings)
-		auth.GET("/billing/:id", billing.GetBilling)
-		// Just test this one patch request for now... we can add more later once we know this one works
-		auth.PATCH("/billing/:id", billing.UpdateBilling)
-		auth.DELETE("/billing/:id", billing.DeleteBilling)
-
-		// Role Routes
-		auth.POST("/role", role.CreateRole)
-		auth.GET("/role", role.GetRoles)
-		auth.GET("/role/:role", role.GetRole)
-		auth.DELETE("/role/:id", role.DeleteRole)
-
-		// Campaign Routes
-		auth.POST("/campaign", campaign.CreateCampaign)
-		auth.GET("/campaign", campaign.GetCampaigns)
-		auth.GET("/campaign/:id", campaign.GetCampaign)
-		auth.DELETE("/campaign/:id", campaign.DeleteCampaign)
-	}
+	company.Routes(v1)
+	industry.Routes(v1)
+	billing.Routes(v1)
+	role.Routes(v1)
+	campaign.Routes(v1)
 
 	if err := r.Run(fmt.Sprintf(":%s", os.Getenv("PORT"))); err != nil {
 		log.Fatal("Unable to start server:", err)
