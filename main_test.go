@@ -35,6 +35,8 @@ func SetUpRouter() *gin.Engine {
 
 	v1 := r.Group("v1")
 
+	v1.GET("/", OnlineCheck)
+
 	v1.POST("/login", user.Login)
 	v1.POST("/register", user.Register)
 	v1.GET("/logout", auth.NotGuest, user.Logout)
@@ -67,7 +69,7 @@ func SetUpRouter() *gin.Engine {
 
 func TestOnlineCheck(t *testing.T) {
 	mockResponse := `{"message":"Adomate Ads API Online."}`
-	req, _ := http.NewRequest("GET", "/", nil)
+	req, _ := http.NewRequest("GET", "/v1/", nil)
 	w := httptest.NewRecorder()
 	r.ServeHTTP(w, req)
 
@@ -84,7 +86,7 @@ func TestCreateIndustryHandler(t *testing.T) {
 	}
 
 	jsonValue, _ := json.Marshal(industry)
-	req, _ := http.NewRequest("POST", "/industry", bytes.NewBuffer(jsonValue))
+	req, _ := http.NewRequest("POST", "/v1/industry", bytes.NewBuffer(jsonValue))
 	w := httptest.NewRecorder()
 	r.ServeHTTP(w, req)
 
@@ -120,7 +122,7 @@ func TestCreateCompanyHandler(t *testing.T) {
 
 	responseData, _ := ioutil.ReadAll(w.Body)
 	assert.Equal(t, mockResponse, string(responseData))
-	assert.Equal(t, http.StatusOK, w.Code)
+	assert.Equal(t, http.StatusCreated, w.Code)
 
 	mockResponse = `{"error":"An company by that email already exists"}`
 	req, _ = http.NewRequest("POST", "/v1/company", bytes.NewBuffer(jsonValue))
@@ -163,5 +165,5 @@ func TestCreateBillingHandler(t *testing.T) {
 
 	responseData, _ = ioutil.ReadAll(w.Body)
 	assert.Equal(t, mockResponse, string(responseData))
-	assert.Equal(t, http.StatusOK, w.Code)
+	assert.Equal(t, http.StatusCreated, w.Code)
 }
