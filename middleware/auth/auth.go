@@ -53,7 +53,7 @@ func HasRole(roles ...string) gin.HandlerFunc {
 			c.Next()
 			return
 		}
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
+		c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "forbidden"})
 	}
 }
 
@@ -67,6 +67,6 @@ func InGroup(group ...string) gin.HandlerFunc {
 			}
 		}
 
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
+		c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "forbidden"})
 	}
 }
