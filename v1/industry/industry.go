@@ -38,17 +38,17 @@ func CreateIndustry(c *gin.Context) {
 	}
 
 	if err := industry.CreateIndustry(); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Successfully created industry"})
+	c.JSON(http.StatusCreated, gin.H{"message": "Successfully created industry"})
 }
 
 func GetIndustries(c *gin.Context) {
 	industries, err := models.GetIndustries()
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -59,7 +59,7 @@ func GetIndustries(c *gin.Context) {
 func GetIndustry(c *gin.Context) {
 	industry, err := models.GetIndustryByName(c.Param("industry"))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -80,7 +80,7 @@ func DeleteIndustry(c *gin.Context) {
 	}
 
 	if err := industry.DeleteIndustry(); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 

@@ -54,17 +54,17 @@ func CreateCompany(c *gin.Context) {
 	}
 
 	if err := company.CreateCompany(); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Successfully registered company"})
+	c.JSON(http.StatusCreated, gin.H{"message": "Successfully registered company"})
 }
 
 func GetCompanies(c *gin.Context) {
 	companies, err := models.GetCompanies()
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, companies)
@@ -79,7 +79,7 @@ func GetCompany(c *gin.Context) {
 
 	company, err := models.GetCompany(uint(companyID))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, company)
@@ -94,12 +94,12 @@ func DeleteCompany(c *gin.Context) {
 
 	company, err := models.GetCompany(uint(companyID))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
 	if err := company.DeleteCompany(); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 

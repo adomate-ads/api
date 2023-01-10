@@ -80,7 +80,7 @@ func GetUser(c *gin.Context) {
 	}
 	user, err := models.GetUser(uint(userID))
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -100,7 +100,7 @@ func DeleteUser(c *gin.Context) {
 
 	user, err := models.GetUser(uint(userID))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 

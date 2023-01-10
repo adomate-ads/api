@@ -266,5 +266,5 @@ func DeleteBilling(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOk, gin.H{"message": "Bill deleted successfully"})
+	c.JSON(http.StatusOK, gin.H{"message": "Bill deleted successfully"})
 }

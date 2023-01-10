@@ -57,8 +57,6 @@ func main() {
 
 	r.Use(auth.Auth)
 
-	// TODO - At some point we should break down the router into smaller files
-
 	// Add router group for v1
 	v1 := r.Group("/v1")
 

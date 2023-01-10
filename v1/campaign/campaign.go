@@ -51,17 +51,17 @@ func CreateCampaign(c *gin.Context) {
 	// TODO - Fetch and fill keywords
 
 	if err := campaign.CreateCampaign(); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Successfully registered campaign"})
+	c.JSON(http.StatusCreated, gin.H{"message": "Successfully registered campaign"})
 }
 
 func GetCampaigns(c *gin.Context) {
 	campaigns, err := models.GetCampaigns()
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, campaigns)
@@ -76,7 +76,7 @@ func GetCampaignsForCompany(c *gin.Context) {
 
 	campaigns, err := models.GetCampaignsByCompanyID(uint(companyID))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -92,7 +92,7 @@ func GetCampaign(c *gin.Context) {
 
 	campaign, err := models.GetCompany(uint(campaignID))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, campaign)
@@ -107,12 +107,12 @@ func DeleteCampaign(c *gin.Context) {
 
 	campaign, err := models.GetCampaign(uint(campaignID))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
 	if err := campaign.DeleteCampaign(); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
