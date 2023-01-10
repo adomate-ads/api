@@ -8,7 +8,6 @@ import (
 	"github.com/adomate-ads/api/v1/campaign"
 	"github.com/adomate-ads/api/v1/company"
 	"github.com/adomate-ads/api/v1/industry"
-	"github.com/adomate-ads/api/v1/role"
 	"github.com/adomate-ads/api/v1/user"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/contrib/sessions"
@@ -52,10 +51,24 @@ func main() {
 	v1.GET("/me", auth.NotGuest, user.Me)
 	v1.GET("/status", auth.NotGuest, user.Status)
 
+	// Test Groups
+	group := r.Group("/test-group")
+	group.GET("/super-admin", auth.NotGuest, auth.InGroup("super-admin"), user.Me)
+	group.GET("/support", auth.NotGuest, auth.InGroup("support"), user.Me)
+	group.GET("/admin", auth.NotGuest, auth.InGroup("admin"), user.Me)
+	group.GET("/user", auth.NotGuest, auth.InGroup("user"), user.Me)
+	// Test Roles
+	roles := r.Group("/test-roles")
+	roles.GET("/super-admin", auth.NotGuest, auth.HasRole("super-admin"), user.Me)
+	roles.GET("/support-billing", auth.NotGuest, auth.HasRole("support-billing"), user.Me)
+	roles.GET("/support-ticket", auth.NotGuest, auth.HasRole("support-ticket"), user.Me)
+	roles.GET("/owner", auth.NotGuest, auth.HasRole("owner"), user.Me)
+	roles.GET("/admin", auth.NotGuest, auth.HasRole("admin"), user.Me)
+	roles.GET("/user", auth.NotGuest, auth.HasRole("user"), user.Me)
+
 	company.Routes(v1)
 	industry.Routes(v1)
 	billing.Routes(v1)
-	role.Routes(v1)
 	campaign.Routes(v1)
 
 	if err := r.Run(fmt.Sprintf(":%s", os.Getenv("PORT"))); err != nil {

@@ -103,11 +103,7 @@ func HasRoleList(user *models.User, roles []string) bool {
 }
 
 func HasRole(user *models.User, role string) bool {
-	r, err := models.GetRole(user.RoleID)
-	if err != nil {
-		return false
-	}
-	if r.Role == role {
+	if user.Role == role {
 		return true
 	}
 	return false
