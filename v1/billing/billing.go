@@ -26,6 +26,8 @@ type CreateRequest struct {
 // @Produce json
 // @Success 201 {object} dto.MessageResponse
 // @Failure 400 {object} dto.ErrorResponse
+// @Failure 401 {object} dto.ErrorResponse
+// @Failure 403 {object} dto.ErrorResponse
 // @Router /billing [post]
 func CreateBilling(c *gin.Context) {
 	var request CreateRequest
@@ -77,6 +79,8 @@ func CreateBilling(c *gin.Context) {
 // @Produce json
 // @Success 200 {object} []models.Billing
 // @Failure 400 {object} dto.ErrorResponse
+// @Failure 401 {object} dto.ErrorResponse
+// @Failure 403 {object} dto.ErrorResponse
 // @Router /billing [get]
 func GetBillings(c *gin.Context) {
 	billings, err := models.GetBillings()
@@ -95,6 +99,8 @@ func GetBillings(c *gin.Context) {
 // @Produce json
 // @Success 200 {object} []models.Billing
 // @Failure 400 {object} dto.ErrorResponse
+// @Failure 401 {object} dto.ErrorResponse
+// @Failure 403 {object} dto.ErrorResponse
 // @Router /billing/company/:id [get]
 func GetBillingsForCompany(c *gin.Context) {
 	id := c.Param("id")
@@ -119,6 +125,8 @@ func GetBillingsForCompany(c *gin.Context) {
 // @Produce json
 // @Success 200 {object} models.Billing
 // @Failure 400 {object} dto.ErrorResponse
+// @Failure 401 {object} dto.ErrorResponse
+// @Failure 403 {object} dto.ErrorResponse
 // @Router /billing/:id [get]
 func GetBilling(c *gin.Context) {
 	id := c.Param("id")
@@ -153,6 +161,8 @@ type UpdateRequest struct {
 // @Produce json
 // @Success 202 {object} models.Billing
 // @Failure 400 {object} dto.ErrorResponse
+// @Failure 401 {object} dto.ErrorResponse
+// @Failure 403 {object} dto.ErrorResponse
 // @Router /billing/:id [patch]
 func UpdateBilling(c *gin.Context) {
 	id := c.Param("id")
@@ -233,6 +243,8 @@ func PayBill(c *gin.Context) {
 // @Produce json
 // @Success 200 {object} dto.MessageResponse
 // @Failure 400 {object} dto.ErrorResponse
+// @Failure 401 {object} dto.ErrorResponse
+// @Failure 403 {object} dto.ErrorResponse
 // @Router /billing/:id [delete]
 func DeleteBilling(c *gin.Context) {
 	id := c.Param("id")
