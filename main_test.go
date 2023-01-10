@@ -3,12 +3,13 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"github.com/adomate-ads/api/middleware/auth"
 	"github.com/adomate-ads/api/models"
 	"github.com/adomate-ads/api/v1/billing"
 	"github.com/adomate-ads/api/v1/campaign"
 	"github.com/adomate-ads/api/v1/company"
 	"github.com/adomate-ads/api/v1/industry"
-	"github.com/adomate-ads/api/v1/role"
+	"github.com/adomate-ads/api/v1/user"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
@@ -32,43 +33,35 @@ func SetUpRouter() *gin.Engine {
 
 	r := gin.Default()
 
-	r.GET("/", OnlineCheck)
+	v1 := r.Group("v1")
 
-	// Company Routes
-	r.POST("/company", company.CreateCompany)
-	r.GET("/company", company.GetCompanies)
-	r.GET("/company/:id", company.GetCompany)
-	r.DELETE("/company/:id", company.DeleteCompany)
+	v1.POST("/login", user.Login)
+	v1.POST("/register", user.Register)
+	v1.GET("/logout", auth.NotGuest, user.Logout)
 
-	r.GET("/company/billing/:id", billing.GetBillingsForCompany)
-	r.GET("/company/campaign/:id", campaign.GetCampaignsForCompany)
+	// Protected routes, requires authentication
+	v1.GET("/me", auth.NotGuest, user.Me)
+	v1.GET("/status", auth.NotGuest, user.Status)
 
-	// Industry Routes
-	r.POST("/industry", industry.CreateIndustry)
-	r.GET("/industry", industry.GetIndustries)
-	r.GET("/industry/:industry", industry.GetIndustry)
-	r.DELETE("/industry/:id", industry.DeleteIndustry)
+	// Test Groups
+	group := r.Group("/test-group")
+	group.GET("/super-admin", auth.NotGuest, auth.InGroup("super-admin"), user.Me)
+	group.GET("/support", auth.NotGuest, auth.InGroup("support"), user.Me)
+	group.GET("/admin", auth.NotGuest, auth.InGroup("admin"), user.Me)
+	group.GET("/user", auth.NotGuest, auth.InGroup("user"), user.Me)
+	// Test Roles
+	roles := r.Group("/test-roles")
+	roles.GET("/super-admin", auth.NotGuest, auth.HasRole("super-admin"), user.Me)
+	roles.GET("/support-billing", auth.NotGuest, auth.HasRole("support-billing"), user.Me)
+	roles.GET("/support-ticket", auth.NotGuest, auth.HasRole("support-ticket"), user.Me)
+	roles.GET("/owner", auth.NotGuest, auth.HasRole("owner"), user.Me)
+	roles.GET("/admin", auth.NotGuest, auth.HasRole("admin"), user.Me)
+	roles.GET("/user", auth.NotGuest, auth.HasRole("user"), user.Me)
 
-	// Billing Routes
-	r.POST("/billing", billing.CreateBilling)
-	r.GET("/billing", billing.GetBillings)
-	r.GET("/billing/:id", billing.GetBilling)
-	// Just test this one patch request for now... we can add more later once we know this one works
-	r.PATCH("/billing/:id", billing.UpdateBilling)
-	r.DELETE("/billing/:id", billing.DeleteBilling)
-
-	// Role Routes
-	r.POST("/role", role.CreateRole)
-	r.GET("/role", role.GetRoles)
-	r.GET("/role/:role", role.GetRole)
-	r.DELETE("/role/:id", role.DeleteRole)
-
-	// Campaign Routes
-	r.POST("/campaign", campaign.CreateCampaign)
-	r.GET("/campaign", campaign.GetCampaigns)
-	r.GET("/campaign/:id", campaign.GetCampaign)
-	r.DELETE("/campaign/:id", campaign.DeleteCampaign)
-
+	company.Routes(v1)
+	industry.Routes(v1)
+	billing.Routes(v1)
+	campaign.Routes(v1)
 	return r
 }
 
@@ -100,7 +93,7 @@ func TestCreateIndustryHandler(t *testing.T) {
 	assert.Equal(t, http.StatusOK, w.Code)
 
 	mockResponse = `{"error":"An industry by that name already exists"}`
-	req, _ = http.NewRequest("POST", "/industry", bytes.NewBuffer(jsonValue))
+	req, _ = http.NewRequest("POST", "/v1/industry", bytes.NewBuffer(jsonValue))
 	w = httptest.NewRecorder()
 	r.ServeHTTP(w, req)
 
@@ -121,7 +114,7 @@ func TestCreateCompanyHandler(t *testing.T) {
 	}
 
 	jsonValue, _ := json.Marshal(company)
-	req, _ := http.NewRequest("POST", "/company", bytes.NewBuffer(jsonValue))
+	req, _ := http.NewRequest("POST", "/v1/company", bytes.NewBuffer(jsonValue))
 	w := httptest.NewRecorder()
 	r.ServeHTTP(w, req)
 
@@ -130,7 +123,7 @@ func TestCreateCompanyHandler(t *testing.T) {
 	assert.Equal(t, http.StatusOK, w.Code)
 
 	mockResponse = `{"error":"An company by that email already exists"}`
-	req, _ = http.NewRequest("POST", "/company", bytes.NewBuffer(jsonValue))
+	req, _ = http.NewRequest("POST", "/v1/company", bytes.NewBuffer(jsonValue))
 	w = httptest.NewRecorder()
 	r.ServeHTTP(w, req)
 
@@ -152,7 +145,7 @@ func TestCreateBillingHandler(t *testing.T) {
 	}
 
 	jsonValue, _ := json.Marshal(billing)
-	req, _ := http.NewRequest("POST", "/billing", bytes.NewBuffer(jsonValue))
+	req, _ := http.NewRequest("POST", "/v1/billing", bytes.NewBuffer(jsonValue))
 	w := httptest.NewRecorder()
 	r.ServeHTTP(w, req)
 
@@ -164,7 +157,7 @@ func TestCreateBillingHandler(t *testing.T) {
 	billing.Company = "Raaj Inc."
 
 	jsonValue, _ = json.Marshal(billing)
-	req, _ = http.NewRequest("POST", "/billing", bytes.NewBuffer(jsonValue))
+	req, _ = http.NewRequest("POST", "/v1/billing", bytes.NewBuffer(jsonValue))
 	w = httptest.NewRecorder()
 	r.ServeHTTP(w, req)
 
