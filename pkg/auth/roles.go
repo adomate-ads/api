@@ -50,7 +50,7 @@ var Roles = map[string]Role{
 		},
 	},
 	"admin": {
-		Name: "ec",
+		Name: "admin",
 		RolesCanAdd: []string{
 			"super-admin",
 			"support-ticket",

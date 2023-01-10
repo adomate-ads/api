@@ -13,15 +13,6 @@ type LoginRequest struct {
 	Password string `json:"password" binding:"required"`
 }
 
-// Login
-// Post Login
-// @Summary Login User
-// @Tags user
-// @Success 200 {object} json
-// @Failure 400 {object} json
-// @Failure 401 {object} json
-// @Failure 500 {object} json
-// @Router /v1/user/login [POST]
 func Login(c *gin.Context) {
 	session := sessions.Default(c)
 	var request LoginRequest

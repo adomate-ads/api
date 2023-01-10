@@ -11,7 +11,7 @@ type User struct {
 	LastName  string `json:"last_name" gorm:"type:varchar(128)" example:"Patel"`
 	Email     string `json:"email" gorm:"type:varchar(128)" example:"the@raajpatel.dev"`
 	Password  string `json:"password" gorm:"type:varchar(128)" example:"hashed string..."`
-	Role      string `json:"role" gorm:"type:varchar(128);default:user;" example:"user"`
+	Role      string `json:"role" gorm:"type:varchar(128);" example:"user"`
 	CompanyID uint   `json:"company"`
 	Company   Company
 	CreatedAt time.Time `json:"created_at" example:"2020-01-01T00:00:00Z"`

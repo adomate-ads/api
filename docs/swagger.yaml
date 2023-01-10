@@ -1,0 +1,30 @@
+basePath: /
+host: localhost:3000
+info:
+  contact:
+    email: support@adomate.com
+    name: Adomate API Support
+    url: https://adomate.com/support
+  description: Adomate Monolithic API
+  title: Adomate API
+  version: "1.0"
+paths:
+  /:
+    get:
+      consumes:
+      - '*/*'
+      description: get the status of server.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Show the status of server.
+      tags:
+      - root
+schemes:
+- http
+swagger: "2.0"

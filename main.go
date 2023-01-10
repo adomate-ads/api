@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/adomate-ads/api/docs"
 	"github.com/adomate-ads/api/middleware/auth"
 	"github.com/adomate-ads/api/models"
 	"github.com/adomate-ads/api/v1/billing"
@@ -13,15 +14,36 @@ import (
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 	"log"
 	"net/http"
 	"os"
 )
 
+// OnlineCheck godoc
+// @Summary Show the status of server.
+// @Description get the status of server.
+// @Tags root
+// @Accept */*
+// @Produce json
+// @Success 200 {object} map[string]interface{}
+// @Router / [get]
 func OnlineCheck(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Adomate Ads API Online."})
 }
 
+// @title Adomate API
+// @version 1.0
+// @description Adomate Monolithic API
+
+// @contact.name Adomate API Support
+// @contact.url https://adomate.com/support
+// @contact.email support@adomate.com
+
+// @host localhost:3000
+// @BasePath /
+// @schemes https
 func main() {
 	err := godotenv.Load(".env")
 	if err != nil {
@@ -87,6 +109,9 @@ func engine() *gin.Engine {
 
 	// Set up the cookie store for session management
 	r.Use(sessions.Sessions("adomate", sessions.NewCookieStore([]byte(os.Getenv("SESSION_SECRET")))))
+
+	docs.SwaggerInfo.BasePath = "/v1"
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	return r
 }
