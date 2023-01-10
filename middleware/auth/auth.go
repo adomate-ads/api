@@ -17,11 +17,7 @@ func Auth(c *gin.Context) {
 		return
 	}
 
-	u := models.User{
-		ID: userId.(uint),
-	}
-
-	user, err := u.GetUser()
+	user, err := models.GetUser(userId.(uint))
 	if err == nil {
 		c.Set("x-guest", false)
 		c.Set("x-id", userId.(uint))

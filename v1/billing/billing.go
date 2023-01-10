@@ -28,6 +28,7 @@ type CreateRequest struct {
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 403 {object} dto.ErrorResponse
+// @Failure 500 {object} dto.ErrorResponse
 // @Router /billing [post]
 func CreateBilling(c *gin.Context) {
 	var request CreateRequest
@@ -64,7 +65,7 @@ func CreateBilling(c *gin.Context) {
 	}
 
 	if err := b.CreateBilling(); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -78,14 +79,14 @@ func CreateBilling(c *gin.Context) {
 // @Accept */*
 // @Produce json
 // @Success 200 {object} []models.Billing
-// @Failure 400 {object} dto.ErrorResponse
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 403 {object} dto.ErrorResponse
+// @Failure 500 {object} dto.ErrorResponse
 // @Router /billing [get]
 func GetBillings(c *gin.Context) {
 	billings, err := models.GetBillings()
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, billings)
@@ -166,6 +167,7 @@ type UpdateRequest struct {
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 403 {object} dto.ErrorResponse
 // @Failure 404 {object} dto.ErrorResponse
+// @Failure 500 {object} dto.ErrorResponse
 // @Router /billing/:id [patch]
 func UpdateBilling(c *gin.Context) {
 	id := c.Param("id")
@@ -226,7 +228,7 @@ func UpdateBilling(c *gin.Context) {
 
 	updatedBilling, err := billing.UpdateBilling()
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -244,6 +246,7 @@ func UpdateBilling(c *gin.Context) {
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 403 {object} dto.ErrorResponse
 // @Failure 404 {object} dto.ErrorResponse
+// @Failure 500 {object} dto.ErrorResponse
 // @Router /billing/:id [delete]
 func DeleteBilling(c *gin.Context) {
 	id := c.Param("id")
@@ -259,9 +262,9 @@ func DeleteBilling(c *gin.Context) {
 	}
 
 	if err := billing.DeleteBilling(); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Bill deleted successfully"})
+	c.JSON(http.StatusOk, gin.H{"message": "Bill deleted successfully"})
 }

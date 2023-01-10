@@ -48,12 +48,21 @@ func (u *User) CreateUser() error {
 	return nil
 }
 
-func (u *User) GetUser() (*User, error) {
-	err := DB.Where("id = ?", u.ID).First(&u).Error
+func GetUsers() ([]User, error) {
+	var users []User
+	if err := DB.Find(&users).Error; err != nil {
+		return nil, err
+	}
+	return users, nil
+}
+
+func GetUser(id uint) (*User, error) {
+	var user User
+	err := DB.Where("id = ?", id).First(&user).Error
 	if err != nil {
 		return nil, err
 	}
-	return u, nil
+	return &user, nil
 }
 
 func GetUserByEmail(email string) (*User, error) {
