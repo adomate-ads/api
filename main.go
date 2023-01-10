@@ -24,10 +24,10 @@ import (
 // OnlineCheck godoc
 // @Summary Show the status of server.
 // @Description get the status of server.
-// @Tags root
+// @Tags General
 // @Accept */*
 // @Produce json
-// @Success 200 {object} map[string]interface{}
+// @Success 200 {object} dto.MessageResponse
 // @Router / [get]
 func OnlineCheck(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Adomate Ads API Online."})
@@ -43,7 +43,7 @@ func OnlineCheck(c *gin.Context) {
 
 // @host localhost:3000
 // @BasePath /
-// @schemes https
+// @schemes http https
 func main() {
 	err := godotenv.Load(".env")
 	if err != nil {

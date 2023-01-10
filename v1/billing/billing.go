@@ -18,6 +18,15 @@ type CreateRequest struct {
 	IssuedAt time.Time `json:"issued_at" binding:"required"`
 }
 
+// CreateBilling godoc
+// @Summary Create Bill
+// @Description Create a new bill.
+// @Tags Billing
+// @Accept */*
+// @Produce json
+// @Success 201 {object} dto.MessageResponse
+// @Failure 400 {object} dto.ErrorResponse
+// @Router /billing [post]
 func CreateBilling(c *gin.Context) {
 	var request CreateRequest
 	if err := c.ShouldBindJSON(&request); err != nil {
@@ -57,9 +66,18 @@ func CreateBilling(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Successfully created bill"})
+	c.JSON(http.StatusCreated, gin.H{"message": "Successfully created bill"})
 }
 
+// GetBillings godoc
+// @Summary Get all Bills
+// @Description Gets a slice of all bills.
+// @Tags Billing
+// @Accept */*
+// @Produce json
+// @Success 200 {object} []models.Billing
+// @Failure 400 {object} dto.ErrorResponse
+// @Router /billing [get]
 func GetBillings(c *gin.Context) {
 	billings, err := models.GetBillings()
 	if err != nil {
@@ -69,6 +87,15 @@ func GetBillings(c *gin.Context) {
 	c.JSON(http.StatusOK, billings)
 }
 
+// GetBillingsForCompany godoc
+// @Summary Get all Bills for a Company
+// @Description Gets a slice of all the bills for a specific company.
+// @Tags Billing
+// @Accept */*
+// @Produce json
+// @Success 200 {object} []models.Billing
+// @Failure 400 {object} dto.ErrorResponse
+// @Router /billing/company/:id [get]
 func GetBillingsForCompany(c *gin.Context) {
 	id := c.Param("id")
 	companyID, err := strconv.ParseUint(id, 10, 64)
@@ -84,6 +111,15 @@ func GetBillingsForCompany(c *gin.Context) {
 	c.JSON(http.StatusOK, billings)
 }
 
+// GetBilling godoc
+// @Summary Gets a Bill
+// @Description Gets all information about a single bill.
+// @Tags Billing
+// @Accept */*
+// @Produce json
+// @Success 200 {object} models.Billing
+// @Failure 400 {object} dto.ErrorResponse
+// @Router /billing/:id [get]
 func GetBilling(c *gin.Context) {
 	id := c.Param("id")
 	billingID, err := strconv.ParseUint(id, 10, 64)
@@ -109,6 +145,15 @@ type UpdateRequest struct {
 	IssuedAt time.Time `json:"issued_at"`
 }
 
+// UpdateBilling godoc
+// @Summary Update Bill
+// @Description Update information about a bill.
+// @Tags Billing
+// @Accept */*
+// @Produce json
+// @Success 202 {object} models.Billing
+// @Failure 400 {object} dto.ErrorResponse
+// @Router /billing/:id [patch]
 func UpdateBilling(c *gin.Context) {
 	id := c.Param("id")
 	billingID, err := strconv.ParseUint(id, 10, 64)
@@ -172,7 +217,7 @@ func UpdateBilling(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, updatedBilling)
+	c.JSON(http.StatusAccepted, updatedBilling)
 }
 
 func PayBill(c *gin.Context) {
@@ -180,6 +225,15 @@ func PayBill(c *gin.Context) {
 
 }
 
+// DeleteBilling godoc
+// @Summary Delete Bill
+// @Description Delete a bill.
+// @Tags Billing
+// @Accept */*
+// @Produce json
+// @Success 200 {object} dto.MessageResponse
+// @Failure 400 {object} dto.ErrorResponse
+// @Router /billing/:id [delete]
 func DeleteBilling(c *gin.Context) {
 	id := c.Param("id")
 	billingID, err := strconv.ParseUint(id, 10, 64)

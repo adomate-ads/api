@@ -1,4 +1,92 @@
 basePath: /
+definitions:
+  dto.ErrorResponse:
+    properties:
+      error:
+        type: string
+    required:
+    - error
+    type: object
+  dto.MessageResponse:
+    properties:
+      message:
+        type: string
+    required:
+    - message
+    type: object
+  models.Billing:
+    properties:
+      amount:
+        example: 900.25
+        type: number
+      comments:
+        example: Something about the invoice...
+        type: string
+      company:
+        $ref: '#/definitions/models.Company'
+      created_at:
+        example: "2020-01-01T00:00:00Z"
+        type: string
+      due_at:
+        example: "2020-01-01T00:00:00Z"
+        type: string
+      id:
+        example: 1
+        type: integer
+      issued_at:
+        example: "2020-01-01T00:00:00Z"
+        type: string
+      name:
+        type: integer
+      status:
+        description: 'Available options: paid, unpaid, pending'
+        example: paid
+        type: string
+      updated_at:
+        example: "2020-01-01T00:00:00Z"
+        type: string
+    type: object
+  models.Company:
+    properties:
+      budget:
+        example: 1000
+        type: integer
+      created_at:
+        example: "2020-01-01T00:00:00Z"
+        type: string
+      domain:
+        example: raajpatel.dev
+        type: string
+      email:
+        example: the@raajpatel.dev
+        type: string
+      id:
+        example: 1
+        type: integer
+      industry:
+        $ref: '#/definitions/models.Industry'
+      name:
+        example: Google LLC
+        type: string
+      updated_at:
+        example: "2020-01-01T00:00:00Z"
+        type: string
+    type: object
+  models.Industry:
+    properties:
+      Industry:
+        example: Health Care
+        type: string
+      created_at:
+        example: "2020-01-01T00:00:00Z"
+        type: string
+      id:
+        example: 1
+        type: integer
+      updated_at:
+        example: "2020-01-01T00:00:00Z"
+        type: string
+    type: object
 host: localhost:3000
 info:
   contact:
@@ -20,11 +108,126 @@ paths:
         "200":
           description: OK
           schema:
-            additionalProperties: true
-            type: object
+            $ref: '#/definitions/dto.MessageResponse'
       summary: Show the status of server.
       tags:
-      - root
+      - General
+  /billing:
+    get:
+      consumes:
+      - '*/*'
+      description: Gets a slice of all bills.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Billing'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Get all Bills
+      tags:
+      - Billing
+    post:
+      consumes:
+      - '*/*'
+      description: Create a new bill.
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.MessageResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Create Bill
+      tags:
+      - Billing
+  /billing/:id:
+    delete:
+      consumes:
+      - '*/*'
+      description: Delete a bill.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.MessageResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Delete Bill
+      tags:
+      - Billing
+    get:
+      consumes:
+      - '*/*'
+      description: Gets all information about a single bill.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Billing'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Gets a Bill
+      tags:
+      - Billing
+    patch:
+      consumes:
+      - '*/*'
+      description: Update information about a bill.
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: Accepted
+          schema:
+            $ref: '#/definitions/models.Billing'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Update Bill
+      tags:
+      - Billing
+  /billing/company/:id:
+    get:
+      consumes:
+      - '*/*'
+      description: Gets a slice of all the bills for a specific company.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Billing'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Get all Bills for a Company
+      tags:
+      - Billing
 schemes:
 - http
+- https
 swagger: "2.0"
