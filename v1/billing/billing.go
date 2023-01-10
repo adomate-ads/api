@@ -101,6 +101,7 @@ func GetBillings(c *gin.Context) {
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 403 {object} dto.ErrorResponse
+// @Failure 404 {object} dto.ErrorResponse
 // @Router /billing/company/:id [get]
 func GetBillingsForCompany(c *gin.Context) {
 	id := c.Param("id")
@@ -111,7 +112,7 @@ func GetBillingsForCompany(c *gin.Context) {
 
 	billings, err := models.GetBillingsByCompanyID(uint(companyID))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, billings)
@@ -127,6 +128,7 @@ func GetBillingsForCompany(c *gin.Context) {
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 403 {object} dto.ErrorResponse
+// @Failure 404 {object} dto.ErrorResponse
 // @Router /billing/:id [get]
 func GetBilling(c *gin.Context) {
 	id := c.Param("id")
@@ -137,7 +139,7 @@ func GetBilling(c *gin.Context) {
 
 	billing, err := models.GetBilling(uint(billingID))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, billing)
@@ -163,6 +165,7 @@ type UpdateRequest struct {
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 403 {object} dto.ErrorResponse
+// @Failure 404 {object} dto.ErrorResponse
 // @Router /billing/:id [patch]
 func UpdateBilling(c *gin.Context) {
 	id := c.Param("id")
@@ -173,7 +176,7 @@ func UpdateBilling(c *gin.Context) {
 
 	billing, err := models.GetBilling(uint(billingID))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -230,11 +233,6 @@ func UpdateBilling(c *gin.Context) {
 	c.JSON(http.StatusAccepted, updatedBilling)
 }
 
-func PayBill(c *gin.Context) {
-	// TODO - Some Stripe magic here...
-
-}
-
 // DeleteBilling godoc
 // @Summary Delete Bill
 // @Description Delete a bill.
@@ -245,6 +243,7 @@ func PayBill(c *gin.Context) {
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 403 {object} dto.ErrorResponse
+// @Failure 404 {object} dto.ErrorResponse
 // @Router /billing/:id [delete]
 func DeleteBilling(c *gin.Context) {
 	id := c.Param("id")
