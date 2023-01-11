@@ -86,6 +86,7 @@ func main() {
 	roles.GET("/admin", auth.NotGuest, auth.HasRole("admin"), user.Me)
 	roles.GET("/user", auth.NotGuest, auth.HasRole("user"), user.Me)
 
+	user.Routes(v1)
 	company.Routes(v1)
 	industry.Routes(v1)
 	billing.Routes(v1)

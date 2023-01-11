@@ -56,6 +56,15 @@ func GetUsers() ([]User, error) {
 	return users, nil
 }
 
+func GetUsersByCompanyID(id uint) ([]User, error) {
+	var users []User
+	err := DB.Where("company_id = ?", id).Preload("Company.Industry").Find(&users).Error
+	if err != nil {
+		return nil, err
+	}
+	return users, nil
+}
+
 func GetUser(id uint) (*User, error) {
 	var user User
 	err := DB.Where("id = ?", id).Preload("Company.Industry").First(&user).Error
