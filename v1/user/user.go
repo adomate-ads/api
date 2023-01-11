@@ -2,6 +2,7 @@ package user
 
 import (
 	"github.com/adomate-ads/api/models"
+	"github.com/adomate-ads/api/pkg/auth"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -22,6 +23,15 @@ func CreateUser(c *gin.Context) {
 	if err := c.ShouldBindJSON(&request); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
+	}
+
+	// Check if the user is an Admin of a company, if so make sure they're only adding the member to their company
+	user := c.MustGet("x-user").(*models.User)
+	if auth.InGroup(user, "admin") {
+		if user.Company.Name != request.Company {
+			c.JSON(http.StatusForbidden, gin.H{"error": "You can only add users to your company"})
+			return
+		}
 	}
 
 	// Validate form input
@@ -75,6 +85,16 @@ func GetUsers(c *gin.Context) {
 func GetUsersByCompanyID(c *gin.Context) {
 	id := c.Param("id")
 	CompanyID, err := strconv.ParseUint(id, 10, 64)
+
+	// Check if the user is an Admin of a company, if so make sure they're only able to see the members in their company
+	user := c.MustGet("x-user").(*models.User)
+	if auth.InGroup(user, "admin") {
+		if user.CompanyID != uint(CompanyID) {
+			c.JSON(http.StatusForbidden, gin.H{"error": "You can only get users in your company"})
+			return
+		}
+	}
+
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -102,6 +122,15 @@ func GetUser(c *gin.Context) {
 		return
 	}
 
+	// Check if the user is an Admin of a company, if so make sure they're only getting the members of their company
+	xUser := c.MustGet("x-user").(*models.User)
+	if auth.InGroup(xUser, "admin") || xUser.ID == user.ID {
+		if xUser.CompanyID != user.CompanyID {
+			c.JSON(http.StatusForbidden, gin.H{"error": "You can only get users from your company"})
+			return
+		}
+	}
+
 	c.JSON(http.StatusOK, gin.H{"user": user})
 }
 
@@ -120,6 +149,20 @@ func DeleteUser(c *gin.Context) {
 	user, err := models.GetUser(uint(userID))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Check if the user is an Admin of a company, if so make sure they're only deleting the members of their company
+	xUser := c.MustGet("x-user").(*models.User)
+	if auth.InGroup(xUser, "admin") {
+		if xUser.CompanyID != user.CompanyID {
+			c.JSON(http.StatusForbidden, gin.H{"error": "You can only get users from your company"})
+			return
+		}
+	}
+	// Check if the user is trying to delete themselves
+	if xUser.ID == user.ID {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "You can't delete yourself"})
 		return
 	}
 
