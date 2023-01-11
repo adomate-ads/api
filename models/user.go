@@ -6,14 +6,14 @@ import (
 )
 
 type User struct {
-	ID        uint   `json:"id" gorm:"primaryKey;autoIncrement" example:"1"`
-	FirstName string `json:"first_name" gorm:"type:varchar(128)" example:"Raaj"`
-	LastName  string `json:"last_name" gorm:"type:varchar(128)" example:"Patel"`
-	Email     string `json:"email" gorm:"type:varchar(128)" example:"the@raajpatel.dev"`
-	Password  string `json:"password" gorm:"type:varchar(128)" example:"hashed string..."`
-	Role      string `json:"role" gorm:"type:varchar(128);" example:"user"`
-	CompanyID uint   `json:"company"`
-	Company   Company
+	ID        uint      `json:"id" gorm:"primaryKey;autoIncrement" example:"1"`
+	FirstName string    `json:"first_name" gorm:"type:varchar(128)" example:"Raaj"`
+	LastName  string    `json:"last_name" gorm:"type:varchar(128)" example:"Patel"`
+	Email     string    `json:"email" gorm:"type:varchar(128)" example:"the@raajpatel.dev"`
+	Password  string    `json:"password" gorm:"type:varchar(128)" example:"hashed string..."`
+	Role      string    `json:"role" gorm:"type:varchar(128);" example:"user"`
+	CompanyID uint      `json:"company_id" gorm:"type:integer" example:"1"`
+	Company   Company   `json:"company" gorm:"foreignKey:CompanyID"`
 	CreatedAt time.Time `json:"created_at" example:"2020-01-01T00:00:00Z"`
 	UpdatedAt time.Time `json:"updated_at" example:"2020-01-01T00:00:00Z"`
 }
@@ -50,7 +50,7 @@ func (u *User) CreateUser() error {
 
 func GetUsers() ([]User, error) {
 	var users []User
-	if err := DB.Find(&users).Error; err != nil {
+	if err := DB.Preload("Company.Industry").Find(&users).Error; err != nil {
 		return nil, err
 	}
 	return users, nil
@@ -58,7 +58,7 @@ func GetUsers() ([]User, error) {
 
 func GetUser(id uint) (*User, error) {
 	var user User
-	err := DB.Where("id = ?", id).First(&user).Error
+	err := DB.Where("id = ?", id).Preload("Company.Industry").First(&user).Error
 	if err != nil {
 		return nil, err
 	}
@@ -67,7 +67,7 @@ func GetUser(id uint) (*User, error) {
 
 func GetUserByEmail(email string) (*User, error) {
 	var user User
-	err := DB.Where("email = ?", email).First(&user).Error
+	err := DB.Where("email = ?", email).Preload("Company.Industry").First(&user).Error
 	if err != nil {
 		return nil, err
 	}
