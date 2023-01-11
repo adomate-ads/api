@@ -5,13 +5,13 @@ import "time"
 // TODO - Linking to AdWords, we probably need to build an adwords package and link a UUID to here.
 
 type Campaign struct {
-	ID                uint    `json:"id" gorm:"primaryKey;autoIncrement" example:"1"`
-	Name              string  `json:"name" gorm:"type:varchar(128)" example:"Primary Monthly"`
-	CompanyID         uint    `json:"company_id" gorm:"type:integer" example:"1"`
-	Company           Company `json:"company" gorm:"foreignKey:CompanyID"`
-	Budget            uint    `json:"budget" gorm:"type:integer" example:"1000"`
-	BiddingStrategyID uint    `json:"bidding_strategy"`
-	BiddingStrategy   BiddingStrategy
+	ID                uint            `json:"id" gorm:"primaryKey;autoIncrement" example:"1"`
+	Name              string          `json:"name" gorm:"type:varchar(128)" example:"Primary Monthly"`
+	CompanyID         uint            `json:"company_id" gorm:"type:integer" example:"1"`
+	Company           Company         `json:"company" gorm:"foreignKey:CompanyID"`
+	Budget            uint            `json:"budget" gorm:"type:integer" example:"1000"`
+	BiddingStrategyID uint            `json:"bidding_strategy_id" gorm:"type:integer" example:"1"`
+	BiddingStrategy   BiddingStrategy `json:"bidding_strategy" gorm:"foreignKey:BiddingStrategyID"`
 	Keywords          []Keyword
 	CreatedAt         time.Time `json:"created_at" example:"2020-01-01T00:00:00Z"`
 	UpdatedAt         time.Time `json:"updated_at" example:"2020-01-01T00:00:00Z"`
@@ -19,7 +19,7 @@ type Campaign struct {
 
 func GetCampaigns() ([]Campaign, error) {
 	var campaigns []Campaign
-	if err := DB.Find(&campaigns).Error; err != nil {
+	if err := DB.Preload("Company").Find(&campaigns).Error; err != nil {
 		return nil, err
 	}
 	return campaigns, nil
@@ -27,7 +27,7 @@ func GetCampaigns() ([]Campaign, error) {
 
 func GetCampaign(id uint) (*Campaign, error) {
 	var campaign Campaign
-	if err := DB.First(&campaign, id).Error; err != nil {
+	if err := DB.Preload("Company").First(&campaign, id).Error; err != nil {
 		return nil, err
 	}
 	return &campaign, nil
@@ -35,7 +35,7 @@ func GetCampaign(id uint) (*Campaign, error) {
 
 func GetCampaignsByCompanyID(id uint) ([]Campaign, error) {
 	var campaigns []Campaign
-	if err := DB.Where("company_id = ?", id).Find(&campaigns).Error; err != nil {
+	if err := DB.Where("company_id = ?", id).Preload("Company").Find(&campaigns).Error; err != nil {
 		return nil, err
 	}
 	return campaigns, nil
