@@ -2,6 +2,7 @@ package billing
 
 import (
 	"github.com/adomate-ads/api/models"
+	"github.com/adomate-ads/api/pkg/auth"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -111,6 +112,15 @@ func GetBillingsForCompany(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
 
+	// Check if the user is an admin of a company, if so make sure they're getting bills of their company
+	user := c.MustGet("x-user").(*models.User)
+	if auth.InGroup(user, "admin") {
+		if user.CompanyID != uint(companyID) {
+			c.JSON(http.StatusForbidden, gin.H{"error": "You can only get bills from your company"})
+			return
+		}
+	}
+
 	billings, err := models.GetBillingsByCompanyID(uint(companyID))
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
@@ -143,6 +153,14 @@ func GetBilling(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
 	}
+
+	// Only allow the user to get bills from their company
+	user := c.MustGet("x-user").(*models.User)
+	if user.CompanyID != billing.CompanyID && !auth.InGroup(user, "super-admin") {
+		c.JSON(http.StatusForbidden, gin.H{"error": "You can only get bills from your company"})
+		return
+	}
+
 	c.JSON(http.StatusOK, billing)
 }
 
