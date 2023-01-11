@@ -3,9 +3,9 @@ package models
 import "time"
 
 type Billing struct {
-	ID        uint `json:"id" gorm:"primaryKey;autoIncrement" example:"1"`
-	CompanyID uint `json:"name"`
-	Company   Company
+	ID        uint    `json:"id" gorm:"primaryKey;autoIncrement" example:"1"`
+	CompanyID uint    `json:"company_id" gorm:"type:integer" example:"1"`
+	Company   Company `json:"company" gorm:"foreignKey:CompanyID"`
 	Amount    float64 `json:"amount" gorm:"type:float" example:"900.25"`
 	// Available options: paid, unpaid, pending
 	Status    string    `json:"status" gorm:"type:varchar(10)" example:"paid"`
