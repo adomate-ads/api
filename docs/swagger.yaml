@@ -126,16 +126,16 @@ paths:
             items:
               $ref: '#/definitions/models.Billing'
             type: array
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/dto.ErrorResponse'
         "401":
           description: Unauthorized
           schema:
             $ref: '#/definitions/dto.ErrorResponse'
         "403":
           description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
           schema:
             $ref: '#/definitions/dto.ErrorResponse'
       summary: Get all Bills
@@ -162,6 +162,10 @@ paths:
             $ref: '#/definitions/dto.ErrorResponse'
         "403":
           description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
           schema:
             $ref: '#/definitions/dto.ErrorResponse'
       summary: Create Bill
@@ -193,6 +197,10 @@ paths:
             $ref: '#/definitions/dto.ErrorResponse'
         "404":
           description: Not Found
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
           schema:
             $ref: '#/definitions/dto.ErrorResponse'
       summary: Delete Bill
@@ -253,6 +261,10 @@ paths:
             $ref: '#/definitions/dto.ErrorResponse'
         "404":
           description: Not Found
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
           schema:
             $ref: '#/definitions/dto.ErrorResponse'
       summary: Update Bill
