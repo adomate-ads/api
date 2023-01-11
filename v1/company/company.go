@@ -2,6 +2,7 @@ package company
 
 import (
 	"github.com/adomate-ads/api/models"
+	"github.com/adomate-ads/api/pkg/auth"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -79,7 +80,7 @@ func GetCompany(c *gin.Context) {
 
 	// Make sure that the user can only get information about the company that they're from.
 	user := c.MustGet("x-user").(*models.User)
-	if user.CompanyID != uint(companyID) {
+	if user.CompanyID != uint(companyID) && !auth.InGroup(user, "super-admin") {
 		c.JSON(http.StatusForbidden, gin.H{"error": "You can only get information about your company"})
 		return
 	}
