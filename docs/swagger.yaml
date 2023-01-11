@@ -14,6 +14,21 @@ definitions:
     required:
     - message
     type: object
+  models.BiddingStrategy:
+    properties:
+      created_at:
+        example: "2020-01-01T00:00:00Z"
+        type: string
+      id:
+        example: 1
+        type: integer
+      strategy:
+        example: Cost Optimize
+        type: string
+      updated_at:
+        example: "2020-01-01T00:00:00Z"
+        type: string
+    type: object
   models.Billing:
     properties:
       amount:
@@ -41,6 +56,34 @@ definitions:
       status:
         description: 'Available options: paid, unpaid, pending'
         example: paid
+        type: string
+      updated_at:
+        example: "2020-01-01T00:00:00Z"
+        type: string
+    type: object
+  models.Campaign:
+    properties:
+      bidding_strategy:
+        type: integer
+      biddingStrategy:
+        $ref: '#/definitions/models.BiddingStrategy'
+      budget:
+        example: 1000
+        type: integer
+      company:
+        $ref: '#/definitions/models.Company'
+      created_at:
+        example: "2020-01-01T00:00:00Z"
+        type: string
+      id:
+        example: 1
+        type: integer
+      keywords:
+        items:
+          $ref: '#/definitions/models.Keyword'
+        type: array
+      name:
+        example: Primary Monthly
         type: string
       updated_at:
         example: "2020-01-01T00:00:00Z"
@@ -87,6 +130,24 @@ definitions:
         example: "2020-01-01T00:00:00Z"
         type: string
     type: object
+  models.Keyword:
+    properties:
+      cpc:
+        example: 9.25
+        type: number
+      created_at:
+        example: "2020-01-01T00:00:00Z"
+        type: string
+      id:
+        example: 1
+        type: integer
+      keyword:
+        example: Dentistry
+        type: string
+      updated_at:
+        example: "2020-01-01T00:00:00Z"
+        type: string
+    type: object
 host: localhost:3000
 info:
   contact:
@@ -126,16 +187,16 @@ paths:
             items:
               $ref: '#/definitions/models.Billing'
             type: array
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/dto.ErrorResponse'
         "401":
           description: Unauthorized
           schema:
             $ref: '#/definitions/dto.ErrorResponse'
         "403":
           description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
           schema:
             $ref: '#/definitions/dto.ErrorResponse'
       summary: Get all Bills
@@ -162,6 +223,10 @@ paths:
             $ref: '#/definitions/dto.ErrorResponse'
         "403":
           description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
           schema:
             $ref: '#/definitions/dto.ErrorResponse'
       summary: Create Bill
@@ -193,6 +258,10 @@ paths:
             $ref: '#/definitions/dto.ErrorResponse'
         "404":
           description: Not Found
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
           schema:
             $ref: '#/definitions/dto.ErrorResponse'
       summary: Delete Bill
@@ -255,6 +324,10 @@ paths:
           description: Not Found
           schema:
             $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
       summary: Update Bill
       tags:
       - Billing
@@ -291,6 +364,155 @@ paths:
       summary: Get all Bills for a Company
       tags:
       - Billing
+  /campaign:
+    get:
+      consumes:
+      - '*/*'
+      description: Get a slice of all campaigns
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Campaign'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Get all campaigns
+      tags:
+      - Campaign
+    post:
+      consumes:
+      - '*/*'
+      description: creates a campaign for certain company/user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Campaign'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Create add campaign
+      tags:
+      - Campaign
+  /campaign/:id:
+    delete:
+      consumes:
+      - '*/*'
+      description: Delete a campaign.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.MessageResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Delete Campaign
+      tags:
+      - Campaign
+    get:
+      consumes:
+      - '*/*'
+      description: Gets all information about specific campaign
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Campaign'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Gets a campaign
+      tags:
+      - Campaign
+  /campaign/company/:id:
+    get:
+      consumes:
+      - '*/*'
+      description: get a slice of all campaigns for certain company
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Campaign'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Get all campaigns for a company
+      tags:
+      - Campaign
 schemes:
 - http
 - https

@@ -15,6 +15,17 @@ type CreateRequest struct {
 	Budget          uint   `json:"budget" binding:"required"`
 }
 
+// CreateCampaign godoc
+// @Summary Create add campaign
+// @Description creates a campaign for certain company/user
+// @Tags Campaign
+// @Accept */*
+// @Produce json
+// @Success 200 {object} []models.Campaign
+// @Failure 401 {object} dto.ErrorResponse
+// @Failure 403 {object} dto.ErrorResponse
+// @Failure 500 {object} dto.ErrorResponse
+// @Router /campaign [post]
 func CreateCampaign(c *gin.Context) {
 	var request CreateRequest
 	if err := c.ShouldBindJSON(&request); err != nil {
@@ -58,6 +69,17 @@ func CreateCampaign(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"message": "Successfully registered campaign"})
 }
 
+// GetCampaigns godoc
+// @Summary Get all campaigns
+// @Description Get a slice of all campaigns
+// @Tags Campaign
+// @Accept */*
+// @Produce json
+// @Success 200 {object} []models.Campaign
+// @Failure 401 {object} dto.ErrorResponse
+// @Failure 403 {object} dto.ErrorResponse
+// @Failure 500 {object} dto.ErrorResponse
+// @Router /campaign [get]
 func GetCampaigns(c *gin.Context) {
 	campaigns, err := models.GetCampaigns()
 	if err != nil {
@@ -67,6 +89,17 @@ func GetCampaigns(c *gin.Context) {
 	c.JSON(http.StatusOK, campaigns)
 }
 
+// GetCampaignsForCompany godoc
+// @Summary Get all campaigns for a company
+// @Description get a slice of all campaigns for certain company
+// @Tags Campaign
+// @Accept */*
+// @Produce json
+// @Success 200 {object} []models.Campaign
+// @Failure 401 {object} dto.ErrorResponse
+// @Failure 403 {object} dto.ErrorResponse
+// @Failure 500 {object} dto.ErrorResponse
+// @Router /campaign/company/:id [get]
 func GetCampaignsForCompany(c *gin.Context) {
 	id := c.Param("id")
 	companyID, err := strconv.ParseUint(id, 10, 64)
@@ -83,6 +116,17 @@ func GetCampaignsForCompany(c *gin.Context) {
 	c.JSON(http.StatusOK, campaigns)
 }
 
+// GetCampaign godoc
+// @Summary Gets a campaign 
+// @Description Gets all information about specific campaign
+// @Tags Campaign
+// @Accept */*
+// @Produce json
+// @Success 200 {object} []models.Campaign
+// @Failure 401 {object} dto.ErrorResponse
+// @Failure 403 {object} dto.ErrorResponse
+// @Failure 500 {object} dto.ErrorResponse
+// @Router /campaign/:id [get]
 func GetCampaign(c *gin.Context) {
 	id := c.Param("id")
 	campaignID, err := strconv.ParseUint(id, 10, 64)
@@ -98,6 +142,19 @@ func GetCampaign(c *gin.Context) {
 	c.JSON(http.StatusOK, campaign)
 }
 
+// DeleteCampaign godoc
+// @Summary Delete Campaign
+// @Description Delete a campaign.
+// @Tags Campaign
+// @Accept */*
+// @Produce json
+// @Success 200 {object} dto.MessageResponse
+// @Failure 400 {object} dto.ErrorResponse
+// @Failure 401 {object} dto.ErrorResponse
+// @Failure 403 {object} dto.ErrorResponse
+// @Failure 404 {object} dto.ErrorResponse
+// @Failure 500 {object} dto.ErrorResponse
+// @Router /campaign/:id [delete]
 func DeleteCampaign(c *gin.Context) {
 	id := c.Param("id")
 	campaignID, err := strconv.ParseUint(id, 10, 64)
