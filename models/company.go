@@ -18,7 +18,7 @@ type Company struct {
 
 func GetCompanies() ([]Company, error) {
 	var companies []Company
-	if err := DB.Find(&companies).Error; err != nil {
+	if err := DB.Preload("Industry").Find(&companies).Error; err != nil {
 		return nil, err
 	}
 	return companies, nil
@@ -26,7 +26,7 @@ func GetCompanies() ([]Company, error) {
 
 func GetCompany(id uint) (*Company, error) {
 	var company Company
-	if err := DB.First(&company, id).Error; err != nil {
+	if err := DB.Preload("Industry").First(&company, id).Error; err != nil {
 		return nil, err
 	}
 	return &company, nil
@@ -34,7 +34,7 @@ func GetCompany(id uint) (*Company, error) {
 
 func GetCompanyByName(name string) (*Company, error) {
 	var company Company
-	if err := DB.Where("name = ?", name).First(&company).Error; err != nil {
+	if err := DB.Where("name = ?", name).Preload("Industry").First(&company).Error; err != nil {
 		return nil, err
 	}
 	return &company, nil
@@ -42,7 +42,7 @@ func GetCompanyByName(name string) (*Company, error) {
 
 func GetCompanyByEmail(email string) (*Company, error) {
 	var company Company
-	if err := DB.Where("email = ?", email).First(&company).Error; err != nil {
+	if err := DB.Where("email = ?", email).Preload("Industry").First(&company).Error; err != nil {
 		return nil, err
 	}
 	return &company, nil

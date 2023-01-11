@@ -77,11 +77,19 @@ func GetCompany(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
 
+	// Make sure that the user can only get information about the company that they're from.
+	user := c.MustGet("x-user").(*models.User)
+	if user.CompanyID != uint(companyID) {
+		c.JSON(http.StatusForbidden, gin.H{"error": "You can only get information about your company"})
+		return
+	}
+
 	company, err := models.GetCompany(uint(companyID))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+
 	c.JSON(http.StatusOK, company)
 }
 
