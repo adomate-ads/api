@@ -17,6 +17,17 @@ type CreateRequest struct {
 	Budget   uint   `json:"budget" binding:"required"`
 }
 
+// Create Company godoc
+// @Summary Create Company
+// @Description creates a company that can start campaigns, etc
+// @Tags Company
+// @Accept */*
+// @Produce json
+// @Success 200 {object} []models.Company
+// @Failure 401 {object} dto.ErrorResponse
+// @Failure 403 {object} dto.ErrorResponse
+// @Failure 500 {object} dto.ErrorResponse
+// @Router /company [post]
 func CreateCompany(c *gin.Context) {
 	var request CreateRequest
 	if err := c.ShouldBindJSON(&request); err != nil {
@@ -62,6 +73,17 @@ func CreateCompany(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"message": "Successfully registered company"})
 }
 
+// GetCompanies godoc
+// @Summary Get all companies
+// @Description Get a slice of all companies
+// @Tags Company
+// @Accept */*
+// @Produce json
+// @Success 200 {object} []models.Company
+// @Failure 401 {object} dto.ErrorResponse
+// @Failure 403 {object} dto.ErrorResponse
+// @Failure 500 {object} dto.ErrorResponse
+// @Router /company [get]
 func GetCompanies(c *gin.Context) {
 	companies, err := models.GetCompanies()
 	if err != nil {
@@ -71,6 +93,17 @@ func GetCompanies(c *gin.Context) {
 	c.JSON(http.StatusOK, companies)
 }
 
+// GetCompany godoc
+// @Summary Gets a company 
+// @Description Gets all information about specific company
+// @Tags Company
+// @Accept */*
+// @Produce json
+// @Success 200 {object} []models.Company
+// @Failure 401 {object} dto.ErrorResponse
+// @Failure 403 {object} dto.ErrorResponse
+// @Failure 500 {object} dto.ErrorResponse
+// @Router /company/:id [get]
 func GetCompany(c *gin.Context) {
 	id := c.Param("id")
 	companyID, err := strconv.ParseUint(id, 10, 64)
@@ -94,6 +127,19 @@ func GetCompany(c *gin.Context) {
 	c.JSON(http.StatusOK, company)
 }
 
+// DeleteCompany godoc
+// @Summary Delete Company
+// @Description Delete a company.
+// @Tags Company
+// @Accept */*
+// @Produce json
+// @Success 200 {object} dto.MessageResponse
+// @Failure 400 {object} dto.ErrorResponse
+// @Failure 401 {object} dto.ErrorResponse
+// @Failure 403 {object} dto.ErrorResponse
+// @Failure 404 {object} dto.ErrorResponse
+// @Failure 500 {object} dto.ErrorResponse
+// @Router /company/:id [delete]
 func DeleteCompany(c *gin.Context) {
 	id := c.Param("id")
 	companyID, err := strconv.ParseUint(id, 10, 64)
