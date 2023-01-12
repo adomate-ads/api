@@ -2,6 +2,7 @@ package campaign
 
 import (
 	"github.com/adomate-ads/api/models"
+	"github.com/adomate-ads/api/pkg/auth"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -30,6 +31,13 @@ func CreateCampaign(c *gin.Context) {
 	var request CreateRequest
 	if err := c.ShouldBindJSON(&request); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Make sure that the user can only create a campaign in their company.
+	user := c.MustGet("x-user").(*models.User)
+	if user.Company.Name != request.Company && !auth.InGroup(user, "super-admin") {
+		c.JSON(http.StatusForbidden, gin.H{"error": "You can only create a campaign for your company"})
 		return
 	}
 
@@ -107,6 +115,13 @@ func GetCampaignsForCompany(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
 
+	// Make sure that the user can only get information about campaigns from the company they're in.
+	user := c.MustGet("x-user").(*models.User)
+	if user.CompanyID != uint(companyID) && !auth.InGroup(user, "super-admin") {
+		c.JSON(http.StatusForbidden, gin.H{"error": "You can only get campaigns for your company"})
+		return
+	}
+
 	campaigns, err := models.GetCampaignsByCompanyID(uint(companyID))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -134,11 +149,19 @@ func GetCampaign(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
 
-	campaign, err := models.GetCompany(uint(campaignID))
+	campaign, err := models.GetCampaign(uint(campaignID))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+
+	// Make sure that the user can only get information about a campaign from the company they're in.
+	user := c.MustGet("x-user").(*models.User)
+	if user.CompanyID != campaign.CompanyID && !auth.InGroup(user, "super-admin") {
+		c.JSON(http.StatusForbidden, gin.H{"error": "You can only get a campaign from your company"})
+		return
+	}
+
 	c.JSON(http.StatusOK, campaign)
 }
 
@@ -165,6 +188,13 @@ func DeleteCampaign(c *gin.Context) {
 	campaign, err := models.GetCampaign(uint(campaignID))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Make sure that the user can only delete a campaign in their company.
+	user := c.MustGet("x-user").(*models.User)
+	if user.CompanyID != campaign.CompanyID && !auth.InGroup(user, "super-admin") {
+		c.JSON(http.StatusForbidden, gin.H{"error": "You can only delete a campaign from your company"})
 		return
 	}
 

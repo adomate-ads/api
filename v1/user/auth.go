@@ -142,7 +142,7 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"message": "Successfully created user"})
+	c.JSON(http.StatusCreated, gin.H{"message": "Successfully created user and company"})
 	// TODO - In the future, we should send an email to the user with a link to verify their email address
 	// TODO - In the future, we should send an email to the company admin notifying them of the new user
 	// TODO - In the future, we should possibly send a session token back to the user
@@ -164,8 +164,9 @@ func Logout(c *gin.Context) {
 }
 
 func Me(c *gin.Context) {
-	session := sessions.Default(c)
-	user := session.Get("user-id")
+	//session := sessions.Default(c)
+	//user := session.Get("user-id")
+	user, _ := c.Get("x-user")
 	c.JSON(http.StatusOK, gin.H{"user": user})
 }
 

@@ -3,13 +3,13 @@ package models
 import "time"
 
 type Email struct {
-	ID              uint `json:"id" gorm:"primaryKey;autoIncrement" example:"1"`
-	CompanyID       uint `json:"company"`
-	Company         Company
-	EmailTemplateID uint `json:"email_template"`
-	EmailTemplate   EmailTemplate
-	CreatedAt       time.Time `json:"created_at" example:"2020-01-01T00:00:00Z"`
-	UpdatedAt       time.Time `json:"updated_at" example:"2020-01-01T00:00:00Z"`
+	ID              uint          `json:"id" gorm:"primaryKey;autoIncrement" example:"1"`
+	CompanyID       uint          `json:"company_id" gorm:"type:integer" example:"1"`
+	Company         Company       `json:"company" gorm:"foreignKey:CompanyID"`
+	EmailTemplateID uint          `json:"email_template_id" gorm:"type:integer" example:"1"`
+	EmailTemplate   EmailTemplate `json:"email_template" gorm:"foreignKey:EmailTemplateID"`
+	CreatedAt       time.Time     `json:"created_at" example:"2020-01-01T00:00:00Z"`
+	UpdatedAt       time.Time     `json:"updated_at" example:"2020-01-01T00:00:00Z"`
 }
 
 func GetEmails() ([]Email, error) {

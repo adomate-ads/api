@@ -6,8 +6,8 @@ import (
 )
 
 func Routes(r *gin.RouterGroup) {
-	r.POST("/industry", auth.NotGuest, CreateIndustry)
+	r.POST("/industry", auth.NotGuest, auth.InGroup("super-admin"), CreateIndustry)
 	r.GET("/industry", auth.NotGuest, GetIndustries)
 	r.GET("/industry/:industry", auth.NotGuest, GetIndustry)
-	r.DELETE("/industry/:id", auth.NotGuest, DeleteIndustry)
+	r.DELETE("/industry/:id", auth.NotGuest, auth.InGroup("super-admin"), DeleteIndustry)
 }
