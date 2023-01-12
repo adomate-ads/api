@@ -39,6 +39,9 @@ definitions:
         type: string
       company:
         $ref: '#/definitions/models.Company'
+      company_id:
+        example: 1
+        type: integer
       created_at:
         example: "2020-01-01T00:00:00Z"
         type: string
@@ -51,8 +54,6 @@ definitions:
       issued_at:
         example: "2020-01-01T00:00:00Z"
         type: string
-      name:
-        type: integer
       status:
         description: 'Available options: paid, unpaid, pending'
         example: paid
@@ -64,14 +65,18 @@ definitions:
   models.Campaign:
     properties:
       bidding_strategy:
-        type: integer
-      biddingStrategy:
         $ref: '#/definitions/models.BiddingStrategy'
+      bidding_strategy_id:
+        example: 1
+        type: integer
       budget:
         example: 1000
         type: integer
       company:
         $ref: '#/definitions/models.Company'
+      company_id:
+        example: 1
+        type: integer
       created_at:
         example: "2020-01-01T00:00:00Z"
         type: string
@@ -108,6 +113,9 @@ definitions:
         type: integer
       industry:
         $ref: '#/definitions/models.Industry'
+      industry_id:
+        example: 1
+        type: integer
       name:
         example: Google LLC
         type: string
@@ -513,6 +521,246 @@ paths:
       summary: Get all campaigns for a company
       tags:
       - Campaign
+  /company:
+    get:
+      consumes:
+      - '*/*'
+      description: Get a slice of all companies
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Company'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Get all companies
+      tags:
+      - Company
+    post:
+      consumes:
+      - '*/*'
+      description: creates a company that can start campaigns, etc
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Company'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Create Company
+      tags:
+      - Company
+  /company/:id:
+    delete:
+      consumes:
+      - '*/*'
+      description: Delete a company.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.MessageResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Delete Company
+      tags:
+      - Company
+    get:
+      consumes:
+      - '*/*'
+      description: Gets all information about specific company
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Company'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Gets a company
+      tags:
+      - Company
+  /industry:
+    get:
+      consumes:
+      - '*/*'
+      description: Get a slice of all industries
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Industry'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Get all industries
+      tags:
+      - Industry
+    post:
+      consumes:
+      - '*/*'
+      description: creates an industry category
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Industry'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Create Industry
+      tags:
+      - Industry
+  /industry/:id:
+    delete:
+      consumes:
+      - '*/*'
+      description: Delete an industry.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.MessageResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Delete Industry
+      tags:
+      - Industry
+    get:
+      consumes:
+      - '*/*'
+      description: Gets all information about specific industry
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Industry'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Gets a industry
+      tags:
+      - Industry
 schemes:
 - http
 - https
