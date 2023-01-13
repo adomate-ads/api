@@ -3,6 +3,7 @@ package user
 import (
 	"github.com/adomate-ads/api/models"
 	"github.com/adomate-ads/api/pkg/auth"
+	"github.com/adomate-ads/api/pkg/email"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -68,6 +69,9 @@ func CreateUser(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+
+	email.SendEmail(company.Email, email.Templates["new-user-notification"].Subject, email.Templates["new-user-notification"].Body)
+	email.SendEmail(u.Email, email.Templates["new-user"].Subject, email.Templates["new-user"].Body)
 
 	c.JSON(http.StatusCreated, gin.H{"message": "Successfully created user"})
 }
@@ -170,6 +174,9 @@ func DeleteUser(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+
+	email.SendEmail(user.Company.Email, email.Templates["delete-user-notification"].Subject, email.Templates["delete-user-notification"].Body)
+	email.SendEmail(user.Email, email.Templates["delete-user"].Subject, email.Templates["delete-user"].Body)
 
 	c.JSON(http.StatusOK, gin.H{"message": "User deleted successfully"})
 }

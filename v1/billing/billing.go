@@ -3,6 +3,7 @@ package billing
 import (
 	"github.com/adomate-ads/api/models"
 	"github.com/adomate-ads/api/pkg/auth"
+	"github.com/adomate-ads/api/pkg/email"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -69,6 +70,8 @@ func CreateBilling(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+
+	email.SendEmail(company.Email, email.Templates["new-invoice"].Subject, email.Templates["new-invoice"].Body)
 
 	c.JSON(http.StatusCreated, gin.H{"message": "Successfully created bill"})
 }
@@ -283,6 +286,8 @@ func DeleteBilling(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+
+	email.SendEmail(billing.Company.Email, email.Templates["delete-invoice"].Subject, email.Templates["delete-invoice"].Body)
 
 	c.JSON(http.StatusOK, gin.H{"message": "Bill deleted successfully"})
 }

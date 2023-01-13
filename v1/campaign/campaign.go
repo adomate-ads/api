@@ -3,6 +3,7 @@ package campaign
 import (
 	"github.com/adomate-ads/api/models"
 	"github.com/adomate-ads/api/pkg/auth"
+	"github.com/adomate-ads/api/pkg/email"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -74,6 +75,8 @@ func CreateCampaign(c *gin.Context) {
 		return
 	}
 
+	email.SendEmail(company.Email, email.Templates["new-campaign"].Subject, email.Templates["new-campaign"].Body)
+
 	c.JSON(http.StatusCreated, gin.H{"message": "Successfully registered campaign"})
 }
 
@@ -132,7 +135,7 @@ func GetCampaignsForCompany(c *gin.Context) {
 }
 
 // GetCampaign godoc
-// @Summary Gets a campaign 
+// @Summary Gets a campaign
 // @Description Gets all information about specific campaign
 // @Tags Campaign
 // @Accept */*
@@ -202,6 +205,8 @@ func DeleteCampaign(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+
+	email.SendEmail(campaign.Company.Email, email.Templates["delete-campaign"].Subject, email.Templates["delete-campaign"].Body)
 
 	c.JSON(http.StatusOK, gin.H{"message": "Campaign deleted successfully"})
 }
