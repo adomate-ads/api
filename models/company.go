@@ -12,6 +12,7 @@ type Company struct {
 	Industry   Industry  `json:"industry" gorm:"foreignKey:IndustryID"`
 	Domain     string    `json:"domain" gorm:"type:varchar(128)" example:"raajpatel.dev"`
 	Budget     uint      `json:"budget" gorm:"type:integer" example:"1000"`
+	AdsBalance uint      `json:"ads_balance" gorm:"type:integer" example:"500"`
 	CreatedAt  time.Time `json:"created_at" example:"2020-01-01T00:00:00Z"`
 	UpdatedAt  time.Time `json:"updated_at" example:"2020-01-01T00:00:00Z"`
 }

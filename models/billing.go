@@ -8,12 +8,14 @@ type Billing struct {
 	Company   Company `json:"company" gorm:"foreignKey:CompanyID"`
 	Amount    float64 `json:"amount" gorm:"type:float" example:"900.25"`
 	// Available options: paid, unpaid, pending
-	Status    string    `json:"status" gorm:"type:varchar(10)" example:"paid"`
-	Comments  string    `json:"comments" gorm:"type:varchar(1000)" example:"Something about the invoice..."`
-	DueAt     time.Time `json:"due_at" example:"2020-01-01T00:00:00Z"`
-	IssuedAt  time.Time `json:"issued_at" example:"2020-01-01T00:00:00Z"`
-	CreatedAt time.Time `json:"created_at" example:"2020-01-01T00:00:00Z"`
-	UpdatedAt time.Time `json:"updated_at" example:"2020-01-01T00:00:00Z"`
+	Status   string `json:"status" gorm:"type:varchar(10)" example:"paid"`
+	Comments string `json:"comments" gorm:"type:varchar(1000)" example:"Something about the invoice..."`
+	// TODO - Check Stripe transaction ID standards for better example and update varchar length
+	TransactionID string    `json:"transaction_id" gorm:"type:varchar(100)" example:"12345678"`
+	DueAt         time.Time `json:"due_at" example:"2020-01-01T00:00:00Z"`
+	IssuedAt      time.Time `json:"issued_at" example:"2020-01-01T00:00:00Z"`
+	CreatedAt     time.Time `json:"created_at" example:"2020-01-01T00:00:00Z"`
+	UpdatedAt     time.Time `json:"updated_at" example:"2020-01-01T00:00:00Z"`
 }
 
 func GetBillings() ([]Billing, error) {
