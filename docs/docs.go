@@ -145,6 +145,15 @@ const docTemplate = `{
                     "Billing"
                 ],
                 "summary": "Gets a Bill",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Billing ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -1002,6 +1011,11 @@ const docTemplate = `{
                     "type": "string",
                     "example": "paid"
                 },
+                "transaction_id": {
+                    "description": "TODO - Check Stripe transaction ID standards for better example and update varchar length",
+                    "type": "string",
+                    "example": "12345678"
+                },
                 "updated_at": {
                     "type": "string",
                     "example": "2020-01-01T00:00:00Z"
@@ -1056,6 +1070,10 @@ const docTemplate = `{
         "models.Company": {
             "type": "object",
             "properties": {
+                "ads_balance": {
+                    "type": "integer",
+                    "example": 500
+                },
                 "budget": {
                     "type": "integer",
                     "example": 1000
