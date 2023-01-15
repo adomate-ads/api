@@ -3,6 +3,7 @@ package campaign
 import (
 	"github.com/adomate-ads/api/models"
 	"github.com/adomate-ads/api/pkg/auth"
+	"github.com/adomate-ads/api/pkg/email"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -17,7 +18,7 @@ type CreateRequest struct {
 }
 
 // CreateCampaign godoc
-// @Summary Create add campaign
+// @Summary Create a campaign
 // @Description creates a campaign for certain company/user
 // @Tags Campaign
 // @Accept */*
@@ -56,6 +57,10 @@ func CreateCampaign(c *gin.Context) {
 
 	// Get bidding strategy ID
 	biddingStrategy, err := models.GetBiddingStrategyByName(request.BiddingStrategy)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "That bidding strategy does not exist"})
+		return
+	}
 
 	campaign := models.Campaign{
 		Name:              request.Name,
@@ -73,6 +78,8 @@ func CreateCampaign(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+
+	email.SendEmail(company.Email, email.Templates["new-campaign"].Subject, email.Templates["new-campaign"].Body)
 
 	c.JSON(http.StatusCreated, gin.H{"message": "Successfully registered campaign"})
 }
@@ -103,6 +110,7 @@ func GetCampaigns(c *gin.Context) {
 // @Tags Campaign
 // @Accept */*
 // @Produce json
+// @Param id path string true "Campaign ID"
 // @Success 200 {object} []models.Campaign
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 403 {object} dto.ErrorResponse
@@ -132,15 +140,17 @@ func GetCampaignsForCompany(c *gin.Context) {
 }
 
 // GetCampaign godoc
-// @Summary Gets a campaign 
-// @Description Gets all information about specific campaign
+// @Summary Gets a Campaign
+// @Description Gets all information about a single campaign.
 // @Tags Campaign
 // @Accept */*
 // @Produce json
-// @Success 200 {object} []models.Campaign
+// @Param id path string true "Campaign ID"
+// @Success 200 {object} models.Campaign
+// @Failure 400 {object} dto.ErrorResponse
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 403 {object} dto.ErrorResponse
-// @Failure 500 {object} dto.ErrorResponse
+// @Failure 404 {object} dto.ErrorResponse
 // @Router /campaign/:id [get]
 func GetCampaign(c *gin.Context) {
 	id := c.Param("id")
@@ -171,6 +181,7 @@ func GetCampaign(c *gin.Context) {
 // @Tags Campaign
 // @Accept */*
 // @Produce json
+// @Param id path string true "Campaign ID"
 // @Success 200 {object} dto.MessageResponse
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 401 {object} dto.ErrorResponse
@@ -202,6 +213,8 @@ func DeleteCampaign(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+
+	email.SendEmail(campaign.Company.Email, email.Templates["delete-campaign"].Subject, email.Templates["delete-campaign"].Body)
 
 	c.JSON(http.StatusOK, gin.H{"message": "Campaign deleted successfully"})
 }

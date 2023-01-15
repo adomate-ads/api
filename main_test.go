@@ -13,7 +13,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"net/http/httptest"
@@ -73,7 +73,7 @@ func TestOnlineCheck(t *testing.T) {
 	w := httptest.NewRecorder()
 	r.ServeHTTP(w, req)
 
-	responseData, _ := ioutil.ReadAll(w.Body)
+	responseData, _ := io.ReadAll(w.Body)
 	assert.Equal(t, mockResponse, string(responseData))
 	assert.Equal(t, http.StatusOK, w.Code)
 }
@@ -90,7 +90,7 @@ func TestCreateIndustryHandler(t *testing.T) {
 	w := httptest.NewRecorder()
 	r.ServeHTTP(w, req)
 
-	responseData, _ := ioutil.ReadAll(w.Body)
+	responseData, _ := io.ReadAll(w.Body)
 	assert.Equal(t, mockResponse, string(responseData))
 	assert.Equal(t, http.StatusOK, w.Code)
 
@@ -99,7 +99,7 @@ func TestCreateIndustryHandler(t *testing.T) {
 	w = httptest.NewRecorder()
 	r.ServeHTTP(w, req)
 
-	responseData, _ = ioutil.ReadAll(w.Body)
+	responseData, _ = io.ReadAll(w.Body)
 	assert.Equal(t, mockResponse, string(responseData))
 	assert.Equal(t, http.StatusBadRequest, w.Code)
 }
@@ -120,7 +120,7 @@ func TestCreateCompanyHandler(t *testing.T) {
 	w := httptest.NewRecorder()
 	r.ServeHTTP(w, req)
 
-	responseData, _ := ioutil.ReadAll(w.Body)
+	responseData, _ := io.ReadAll(w.Body)
 	assert.Equal(t, mockResponse, string(responseData))
 	assert.Equal(t, http.StatusCreated, w.Code)
 
@@ -129,7 +129,7 @@ func TestCreateCompanyHandler(t *testing.T) {
 	w = httptest.NewRecorder()
 	r.ServeHTTP(w, req)
 
-	responseData, _ = ioutil.ReadAll(w.Body)
+	responseData, _ = io.ReadAll(w.Body)
 	assert.Equal(t, mockResponse, string(responseData))
 	assert.Equal(t, http.StatusBadRequest, w.Code)
 }
@@ -151,7 +151,7 @@ func TestCreateBillingHandler(t *testing.T) {
 	w := httptest.NewRecorder()
 	r.ServeHTTP(w, req)
 
-	responseData, _ := ioutil.ReadAll(w.Body)
+	responseData, _ := io.ReadAll(w.Body)
 	assert.Equal(t, mockResponse, string(responseData))
 	assert.Equal(t, http.StatusBadRequest, w.Code)
 
@@ -163,7 +163,7 @@ func TestCreateBillingHandler(t *testing.T) {
 	w = httptest.NewRecorder()
 	r.ServeHTTP(w, req)
 
-	responseData, _ = ioutil.ReadAll(w.Body)
+	responseData, _ = io.ReadAll(w.Body)
 	assert.Equal(t, mockResponse, string(responseData))
 	assert.Equal(t, http.StatusCreated, w.Code)
 }

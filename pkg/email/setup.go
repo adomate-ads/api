@@ -14,13 +14,12 @@ var private_key string = os.Getenv("EMAIL_PRIVATE_KEY")
 var mg *mailgun.MailgunImpl
 var sender string
 
-func setup() {
+func Setup() {
 	mg = mailgun.NewMailgun(domain, private_key)
 	sender = "no-reply@adomate.com"
 }
 
-func SendEmail(to string, subject string, body string) (string, string, error) {
-	setup()
+func SendEmail(to string, subject string, body string) (string, string) {
 	message := mg.NewMessage(sender, subject, body, to)
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
@@ -28,8 +27,8 @@ func SendEmail(to string, subject string, body string) (string, string, error) {
 
 	resp, id, err := mg.Send(ctx, message)
 	if err != nil {
-		return "", "", err
+		return "", ""
 	}
 
-	return resp, id, nil
+	return resp, id
 }

@@ -83,6 +83,7 @@ func GetIndustries(c *gin.Context) {
 // @Tags Industry
 // @Accept */*
 // @Produce json
+// @Param id path string true "Industry ID"
 // @Success 200 {object} []models.Industry
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 403 {object} dto.ErrorResponse
@@ -105,6 +106,7 @@ func GetIndustry(c *gin.Context) {
 // @Tags Industry
 // @Accept */*
 // @Produce json
+// @Param id path string true "Industry ID"
 // @Success 200 {object} dto.MessageResponse
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 401 {object} dto.ErrorResponse

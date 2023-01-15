@@ -110,7 +110,7 @@ func Register(c *gin.Context) {
 		Name:       request.CompanyName,
 		Email:      request.Email,
 		IndustryID: industry.ID,
-		Industry:   *industry, // TODO - Is this necessary?
+		Industry:   *industry,
 		Domain:     request.Domain,
 		Budget:     request.Budget,
 	}

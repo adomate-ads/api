@@ -3,6 +3,7 @@ package billing
 import (
 	"github.com/adomate-ads/api/models"
 	"github.com/adomate-ads/api/pkg/auth"
+	"github.com/adomate-ads/api/pkg/email"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -70,6 +71,8 @@ func CreateBilling(c *gin.Context) {
 		return
 	}
 
+	email.SendEmail(company.Email, email.Templates["new-invoice"].Subject, email.Templates["new-invoice"].Body)
+
 	c.JSON(http.StatusCreated, gin.H{"message": "Successfully created bill"})
 }
 
@@ -99,6 +102,7 @@ func GetBillings(c *gin.Context) {
 // @Tags Billing
 // @Accept */*
 // @Produce json
+// @Param id path string true "Billing ID"
 // @Success 200 {object} []models.Billing
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 401 {object} dto.ErrorResponse
@@ -135,6 +139,7 @@ func GetBillingsForCompany(c *gin.Context) {
 // @Tags Billing
 // @Accept */*
 // @Produce json
+// @Param id path string true "Billing ID"
 // @Success 200 {object} models.Billing
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 401 {object} dto.ErrorResponse
@@ -180,6 +185,7 @@ type UpdateRequest struct {
 // @Tags Billing
 // @Accept */*
 // @Produce json
+// @Param id path string true "Billing ID"
 // @Success 202 {object} models.Billing
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 401 {object} dto.ErrorResponse
@@ -259,6 +265,7 @@ func UpdateBilling(c *gin.Context) {
 // @Tags Billing
 // @Accept */*
 // @Produce json
+// @Param id path string true "Billing ID"
 // @Success 200 {object} dto.MessageResponse
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 401 {object} dto.ErrorResponse
@@ -283,6 +290,8 @@ func DeleteBilling(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+
+	email.SendEmail(billing.Company.Email, email.Templates["delete-invoice"].Subject, email.Templates["delete-invoice"].Body)
 
 	c.JSON(http.StatusOK, gin.H{"message": "Bill deleted successfully"})
 }

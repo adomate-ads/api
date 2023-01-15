@@ -5,6 +5,7 @@ import (
 	"github.com/adomate-ads/api/docs"
 	"github.com/adomate-ads/api/middleware/auth"
 	"github.com/adomate-ads/api/models"
+	"github.com/adomate-ads/api/pkg/email"
 	"github.com/adomate-ads/api/v1/billing"
 	"github.com/adomate-ads/api/v1/campaign"
 	"github.com/adomate-ads/api/v1/company"
@@ -51,6 +52,7 @@ func main() {
 	}
 
 	models.ConnectDatabase(models.Config(), false)
+	email.Setup()
 
 	r := engine()
 	r.Use(gin.Logger())
@@ -76,7 +78,7 @@ func main() {
 	group.GET("/super-admin", auth.NotGuest, auth.InGroup("super-admin"), user.Me)
 	group.GET("/support", auth.NotGuest, auth.InGroup("support"), user.Me)
 	group.GET("/admin", auth.NotGuest, auth.InGroup("admin"), user.Me)
-	group.GET("/user", auth.NotGuest, auth.InGroup("user"), user.Me)
+	group.GET("/user", auth.NotGuest, user.Me)
 	// Test Roles
 	roles := r.Group("/test-roles")
 	roles.GET("/super-admin", auth.NotGuest, auth.HasRole("super-admin"), user.Me)
@@ -84,7 +86,7 @@ func main() {
 	roles.GET("/support-ticket", auth.NotGuest, auth.HasRole("support-ticket"), user.Me)
 	roles.GET("/owner", auth.NotGuest, auth.HasRole("owner"), user.Me)
 	roles.GET("/admin", auth.NotGuest, auth.HasRole("admin"), user.Me)
-	roles.GET("/user", auth.NotGuest, auth.HasRole("user"), user.Me)
+	roles.GET("/user", auth.NotGuest, user.Me)
 
 	user.Routes(v1)
 	company.Routes(v1)

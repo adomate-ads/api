@@ -3,6 +3,7 @@ package company
 import (
 	"github.com/adomate-ads/api/models"
 	"github.com/adomate-ads/api/pkg/auth"
+	"github.com/adomate-ads/api/pkg/email"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -60,7 +61,7 @@ func CreateCompany(c *gin.Context) {
 		Name:       request.Name,
 		Email:      request.Email,
 		IndustryID: industry.ID,
-		Industry:   *industry, // TODO - Is this necessary?
+		Industry:   *industry,
 		Domain:     request.Domain,
 		Budget:     request.Budget,
 	}
@@ -69,6 +70,8 @@ func CreateCompany(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+
+	email.SendEmail(company.Email, email.Templates["registration"].Subject, email.Templates["registration"].Body)
 
 	c.JSON(http.StatusCreated, gin.H{"message": "Successfully registered company"})
 }
@@ -93,17 +96,6 @@ func GetCompanies(c *gin.Context) {
 	c.JSON(http.StatusOK, companies)
 }
 
-// GetCompany godoc
-// @Summary Gets a company 
-// @Description Gets all information about specific company
-// @Tags Company
-// @Accept */*
-// @Produce json
-// @Success 200 {object} []models.Company
-// @Failure 401 {object} dto.ErrorResponse
-// @Failure 403 {object} dto.ErrorResponse
-// @Failure 500 {object} dto.ErrorResponse
-// @Router /company/:id [get]
 func GetCompany(c *gin.Context) {
 	id := c.Param("id")
 	companyID, err := strconv.ParseUint(id, 10, 64)
@@ -133,6 +125,7 @@ func GetCompany(c *gin.Context) {
 // @Tags Company
 // @Accept */*
 // @Produce json
+// @Param id path string true "Company ID"
 // @Success 200 {object} dto.MessageResponse
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 401 {object} dto.ErrorResponse
@@ -157,6 +150,8 @@ func DeleteCompany(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+
+	email.SendEmail(company.Email, email.Templates["delete-company"].Subject, email.Templates["delete-company"].Body)
 
 	c.JSON(http.StatusOK, gin.H{"message": "Company deleted successfully"})
 }
