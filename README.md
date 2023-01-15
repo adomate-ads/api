@@ -20,13 +20,6 @@ The API follows standard RESTful API designs. The API documentation is accessibl
 
 Coming Soon...
 
-### Kubernetes
-
-Coming Soon...
-
-The `manifests/deployment.yaml` is an example of the deployment. We use an init-container to do environment variable substitution using notation similar to that of Helm.
-The `manifests/configmap.yaml` is your Config Map that specifies the template used. Pass environment variables by either specifying them in `env` or mounting secrets.
-
 ### Local
 
 To run locally, you'll need to setup a MySQL instance.
