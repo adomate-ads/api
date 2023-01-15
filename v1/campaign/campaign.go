@@ -57,6 +57,10 @@ func CreateCampaign(c *gin.Context) {
 
 	// Get bidding strategy ID
 	biddingStrategy, err := models.GetBiddingStrategyByName(request.BiddingStrategy)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "That bidding strategy does not exist"})
+		return
+	}
 
 	campaign := models.Campaign{
 		Name:              request.Name,

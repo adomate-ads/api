@@ -19,7 +19,7 @@ func Setup() {
 	sender = "no-reply@adomate.com"
 }
 
-func SendEmail(to string, subject string, body string) (string, string, error) {
+func SendEmail(to string, subject string, body string) (string, string) {
 	message := mg.NewMessage(sender, subject, body, to)
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
@@ -27,8 +27,8 @@ func SendEmail(to string, subject string, body string) (string, string, error) {
 
 	resp, id, err := mg.Send(ctx, message)
 	if err != nil {
-		return "", "", err
+		return "", ""
 	}
 
-	return resp, id, nil
+	return resp, id
 }
