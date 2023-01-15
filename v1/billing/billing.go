@@ -102,6 +102,7 @@ func GetBillings(c *gin.Context) {
 // @Tags Billing
 // @Accept */*
 // @Produce json
+// @Param id path string true "Billing ID"
 // @Success 200 {object} []models.Billing
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 401 {object} dto.ErrorResponse
@@ -184,6 +185,7 @@ type UpdateRequest struct {
 // @Tags Billing
 // @Accept */*
 // @Produce json
+// @Param id path string true "Billing ID"
 // @Success 202 {object} models.Billing
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 401 {object} dto.ErrorResponse
@@ -263,6 +265,7 @@ func UpdateBilling(c *gin.Context) {
 // @Tags Billing
 // @Accept */*
 // @Produce json
+// @Param id path string true "Billing ID"
 // @Success 200 {object} dto.MessageResponse
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 401 {object} dto.ErrorResponse

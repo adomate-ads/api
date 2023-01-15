@@ -18,7 +18,7 @@ type CreateRequest struct {
 }
 
 // CreateCampaign godoc
-// @Summary Create add campaign
+// @Summary Create a campaign
 // @Description creates a campaign for certain company/user
 // @Tags Campaign
 // @Accept */*
@@ -110,6 +110,7 @@ func GetCampaigns(c *gin.Context) {
 // @Tags Campaign
 // @Accept */*
 // @Produce json
+// @Param id path string true "Campaign ID"
 // @Success 200 {object} []models.Campaign
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 403 {object} dto.ErrorResponse
@@ -139,15 +140,17 @@ func GetCampaignsForCompany(c *gin.Context) {
 }
 
 // GetCampaign godoc
-// @Summary Gets a campaign
-// @Description Gets all information about specific campaign
+// @Summary Gets a Campaign
+// @Description Gets all information about a single campaign.
 // @Tags Campaign
 // @Accept */*
 // @Produce json
-// @Success 200 {object} []models.Campaign
+// @Param id path string true "Campaign ID"
+// @Success 200 {object} models.Campaign
+// @Failure 400 {object} dto.ErrorResponse
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 403 {object} dto.ErrorResponse
-// @Failure 500 {object} dto.ErrorResponse
+// @Failure 404 {object} dto.ErrorResponse
 // @Router /campaign/:id [get]
 func GetCampaign(c *gin.Context) {
 	id := c.Param("id")
@@ -178,6 +181,7 @@ func GetCampaign(c *gin.Context) {
 // @Tags Campaign
 // @Accept */*
 // @Produce json
+// @Param id path string true "Campaign ID"
 // @Success 200 {object} dto.MessageResponse
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 401 {object} dto.ErrorResponse

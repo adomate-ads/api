@@ -164,6 +164,38 @@ definitions:
         example: "2020-01-01T00:00:00Z"
         type: string
     type: object
+  models.User:
+    properties:
+      company:
+        $ref: '#/definitions/models.Company'
+      company_id:
+        example: 1
+        type: integer
+      created_at:
+        example: "2020-01-01T00:00:00Z"
+        type: string
+      email:
+        example: the@raajpatel.dev
+        type: string
+      first_name:
+        example: Raaj
+        type: string
+      id:
+        example: 1
+        type: integer
+      last_name:
+        example: Patel
+        type: string
+      password:
+        example: hashed string...
+        type: string
+      role:
+        example: user
+        type: string
+      updated_at:
+        example: "2020-01-01T00:00:00Z"
+        type: string
+    type: object
 host: localhost:3000
 info:
   contact:
@@ -253,6 +285,12 @@ paths:
       consumes:
       - '*/*'
       description: Delete a bill.
+      parameters:
+      - description: Billing ID
+        in: path
+        name: id
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -323,6 +361,12 @@ paths:
       consumes:
       - '*/*'
       description: Update information about a bill.
+      parameters:
+      - description: Billing ID
+        in: path
+        name: id
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -358,6 +402,12 @@ paths:
       consumes:
       - '*/*'
       description: Gets a slice of all the bills for a specific company.
+      parameters:
+      - description: Billing ID
+        in: path
+        name: id
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -440,7 +490,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/dto.ErrorResponse'
-      summary: Create add campaign
+      summary: Create a campaign
       tags:
       - Campaign
   /campaign/:id:
@@ -448,6 +498,12 @@ paths:
       consumes:
       - '*/*'
       description: Delete a campaign.
+      parameters:
+      - description: Campaign ID
+        in: path
+        name: id
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -481,16 +537,24 @@ paths:
     get:
       consumes:
       - '*/*'
-      description: Gets all information about specific campaign
+      description: Gets all information about a single campaign.
+      parameters:
+      - description: Campaign ID
+        in: path
+        name: id
+        required: true
+        type: string
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            items:
-              $ref: '#/definitions/models.Campaign'
-            type: array
+            $ref: '#/definitions/models.Campaign'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
         "401":
           description: Unauthorized
           schema:
@@ -499,11 +563,11 @@ paths:
           description: Forbidden
           schema:
             $ref: '#/definitions/dto.ErrorResponse'
-        "500":
-          description: Internal Server Error
+        "404":
+          description: Not Found
           schema:
             $ref: '#/definitions/dto.ErrorResponse'
-      summary: Gets a campaign
+      summary: Gets a Campaign
       tags:
       - Campaign
   /campaign/company/:id:
@@ -511,6 +575,12 @@ paths:
       consumes:
       - '*/*'
       description: get a slice of all campaigns for certain company
+      parameters:
+      - description: Campaign ID
+        in: path
+        name: id
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -597,6 +667,12 @@ paths:
       consumes:
       - '*/*'
       description: Delete a company.
+      parameters:
+      - description: Company ID
+        in: path
+        name: id
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -625,34 +701,6 @@ paths:
           schema:
             $ref: '#/definitions/dto.ErrorResponse'
       summary: Delete Company
-      tags:
-      - Company
-    get:
-      consumes:
-      - '*/*'
-      description: Gets all information about specific company
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/models.Company'
-            type: array
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/dto.ErrorResponse'
-        "403":
-          description: Forbidden
-          schema:
-            $ref: '#/definitions/dto.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/dto.ErrorResponse'
-      summary: Gets a company
       tags:
       - Company
   /industry:
@@ -717,6 +765,12 @@ paths:
       consumes:
       - '*/*'
       description: Delete an industry.
+      parameters:
+      - description: Industry ID
+        in: path
+        name: id
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -751,6 +805,12 @@ paths:
       consumes:
       - '*/*'
       description: Gets all information about specific industry
+      parameters:
+      - description: Industry ID
+        in: path
+        name: id
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -775,6 +835,221 @@ paths:
       summary: Gets a industry
       tags:
       - Industry
+  /user:
+    get:
+      consumes:
+      - '*/*'
+      description: Gets a slice of all users.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.User'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Get all Users
+      tags:
+      - User
+    post:
+      consumes:
+      - '*/*'
+      description: Create a new user.
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.MessageResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Create User
+      tags:
+      - User
+  /user/:id:
+    delete:
+      consumes:
+      - '*/*'
+      description: Delete a user.
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.MessageResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Delete User
+      tags:
+      - User
+    get:
+      consumes:
+      - '*/*'
+      description: Gets all information about a single user.
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Gets a User
+      tags:
+      - User
+    patch:
+      consumes:
+      - '*/*'
+      description: Update information about a user.
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: Accepted
+          schema:
+            $ref: '#/definitions/models.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Update User
+      tags:
+      - User
+  /user/company/:id:
+    get:
+      consumes:
+      - '*/*'
+      description: Gets a slice of all the users for a specific company.
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.User'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Get all Users for a Company
+      tags:
+      - User
 schemes:
 - http
 - https

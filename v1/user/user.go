@@ -19,6 +19,18 @@ type CreateRequest struct {
 	Role      string `json:"role" binding:"required"`
 }
 
+// CreateUser godoc
+// @Summary Create User
+// @Description Create a new user.
+// @Tags User
+// @Accept */*
+// @Produce json
+// @Success 201 {object} dto.MessageResponse
+// @Failure 400 {object} dto.ErrorResponse
+// @Failure 401 {object} dto.ErrorResponse
+// @Failure 403 {object} dto.ErrorResponse
+// @Failure 500 {object} dto.ErrorResponse
+// @Router /user [post]
 func CreateUser(c *gin.Context) {
 	var request CreateRequest
 	if err := c.ShouldBindJSON(&request); err != nil {
@@ -76,6 +88,17 @@ func CreateUser(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"message": "Successfully created user"})
 }
 
+// GetUsers godoc
+// @Summary Get all Users
+// @Description Gets a slice of all users.
+// @Tags User
+// @Accept */*
+// @Produce json
+// @Success 200 {object} []models.User
+// @Failure 401 {object} dto.ErrorResponse
+// @Failure 403 {object} dto.ErrorResponse
+// @Failure 500 {object} dto.ErrorResponse
+// @Router /user [get]
 func GetUsers(c *gin.Context) {
 	users, err := models.GetUsers()
 	if err != nil {
@@ -86,6 +109,19 @@ func GetUsers(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"users": users})
 }
 
+// GetUsersByCompanyID godoc
+// @Summary Get all Users for a Company
+// @Description Gets a slice of all the users for a specific company.
+// @Tags User
+// @Accept */*
+// @Produce json
+// @Param id path string true "User ID"
+// @Success 200 {object} []models.User
+// @Failure 400 {object} dto.ErrorResponse
+// @Failure 401 {object} dto.ErrorResponse
+// @Failure 403 {object} dto.ErrorResponse
+// @Failure 404 {object} dto.ErrorResponse
+// @Router /user/company/:id [get]
 func GetUsersByCompanyID(c *gin.Context) {
 	id := c.Param("id")
 	CompanyID, err := strconv.ParseUint(id, 10, 64)
@@ -113,6 +149,19 @@ func GetUsersByCompanyID(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"users": users})
 }
 
+// GetUser godoc
+// @Summary Gets a User
+// @Description Gets all information about a single user.
+// @Tags User
+// @Accept */*
+// @Produce json
+// @Param id path string true "User ID"
+// @Success 200 {object} models.User
+// @Failure 400 {object} dto.ErrorResponse
+// @Failure 401 {object} dto.ErrorResponse
+// @Failure 403 {object} dto.ErrorResponse
+// @Failure 404 {object} dto.ErrorResponse
+// @Router /user/:id [get]
 func GetUser(c *gin.Context) {
 	id := c.Param("id")
 	userID, err := strconv.ParseUint(id, 10, 64)
@@ -138,10 +187,38 @@ func GetUser(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"user": user})
 }
 
+// UpdateUser godoc
+// @Summary Update User
+// @Description Update information about a user.
+// @Tags User
+// @Accept */*
+// @Produce json
+// @Param id path string true "User ID"
+// @Success 202 {object} models.User
+// @Failure 400 {object} dto.ErrorResponse
+// @Failure 401 {object} dto.ErrorResponse
+// @Failure 403 {object} dto.ErrorResponse
+// @Failure 404 {object} dto.ErrorResponse
+// @Failure 500 {object} dto.ErrorResponse
+// @Router /user/:id [patch]
 func UpdateUser(c *gin.Context) {
 
 }
 
+// DeleteUser godoc
+// @Summary Delete User
+// @Description Delete a user.
+// @Tags User
+// @Accept */*
+// @Produce json
+// @Param id path string true "User ID"
+// @Success 200 {object} dto.MessageResponse
+// @Failure 400 {object} dto.ErrorResponse
+// @Failure 401 {object} dto.ErrorResponse
+// @Failure 403 {object} dto.ErrorResponse
+// @Failure 404 {object} dto.ErrorResponse
+// @Failure 500 {object} dto.ErrorResponse
+// @Router /user/:id [delete]
 func DeleteUser(c *gin.Context) {
 	id := c.Param("id")
 	userID, err := strconv.ParseUint(id, 10, 64)
