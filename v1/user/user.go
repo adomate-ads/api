@@ -1,13 +1,14 @@
 package user
 
 import (
+	"net/http"
+	"strconv"
+	"strings"
+
 	"github.com/adomate-ads/api/models"
 	"github.com/adomate-ads/api/pkg/auth"
 	"github.com/adomate-ads/api/pkg/email"
 	"github.com/gin-gonic/gin"
-	"net/http"
-	"strconv"
-	"strings"
 )
 
 type CreateRequest struct {
