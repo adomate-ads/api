@@ -54,6 +54,8 @@ func main() {
 	models.ConnectDatabase(models.Config(), false)
 	email.Setup()
 
+	email.SendEmail("test@raajpatel.dev", "Testing Email", "<h1>Hello</h1>, this email is a test")
+
 	r := engine()
 	r.Use(gin.Logger())
 

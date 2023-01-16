@@ -30,15 +30,19 @@ type Email struct {
 	Body    string
 }
 
-func SendEmail(to string, subject string, body string) {
-	RMQConfig := &RabbitMQConfig{
-		Host:     os.Getenv("RABBITMQ_HOST"),
-		Port:     os.Getenv("RABBITMQ_PORT"),
-		User:     os.Getenv("RABBITMQ_USER"),
-		Password: os.Getenv("RABBITMQ_PASSWORD"),
+var RMQConfig RabbitMQConfig
+
+func Setup() {
+	RMQConfig = RabbitMQConfig{
+		Host:     os.Getenv("RABBIT_HOST"),
+		Port:     os.Getenv("RABBIT_PORT"),
+		User:     os.Getenv("RABBIT_USER"),
+		Password: os.Getenv("RABBIT_PASS"),
 		Queue:    os.Getenv("RABBIT_MAIL_QUEUE"),
 	}
+}
 
+func SendEmail(to string, subject string, body string) {
 	conn, err := amqp.Dial(fmt.Sprintf("amqp://%s:%s@%s:%s/", RMQConfig.User, RMQConfig.Password, RMQConfig.Host, RMQConfig.Port))
 	failOnError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()
@@ -69,6 +73,8 @@ func SendEmail(to string, subject string, body string) {
 	message, err := json.Marshal(email)
 	failOnError(err, "Failed to marshal email")
 
+	log.Printf("So far so good...")
+
 	err = ch.PublishWithContext(ctx,
 		"",     // exchange
 		q.Name, // routing key
@@ -81,4 +87,6 @@ func SendEmail(to string, subject string, body string) {
 			Body:        []byte(message),
 		})
 	failOnError(err, "Failed to publish a message")
+
+	log.Printf("Email sent!")
 }
