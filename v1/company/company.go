@@ -1,14 +1,13 @@
 package company
 
 import (
-	"net/http"
-	"strconv"
-	"strings"
-
 	"github.com/adomate-ads/api/models"
 	"github.com/adomate-ads/api/pkg/auth"
 	"github.com/adomate-ads/api/pkg/email"
 	"github.com/gin-gonic/gin"
+	"net/http"
+	"strconv"
+	"strings"
 )
 
 type CreateRequest struct {
@@ -112,7 +111,7 @@ func GetCompany(c *gin.Context) {
 	}
 
 	company, err := models.GetCompany(uint(companyID))
-	if err != nil && err.Error() == "record not found" {
+	if err.Error() == "record not found" {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "company doesn't exist"})
 		return
 	} else if err != nil {
@@ -145,7 +144,7 @@ func DeleteCompany(c *gin.Context) {
 	}
 
 	company, err := models.GetCompany(uint(companyID))
-	if err != nil && err.Error() == "record not found" {
+	if err.Error() == "record not found" {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "company doesn't exist"})
 		return
 	} else if err != nil {
