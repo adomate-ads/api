@@ -113,7 +113,7 @@ func GetCompany(c *gin.Context) {
 	company, err := models.GetCompany(uint(companyID))
 	if err != nil {
 		if err.Error() == "record not found" {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "company doesn't exist"})
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Company doesn't exist"})
 		} else {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal Error"})
 		}
