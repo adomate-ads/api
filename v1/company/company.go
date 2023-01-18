@@ -111,11 +111,12 @@ func GetCompany(c *gin.Context) {
 	}
 
 	company, err := models.GetCompany(uint(companyID))
-	if err.Error() == "record not found" {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "company doesn't exist"})
-		return
-	} else if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal Error"})
+	if err != nil {
+		if err.Error() == "record not found" {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "company doesn't exist"})
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal Error"})
+		}
 		return
 	}
 
@@ -144,11 +145,12 @@ func DeleteCompany(c *gin.Context) {
 	}
 
 	company, err := models.GetCompany(uint(companyID))
-	if err.Error() == "record not found" {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "company doesn't exist"})
-		return
-	} else if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal Error"})
+	if err != nil {
+		if err.Error() == "record not found" {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "company doesn't exist"})
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal Error"})
+		}
 		return
 	}
 
