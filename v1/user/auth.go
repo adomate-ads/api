@@ -13,6 +13,18 @@ type LoginRequest struct {
 	Password string `json:"password" binding:"required"`
 }
 
+// Login godoc
+// @Summary Login User
+// @Description Login using user credentials.
+// @Tags Auth
+// @Accept */*
+// @Produce json
+// @Success 201 {object} dto.MessageResponse
+// @Failure 400 {object} dto.ErrorResponse
+// @Failure 401 {object} dto.ErrorResponse
+// @Failure 403 {object} dto.ErrorResponse
+// @Failure 500 {object} dto.ErrorResponse
+// @Router /user [get]
 func Login(c *gin.Context) {
 	session := sessions.Default(c)
 	var request LoginRequest
@@ -48,6 +60,7 @@ func Login(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Successfully authenticated user"})
 }
 
+
 type RegisterRequest struct {
 	FirstName   string `json:"first_name" binding:"required"`
 	LastName    string `json:"last_name" binding:"required"`
@@ -59,6 +72,18 @@ type RegisterRequest struct {
 	Budget      uint   `json:"budget" binding:"required"`
 }
 
+// Register godoc
+// @Summary Register New User
+// @Description Registers a new user.
+// @Tags Auth
+// @Accept */*
+// @Produce json
+// @Success 201 {object} dto.MessageResponse
+// @Failure 400 {object} dto.ErrorResponse
+// @Failure 401 {object} dto.ErrorResponse
+// @Failure 403 {object} dto.ErrorResponse
+// @Failure 500 {object} dto.ErrorResponse
+// @Router /user [post]
 func Register(c *gin.Context) {
 	var request RegisterRequest
 	if err := c.ShouldBindJSON(&request); err != nil {
@@ -148,6 +173,18 @@ func Register(c *gin.Context) {
 	// TODO - In the future, we should possibly send a session token back to the user
 }
 
+// Logout godoc
+// @Summary Logout User
+// @Description Logout of a user.
+// @Tags Auth
+// @Accept */*
+// @Produce json
+// @Success 201 {object} dto.MessageResponse
+// @Failure 400 {object} dto.ErrorResponse
+// @Failure 401 {object} dto.ErrorResponse
+// @Failure 403 {object} dto.ErrorResponse
+// @Failure 500 {object} dto.ErrorResponse
+// @Router /user [post]
 func Logout(c *gin.Context) {
 	session := sessions.Default(c)
 	user := session.Get("user-id")

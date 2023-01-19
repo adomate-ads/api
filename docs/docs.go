@@ -1028,7 +1028,10 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/dto.MessageResponse"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.User"
+                            }
                         }
                     },
                     "400": {
@@ -1502,6 +1505,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "cpc": {
+                    "description": "TODO - Add Location",
                     "type": "number",
                     "example": 9.25
                 },

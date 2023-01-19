@@ -25,7 +25,7 @@ type CreateRequest struct {
 // @Tags User
 // @Accept */*
 // @Produce json
-// @Success 201 {object} dto.MessageResponse
+// @Success 201 {object} []models.User
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 403 {object} dto.ErrorResponse
