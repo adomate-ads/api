@@ -7,7 +7,7 @@ type Role struct {
 	RolesCanAdd []string
 }
 
-var Groups = map[string][]string{
+var groups = map[string][]string{
 	"super-admin": {
 		"super-admin",
 	},
@@ -24,7 +24,7 @@ var Groups = map[string][]string{
 	},
 }
 
-var Roles = map[string]Role{
+var roles = map[string]Role{
 	"super-admin": {
 		Name: "super-admin",
 		RolesCanAdd: []string{
@@ -72,10 +72,10 @@ var Roles = map[string]Role{
 }
 
 func CanUserModifyRole(user *models.User, role string) bool {
-	if _, ok := Roles[role]; !ok {
+	if _, ok := roles[role]; !ok {
 		return false
 	}
-	return HasRoleList(user, Roles[role].RolesCanAdd)
+	return HasRoleList(user, roles[role].RolesCanAdd)
 }
 
 func InGroup(user *models.User, group string) bool {
@@ -85,11 +85,11 @@ func InGroup(user *models.User, group string) bool {
 	}
 
 	// Group does not exist
-	if _, ok := Groups[group]; !ok {
+	if _, ok := groups[group]; !ok {
 		return false
 	}
 
-	has := HasRoleList(user, Groups[group])
+	has := HasRoleList(user, groups[group])
 	return has
 }
 
