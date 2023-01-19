@@ -149,6 +149,7 @@ definitions:
   models.Keyword:
     properties:
       cpc:
+        description: TODO - Add Location
         example: 9.25
         type: number
       created_at:
@@ -874,7 +875,9 @@ paths:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/dto.MessageResponse'
+            items:
+              $ref: '#/definitions/models.User'
+            type: array
         "400":
           description: Bad Request
           schema:
