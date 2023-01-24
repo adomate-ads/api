@@ -21,8 +21,9 @@ type CreateRequest struct {
 // @Summary Create a campaign
 // @Description creates a campaign for certain company/user
 // @Tags Campaign
-// @Accept */*
+// @Accept json
 // @Produce json
+// @Param create body CreateRequest true "Create Request"
 // @Success 200 {object} []models.Campaign
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 403 {object} dto.ErrorResponse

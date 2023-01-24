@@ -19,12 +19,13 @@ type LoginRequest struct {
 // @Tags Auth
 // @Accept */*
 // @Produce json
+// @Param login body LoginRequest true "Login Request"
 // @Success 201 {object} dto.MessageResponse
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 403 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
-// @Router /user [get]
+// @Router /login [get]
 func Login(c *gin.Context) {
 	session := sessions.Default(c)
 	var request LoginRequest
@@ -60,7 +61,6 @@ func Login(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Successfully authenticated user"})
 }
 
-
 type RegisterRequest struct {
 	FirstName   string `json:"first_name" binding:"required"`
 	LastName    string `json:"last_name" binding:"required"`
@@ -77,13 +77,14 @@ type RegisterRequest struct {
 // @Description Registers a new user.
 // @Tags Auth
 // @Accept */*
+// @Param register body RegisterRequest true "Register Request"
 // @Produce json
 // @Success 201 {object} dto.MessageResponse
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 403 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
-// @Router /user [post]
+// @Router /register [post]
 func Register(c *gin.Context) {
 	var request RegisterRequest
 	if err := c.ShouldBindJSON(&request); err != nil {
@@ -184,7 +185,7 @@ func Register(c *gin.Context) {
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 403 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
-// @Router /user [post]
+// @Router /logout [post]
 func Logout(c *gin.Context) {
 	session := sessions.Default(c)
 	user := session.Get("user-id")

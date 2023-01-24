@@ -1,5 +1,62 @@
 basePath: /
 definitions:
+  billing.CreateRequest:
+    properties:
+      amount:
+        type: number
+      comments:
+        type: string
+      company:
+        type: string
+      due_at:
+        type: string
+      issued_at:
+        type: string
+      status:
+        type: string
+    required:
+    - amount
+    - comments
+    - company
+    - due_at
+    - issued_at
+    - status
+    type: object
+  campaign.CreateRequest:
+    properties:
+      bidding_strategy:
+        type: string
+      budget:
+        type: integer
+      company:
+        type: string
+      name:
+        type: string
+    required:
+    - bidding_strategy
+    - budget
+    - company
+    - name
+    type: object
+  company.CreateRequest:
+    properties:
+      budget:
+        type: integer
+      domain:
+        type: string
+      email:
+        type: string
+      industry:
+        type: string
+      name:
+        type: string
+    required:
+    - budget
+    - domain
+    - email
+    - industry
+    - name
+    type: object
   dto.ErrorResponse:
     properties:
       error:
@@ -13,6 +70,13 @@ definitions:
         type: string
     required:
     - message
+    type: object
+  industry.CreateRequest:
+    properties:
+      industry:
+        type: string
+    required:
+    - industry
     type: object
   models.BiddingStrategy:
     properties:
@@ -197,6 +261,66 @@ definitions:
         example: "2020-01-01T00:00:00Z"
         type: string
     type: object
+  user.CreateRequest:
+    properties:
+      company:
+        type: string
+      email:
+        type: string
+      first_name:
+        type: string
+      last_name:
+        type: string
+      password:
+        type: string
+      role:
+        type: string
+    required:
+    - company
+    - email
+    - first_name
+    - last_name
+    - password
+    - role
+    type: object
+  user.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  user.RegisterRequest:
+    properties:
+      budget:
+        type: integer
+      company_name:
+        type: string
+      domain:
+        type: string
+      email:
+        type: string
+      first_name:
+        type: string
+      industry:
+        type: string
+      last_name:
+        type: string
+      password:
+        type: string
+    required:
+    - budget
+    - company_name
+    - domain
+    - email
+    - first_name
+    - industry
+    - last_name
+    - password
+    type: object
 host: localhost:3000
 info:
   contact:
@@ -253,8 +377,15 @@ paths:
       - Billing
     post:
       consumes:
-      - '*/*'
+      - application/json
       description: Create a new bill.
+      parameters:
+      - description: Create Request
+        in: body
+        name: create
+        required: true
+        schema:
+          $ref: '#/definitions/billing.CreateRequest'
       produces:
       - application/json
       responses:
@@ -360,9 +491,15 @@ paths:
       - Billing
     patch:
       consumes:
-      - '*/*'
+      - application/json
       description: Update information about a bill.
       parameters:
+      - description: Create Request
+        in: body
+        name: update
+        required: true
+        schema:
+          $ref: '#/definitions/billing.CreateRequest'
       - description: Billing ID
         in: path
         name: id
@@ -468,8 +605,15 @@ paths:
       - Campaign
     post:
       consumes:
-      - '*/*'
+      - application/json
       description: creates a campaign for certain company/user
+      parameters:
+      - description: Create Request
+        in: body
+        name: create
+        required: true
+        schema:
+          $ref: '#/definitions/campaign.CreateRequest'
       produces:
       - application/json
       responses:
@@ -637,8 +781,15 @@ paths:
       - Company
     post:
       consumes:
-      - '*/*'
+      - application/json
       description: creates a company that can start campaigns, etc
+      parameters:
+      - description: Create Request
+        in: body
+        name: create
+        required: true
+        schema:
+          $ref: '#/definitions/company.CreateRequest'
       produces:
       - application/json
       responses:
@@ -735,8 +886,15 @@ paths:
       - Industry
     post:
       consumes:
-      - '*/*'
+      - application/json
       description: creates an industry category
+      parameters:
+      - description: Create Request
+        in: body
+        name: create
+        required: true
+        schema:
+          $ref: '#/definitions/industry.CreateRequest'
       produces:
       - application/json
       responses:
@@ -836,6 +994,113 @@ paths:
       summary: Gets a industry
       tags:
       - Industry
+  /login:
+    get:
+      consumes:
+      - '*/*'
+      description: Login using user credentials.
+      parameters:
+      - description: Login Request
+        in: body
+        name: login
+        required: true
+        schema:
+          $ref: '#/definitions/user.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.MessageResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Login User
+      tags:
+      - Auth
+  /logout:
+    post:
+      consumes:
+      - '*/*'
+      description: Logout of a user.
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.MessageResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Logout User
+      tags:
+      - Auth
+  /register:
+    post:
+      consumes:
+      - '*/*'
+      description: Registers a new user.
+      parameters:
+      - description: Register Request
+        in: body
+        name: register
+        required: true
+        schema:
+          $ref: '#/definitions/user.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.MessageResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Register New User
+      tags:
+      - Auth
   /user:
     get:
       consumes:
@@ -869,6 +1134,13 @@ paths:
       consumes:
       - '*/*'
       description: Create a new user.
+      parameters:
+      - description: Create Request
+        in: body
+        name: create
+        required: true
+        schema:
+          $ref: '#/definitions/user.CreateRequest'
       produces:
       - application/json
       responses:
