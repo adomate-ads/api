@@ -197,6 +197,34 @@ definitions:
         example: "2020-01-01T00:00:00Z"
         type: string
     type: object
+  user.RegisterRequest:
+    properties:
+      budget:
+        type: integer
+      company_name:
+        type: string
+      domain:
+        type: string
+      email:
+        type: string
+      first_name:
+        type: string
+      industry:
+        type: string
+      last_name:
+        type: string
+      password:
+        type: string
+    required:
+    - budget
+    - company_name
+    - domain
+    - email
+    - first_name
+    - industry
+    - last_name
+    - password
+    type: object
 host: localhost:3000
 info:
   contact:
@@ -836,6 +864,106 @@ paths:
       summary: Gets a industry
       tags:
       - Industry
+  /login:
+    get:
+      consumes:
+      - '*/*'
+      description: Login using user credentials.
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.MessageResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Login User
+      tags:
+      - Auth
+  /logout:
+    post:
+      consumes:
+      - '*/*'
+      description: Logout of a user.
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.MessageResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Logout User
+      tags:
+      - Auth
+  /register:
+    post:
+      consumes:
+      - '*/*'
+      description: Registers a new user.
+      parameters:
+      - description: Register Request
+        in: body
+        name: register
+        required: true
+        schema:
+          $ref: '#/definitions/user.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.MessageResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Register New User
+      tags:
+      - Auth
   /user:
     get:
       consumes:
