@@ -16,8 +16,9 @@ type CreateRequest struct {
 // @Summary Create Industry
 // @Description creates an industry category
 // @Tags Industry
-// @Accept */*
+// @Accept json
 // @Produce json
+// @Param create body CreateRequest true "Create Request"
 // @Success 200 {object} []models.Industry
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 403 {object} dto.ErrorResponse

@@ -24,8 +24,9 @@ type CreateRequest struct {
 // @Summary Create Bill
 // @Description Create a new bill.
 // @Tags Billing
-// @Accept */*
+// @Accept json
 // @Produce json
+// @Param create body CreateRequest true "Create Request"
 // @Success 201 {object} dto.MessageResponse
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 401 {object} dto.ErrorResponse
@@ -183,8 +184,9 @@ type UpdateRequest struct {
 // @Summary Update Bill
 // @Description Update information about a bill.
 // @Tags Billing
-// @Accept */*
+// @Accept  json
 // @Produce json
+// @Param update body CreateRequest true "Create Request"
 // @Param id path string true "Billing ID"
 // @Success 202 {object} models.Billing
 // @Failure 400 {object} dto.ErrorResponse

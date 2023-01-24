@@ -89,7 +89,7 @@ const docTemplate = `{
             "post": {
                 "description": "Create a new bill.",
                 "consumes": [
-                    "*/*"
+                    "application/json"
                 ],
                 "produces": [
                     "application/json"
@@ -98,6 +98,17 @@ const docTemplate = `{
                     "Billing"
                 ],
                 "summary": "Create Bill",
+                "parameters": [
+                    {
+                        "description": "Create Request",
+                        "name": "create",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/billing.CreateRequest"
+                        }
+                    }
+                ],
                 "responses": {
                     "201": {
                         "description": "Created",
@@ -250,7 +261,7 @@ const docTemplate = `{
             "patch": {
                 "description": "Update information about a bill.",
                 "consumes": [
-                    "*/*"
+                    "application/json"
                 ],
                 "produces": [
                     "application/json"
@@ -260,6 +271,15 @@ const docTemplate = `{
                 ],
                 "summary": "Update Bill",
                 "parameters": [
+                    {
+                        "description": "Create Request",
+                        "name": "update",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/billing.CreateRequest"
+                        }
+                    },
                     {
                         "type": "string",
                         "description": "Billing ID",
@@ -413,7 +433,7 @@ const docTemplate = `{
             "post": {
                 "description": "creates a campaign for certain company/user",
                 "consumes": [
-                    "*/*"
+                    "application/json"
                 ],
                 "produces": [
                     "application/json"
@@ -422,6 +442,17 @@ const docTemplate = `{
                     "Campaign"
                 ],
                 "summary": "Create a campaign",
+                "parameters": [
+                    {
+                        "description": "Create Request",
+                        "name": "create",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/campaign.CreateRequest"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -668,7 +699,7 @@ const docTemplate = `{
             "post": {
                 "description": "creates a company that can start campaigns, etc",
                 "consumes": [
-                    "*/*"
+                    "application/json"
                 ],
                 "produces": [
                     "application/json"
@@ -677,6 +708,17 @@ const docTemplate = `{
                     "Company"
                 ],
                 "summary": "Create Company",
+                "parameters": [
+                    {
+                        "description": "Create Request",
+                        "name": "create",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/company.CreateRequest"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -816,7 +858,7 @@ const docTemplate = `{
             "post": {
                 "description": "creates an industry category",
                 "consumes": [
-                    "*/*"
+                    "application/json"
                 ],
                 "produces": [
                     "application/json"
@@ -825,6 +867,17 @@ const docTemplate = `{
                     "Industry"
                 ],
                 "summary": "Create Industry",
+                "parameters": [
+                    {
+                        "description": "Create Request",
+                        "name": "create",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/industry.CreateRequest"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -1187,6 +1240,17 @@ const docTemplate = `{
                     "User"
                 ],
                 "summary": "Create User",
+                "parameters": [
+                    {
+                        "description": "Create Request",
+                        "name": "create",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user.CreateRequest"
+                        }
+                    }
+                ],
                 "responses": {
                     "201": {
                         "description": "Created",
@@ -1461,6 +1525,87 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "billing.CreateRequest": {
+            "type": "object",
+            "required": [
+                "amount",
+                "comments",
+                "company",
+                "due_at",
+                "issued_at",
+                "status"
+            ],
+            "properties": {
+                "amount": {
+                    "type": "number"
+                },
+                "comments": {
+                    "type": "string"
+                },
+                "company": {
+                    "type": "string"
+                },
+                "due_at": {
+                    "type": "string"
+                },
+                "issued_at": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "campaign.CreateRequest": {
+            "type": "object",
+            "required": [
+                "bidding_strategy",
+                "budget",
+                "company",
+                "name"
+            ],
+            "properties": {
+                "bidding_strategy": {
+                    "type": "string"
+                },
+                "budget": {
+                    "type": "integer"
+                },
+                "company": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "company.CreateRequest": {
+            "type": "object",
+            "required": [
+                "budget",
+                "domain",
+                "email",
+                "industry",
+                "name"
+            ],
+            "properties": {
+                "budget": {
+                    "type": "integer"
+                },
+                "domain": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "industry": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.ErrorResponse": {
             "type": "object",
             "required": [
@@ -1479,6 +1624,17 @@ const docTemplate = `{
             ],
             "properties": {
                 "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "industry.CreateRequest": {
+            "type": "object",
+            "required": [
+                "industry"
+            ],
+            "properties": {
+                "industry": {
                     "type": "string"
                 }
             }
@@ -1731,6 +1887,37 @@ const docTemplate = `{
                 "updated_at": {
                     "type": "string",
                     "example": "2020-01-01T00:00:00Z"
+                }
+            }
+        },
+        "user.CreateRequest": {
+            "type": "object",
+            "required": [
+                "company",
+                "email",
+                "first_name",
+                "last_name",
+                "password",
+                "role"
+            ],
+            "properties": {
+                "company": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
                 }
             }
         },
