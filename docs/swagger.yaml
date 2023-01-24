@@ -197,6 +197,16 @@ definitions:
         example: "2020-01-01T00:00:00Z"
         type: string
     type: object
+  user.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
   user.RegisterRequest:
     properties:
       budget:
@@ -869,6 +879,13 @@ paths:
       consumes:
       - '*/*'
       description: Login using user credentials.
+      parameters:
+      - description: Login Request
+        in: body
+        name: login
+        required: true
+        schema:
+          $ref: '#/definitions/user.LoginRequest'
       produces:
       - application/json
       responses:
