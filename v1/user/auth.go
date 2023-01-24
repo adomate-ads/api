@@ -19,6 +19,7 @@ type LoginRequest struct {
 // @Tags Auth
 // @Accept */*
 // @Produce json
+// @Param login body LoginRequest true "Login Request"
 // @Success 201 {object} dto.MessageResponse
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 401 {object} dto.ErrorResponse
