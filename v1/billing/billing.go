@@ -103,13 +103,13 @@ func GetBillings(c *gin.Context) {
 // @Tags Billing
 // @Accept */*
 // @Produce json
-// @Param id path string true "Billing ID"
+// @Param id path integer true "Billing ID"
 // @Success 200 {object} []models.Billing
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 403 {object} dto.ErrorResponse
 // @Failure 404 {object} dto.ErrorResponse
-// @Router /billing/company/:id [get]
+// @Router /billing/company/{id} [get]
 func GetBillingsForCompany(c *gin.Context) {
 	id := c.Param("id")
 	companyID, err := strconv.ParseUint(id, 10, 64)
@@ -140,7 +140,7 @@ func GetBillingsForCompany(c *gin.Context) {
 // @Tags Billing
 // @Accept */*
 // @Produce json
-// @Param id path string true "Billing ID"
+// @Param id path integer true "Billing ID"
 // @Success 200 {object} models.Billing
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 401 {object} dto.ErrorResponse
@@ -187,14 +187,14 @@ type UpdateRequest struct {
 // @Accept  json
 // @Produce json
 // @Param update body CreateRequest true "Create Request"
-// @Param id path string true "Billing ID"
+// @Param id path integer true "Billing ID"
 // @Success 202 {object} models.Billing
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 403 {object} dto.ErrorResponse
 // @Failure 404 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
-// @Router /billing/:id [patch]
+// @Router /billing/{id} [patch]
 func UpdateBilling(c *gin.Context) {
 	id := c.Param("id")
 	billingID, err := strconv.ParseUint(id, 10, 64)
@@ -267,14 +267,14 @@ func UpdateBilling(c *gin.Context) {
 // @Tags Billing
 // @Accept */*
 // @Produce json
-// @Param id path string true "Billing ID"
+// @Param id path integer true "Billing ID"
 // @Success 200 {object} dto.MessageResponse
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 403 {object} dto.ErrorResponse
 // @Failure 404 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
-// @Router /billing/:id [delete]
+// @Router /billing/{id} [delete]
 func DeleteBilling(c *gin.Context) {
 	id := c.Param("id")
 	billingID, err := strconv.ParseUint(id, 10, 64)

@@ -412,7 +412,7 @@ paths:
       summary: Create Bill
       tags:
       - Billing
-  /billing/:id:
+  /billing/{id}:
     delete:
       consumes:
       - '*/*'
@@ -422,7 +422,7 @@ paths:
         in: path
         name: id
         required: true
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -453,6 +453,42 @@ paths:
       summary: Delete Bill
       tags:
       - Billing
+    get:
+      consumes:
+      - '*/*'
+      description: Gets all information about a single bill.
+      parameters:
+      - description: Billing ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Billing'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Gets a Bill
+      tags:
+      - Billing
     patch:
       consumes:
       - application/json
@@ -468,7 +504,7 @@ paths:
         in: path
         name: id
         required: true
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -499,44 +535,7 @@ paths:
       summary: Update Bill
       tags:
       - Billing
-  /billing/{id}:
-    get:
-      consumes:
-      - '*/*'
-      description: Gets all information about a single bill.
-      parameters:
-      - description: Billing ID
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.Billing'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/dto.ErrorResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/dto.ErrorResponse'
-        "403":
-          description: Forbidden
-          schema:
-            $ref: '#/definitions/dto.ErrorResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/dto.ErrorResponse'
-      summary: Gets a Bill
-      tags:
-      - Billing
-  /billing/company/:id:
+  /billing/company/{id}:
     get:
       consumes:
       - '*/*'
@@ -546,7 +545,7 @@ paths:
         in: path
         name: id
         required: true
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -639,7 +638,7 @@ paths:
       summary: Create a campaign
       tags:
       - Campaign
-  /campaign/:id:
+  /campaign/{id}:
     delete:
       consumes:
       - '*/*'
@@ -649,7 +648,7 @@ paths:
         in: path
         name: id
         required: true
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -689,7 +688,7 @@ paths:
         in: path
         name: id
         required: true
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -716,7 +715,7 @@ paths:
       summary: Gets a Campaign
       tags:
       - Campaign
-  /campaign/company/:id:
+  /campaign/company/{id}:
     get:
       consumes:
       - '*/*'
@@ -726,7 +725,7 @@ paths:
         in: path
         name: id
         required: true
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -815,7 +814,7 @@ paths:
       summary: Create Company
       tags:
       - Company
-  /company/:id:
+  /company/{id}:
     delete:
       consumes:
       - '*/*'
@@ -825,7 +824,7 @@ paths:
         in: path
         name: id
         required: true
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -920,7 +919,7 @@ paths:
       summary: Create Industry
       tags:
       - Industry
-  /industry/:id:
+  /industry/{id}:
     delete:
       consumes:
       - '*/*'
@@ -930,7 +929,7 @@ paths:
         in: path
         name: id
         required: true
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -970,7 +969,7 @@ paths:
         in: path
         name: id
         required: true
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -1067,7 +1066,7 @@ paths:
   /register:
     post:
       consumes:
-      - '*/*'
+      - application/json
       description: Registers a new user.
       parameters:
       - description: Register Request
@@ -1133,7 +1132,7 @@ paths:
       - User
     post:
       consumes:
-      - '*/*'
+      - application/json
       description: Create a new user.
       parameters:
       - description: Create Request
@@ -1170,7 +1169,7 @@ paths:
       summary: Create User
       tags:
       - User
-  /user/:id:
+  /user/{id}:
     delete:
       consumes:
       - '*/*'
@@ -1180,7 +1179,7 @@ paths:
         in: path
         name: id
         required: true
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -1220,7 +1219,7 @@ paths:
         in: path
         name: id
         required: true
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -1256,7 +1255,7 @@ paths:
         in: path
         name: id
         required: true
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -1287,7 +1286,7 @@ paths:
       summary: Update User
       tags:
       - User
-  /user/company/:id:
+  /user/company/{id}:
     get:
       consumes:
       - '*/*'
@@ -1297,7 +1296,7 @@ paths:
         in: path
         name: id
         required: true
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
