@@ -42,8 +42,7 @@ func HelperCreateClient(ctx context.Context, conn *grpc.ClientConn, customerName
 	}
 	response, err := services.NewCustomerServiceClient(conn).CreateCustomerClient(ctx, &request)
 	if err != nil {
-		//fmt.Printf("%+#v", err.Error())
-		panic(err)
+		fmt.Printf("%+#v", err.Error())
 		return
 	}
 
