@@ -995,9 +995,9 @@ paths:
       tags:
       - Industry
   /login:
-    get:
+    post:
       consumes:
-      - '*/*'
+      - application/json
       description: Login using user credentials.
       parameters:
       - description: Login Request

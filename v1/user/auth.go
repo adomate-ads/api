@@ -20,7 +20,7 @@ type LoginRequest struct {
 // @Summary Login User
 // @Description Login using user credentials.
 // @Tags Auth
-// @Accept */*
+// @Accept json
 // @Produce json
 // @Param login body LoginRequest true "Login Request"
 // @Success 201 {object} dto.MessageResponse
@@ -28,7 +28,7 @@ type LoginRequest struct {
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 403 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
-// @Router /login [get]
+// @Router /login [post]
 func Login(c *gin.Context) {
 	session := sessions.Default(c)
 	var request LoginRequest
