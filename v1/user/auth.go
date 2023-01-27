@@ -79,7 +79,7 @@ type RegisterRequest struct {
 // @Summary Register New User
 // @Description Registers a new user.
 // @Tags Auth
-// @Accept */*
+// @Accept json
 // @Param register body RegisterRequest true "Register Request"
 // @Produce json
 // @Success 201 {object} dto.MessageResponse
