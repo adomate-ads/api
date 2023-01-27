@@ -4,10 +4,7 @@ import (
 	"github.com/adomate-ads/api/models"
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
-	"github.com/stripe/stripe-go/v74"
-	"github.com/stripe/stripe-go/v74/customer"
 	"net/http"
-	"strconv"
 	"strings"
 )
 
@@ -20,7 +17,7 @@ type LoginRequest struct {
 // @Summary Login User
 // @Description Login using user credentials.
 // @Tags Auth
-// @Accept */*
+// @Accept json
 // @Produce json
 // @Param login body LoginRequest true "Login Request"
 // @Success 201 {object} dto.MessageResponse
@@ -28,7 +25,7 @@ type LoginRequest struct {
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 403 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
-// @Router /login [get]
+// @Router /login [post]
 func Login(c *gin.Context) {
 	session := sessions.Default(c)
 	var request LoginRequest
@@ -172,17 +169,17 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	params := &stripe.CustomerParams{
-		Name:  stripe.String(request.CompanyName),
-		Email: stripe.String(request.Email),
-	}
-	params.AddMetadata("company_id", strconv.Itoa(int(newCompany.ID)))
-
-	//TODO - If we run into this error, that means that we created the user and company, but not the stripe customer, so we actually need to delete the user and company now and return an error.
-	if _, err := customer.New(params); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
+	//params := &stripe.CustomerParams{
+	//	Name:  stripe.String(request.CompanyName),
+	//	Email: stripe.String(request.Email),
+	//}
+	//params.AddMetadata("company_id", strconv.Itoa(int(newCompany.ID)))
+	//
+	////TODO - If we run into this error, that means that we created the user and company, but not the stripe customer, so we actually need to delete the user and company now and return an error.
+	//if _, err := customer.New(params); err != nil {
+	//	c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	//	return
+	//}
 
 	c.JSON(http.StatusCreated, gin.H{"message": "Successfully created user and company"})
 	// TODO - In the future, we should send an email to the user with a link to verify their email address
