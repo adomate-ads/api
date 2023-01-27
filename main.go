@@ -51,6 +51,10 @@ func main() {
 		log.Fatalf("Error loading .env file.")
 	}
 
+	//client_management.CreateClient("First test from API", "sdafasd@gmail.com")
+	//account_management.GetAccountInformation()
+	//account_management.ListAccessibleCustomers()
+
 	models.ConnectDatabase(models.Config(), false)
 	email.Setup()
 

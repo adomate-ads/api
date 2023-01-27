@@ -111,12 +111,12 @@ func GetCampaigns(c *gin.Context) {
 // @Tags Campaign
 // @Accept */*
 // @Produce json
-// @Param id path string true "Campaign ID"
+// @Param id path int true "Campaign ID"
 // @Success 200 {object} []models.Campaign
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 403 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
-// @Router /campaign/company/:id [get]
+// @Router /campaign/company/{id} [get]
 func GetCampaignsForCompany(c *gin.Context) {
 	id := c.Param("id")
 	companyID, err := strconv.ParseUint(id, 10, 64)
@@ -146,13 +146,13 @@ func GetCampaignsForCompany(c *gin.Context) {
 // @Tags Campaign
 // @Accept */*
 // @Produce json
-// @Param id path string true "Campaign ID"
+// @Param id path int true "Campaign ID"
 // @Success 200 {object} models.Campaign
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 403 {object} dto.ErrorResponse
 // @Failure 404 {object} dto.ErrorResponse
-// @Router /campaign/:id [get]
+// @Router /campaign/{id} [get]
 func GetCampaign(c *gin.Context) {
 	id := c.Param("id")
 	campaignID, err := strconv.ParseUint(id, 10, 64)
@@ -182,14 +182,14 @@ func GetCampaign(c *gin.Context) {
 // @Tags Campaign
 // @Accept */*
 // @Produce json
-// @Param id path string true "Campaign ID"
+// @Param id path int true "Campaign ID"
 // @Success 200 {object} dto.MessageResponse
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 403 {object} dto.ErrorResponse
 // @Failure 404 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
-// @Router /campaign/:id [delete]
+// @Router /campaign/{id} [delete]
 func DeleteCampaign(c *gin.Context) {
 	id := c.Param("id")
 	campaignID, err := strconv.ParseUint(id, 10, 64)

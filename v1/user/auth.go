@@ -4,7 +4,10 @@ import (
 	"github.com/adomate-ads/api/models"
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
+	"github.com/stripe/stripe-go/v74"
+	"github.com/stripe/stripe-go/v74/customer"
 	"net/http"
+	"strconv"
 	"strings"
 )
 
@@ -76,7 +79,7 @@ type RegisterRequest struct {
 // @Summary Register New User
 // @Description Registers a new user.
 // @Tags Auth
-// @Accept */*
+// @Accept json
 // @Param register body RegisterRequest true "Register Request"
 // @Produce json
 // @Success 201 {object} dto.MessageResponse
@@ -163,14 +166,26 @@ func Register(c *gin.Context) {
 		Role:      "owner",
 	}
 
+	//TODO - If we run into this error, that means it created the company but not the user, so we actually need to delete the company now and return an error.
 	if err := u.CreateUser(); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	params := &stripe.CustomerParams{
+		Name:  stripe.String(request.CompanyName),
+		Email: stripe.String(request.Email),
+	}
+	params.AddMetadata("company_id", strconv.Itoa(int(newCompany.ID)))
+
+	//TODO - If we run into this error, that means that we created the user and company, but not the stripe customer, so we actually need to delete the user and company now and return an error.
+	if _, err := customer.New(params); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
 	c.JSON(http.StatusCreated, gin.H{"message": "Successfully created user and company"})
 	// TODO - In the future, we should send an email to the user with a link to verify their email address
-	// TODO - In the future, we should send an email to the company admin notifying them of the new user
 	// TODO - In the future, we should possibly send a session token back to the user
 }
 
