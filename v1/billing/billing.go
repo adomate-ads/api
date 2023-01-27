@@ -163,7 +163,7 @@ func GetBillingsForCompany(c *gin.Context) {
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 403 {object} dto.ErrorResponse
 // @Failure 404 {object} dto.ErrorResponse
-// @Router /billing/:id [get]
+// @Router /billing/{id} [get]
 func GetBilling(c *gin.Context) {
 	id := c.Param("id")
 	billingID, err := strconv.ParseUint(id, 10, 64)
