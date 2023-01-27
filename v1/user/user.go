@@ -219,7 +219,7 @@ func UpdateUser(c *gin.Context) {
 // @Failure 403 {object} dto.ErrorResponse
 // @Failure 404 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
-// @Router /user/{id} [delete] 
+// @Router /user/{id} [delete]
 func DeleteUser(c *gin.Context) {
 	id := c.Param("id")
 	userID, err := strconv.ParseUint(id, 10, 64)
