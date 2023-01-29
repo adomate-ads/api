@@ -1033,7 +1033,7 @@ paths:
       tags:
       - Auth
   /logout:
-    post:
+    get:
       consumes:
       - '*/*'
       description: Logout of a user.

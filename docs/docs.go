@@ -1081,7 +1081,7 @@ const docTemplate = `{
             }
         },
         "/logout": {
-            "post": {
+            "get": {
                 "description": "Logout of a user.",
                 "consumes": [
                     "*/*"
