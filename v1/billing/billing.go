@@ -1,13 +1,10 @@
 package billing
 
 import (
-	"fmt"
 	"github.com/adomate-ads/api/models"
 	"github.com/adomate-ads/api/pkg/auth"
 	"github.com/adomate-ads/api/pkg/email"
 	"github.com/gin-gonic/gin"
-	"github.com/stripe/stripe-go/v74"
-	"github.com/stripe/stripe-go/v74/customer"
 	"net/http"
 	"strconv"
 	"strings"
@@ -75,16 +72,16 @@ func CreateBilling(c *gin.Context) {
 		return
 	}
 
-	params := &stripe.CustomerSearchParams{}
-	params.Query = *stripe.String(fmt.Sprintf("metadata['company_id']:'%s'", company.ID))
-	// TODO - grab the customer ID from stripe
-	//customerID := "12345"
-	iter := customer.Search(params)
-	for iter.Next() {
-		result := iter.Current()
-		fmt.Println(result)
-
-	}
+	//params := &stripe.CustomerSearchParams{}
+	//params.Query = *stripe.String(fmt.Sprintf("metadata['company_id']:'%s'", company.ID))
+	//// TODO - grab the customer ID from stripe
+	////customerID := "12345"
+	//iter := customer.Search(params)
+	//for iter.Next() {
+	//	result := iter.Current()
+	//	fmt.Println(result)
+	//
+	//}
 	//billParams := &stripe.InvoiceParams{
 	//	Customer:    stripe.String(customerID),
 	//	Description: "10/12-12/10 something like that..",
