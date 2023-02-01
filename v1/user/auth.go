@@ -165,7 +165,7 @@ func Register(c *gin.Context) {
 
 	//TODO - If we run into this error, that means it created the company but not the user, so we actually need to delete the company now and return an error.
 	if err := u.CreateUser(); err != nil {
-		u.DeleteUser();
+		u.Company.DeleteCompany();
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
