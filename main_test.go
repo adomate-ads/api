@@ -19,10 +19,12 @@ import (
 	"log"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 )
 
 var r *gin.Engine = SetUpRouter()
+var authCookie string = ""
 
 func SetUpRouter() *gin.Engine {
 	err := godotenv.Load(".env")
@@ -30,7 +32,7 @@ func SetUpRouter() *gin.Engine {
 		log.Fatalf("Error loading .env file.")
 	}
 
-	models.ConnectDatabase(models.Config(), false)
+	models.ConnectDatabase(models.Config(), true)
 
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
@@ -56,11 +58,15 @@ func SetUpRouter() *gin.Engine {
 	return r
 }
 
-func RequestTesting(method string, url string, body *bytes.Buffer, expectedResponse string, expectedStatus int, t *testing.T) {
+func RequestTesting(method string, url string, body *bytes.Buffer, expectedResponse string, expectedStatus int, t *testing.T, cookies ...*http.Cookie) {
 	if body == nil {
 		req, err := http.NewRequest(method, url, nil)
 		if err != nil {
 			t.Fatal(err)
+		}
+
+		for _, cookie := range cookies {
+			req.AddCookie(cookie)
 		}
 		w := httptest.NewRecorder()
 		r.ServeHTTP(w, req)
@@ -86,6 +92,30 @@ func TestOnlineCheck(t *testing.T) {
 	RequestTesting("GET", "/v1/", nil, `{"message":"Adomate Ads API Online."}`, http.StatusOK, t)
 }
 
+func TestRegisterHandler(t *testing.T) {
+	industry := models.Industry{
+		Industry: "software",
+	}
+	if err := industry.CreateIndustry(); err != nil {
+		t.Fatal(err)
+	}
+
+	mockResponse := `{"message":"Successfully created user and company"}`
+	user := user.RegisterRequest{
+		FirstName:   "Raaj",
+		LastName:    "Patel",
+		Email:       "the@raajpatel.dev",
+		Password:    "Password123",
+		CompanyName: "Raaj LLC.",
+		Industry:    "software",
+		Domain:      "raajpatel.dev",
+		Budget:      1000,
+	}
+	jsonValue, _ := json.Marshal(user)
+
+	RequestTesting("POST", "/v1/register", bytes.NewBuffer(jsonValue), mockResponse, http.StatusCreated, t)
+}
+
 func TestLoginHandler(t *testing.T) {
 	mockResponse := `{"message":"Successfully authenticated user"}`
 	user := user.LoginRequest{
@@ -97,7 +127,7 @@ func TestLoginHandler(t *testing.T) {
 	w := httptest.NewRecorder()
 	r.ServeHTTP(w, req)
 
-	fmt.Println(w.Header().Get("Set-Cookie"))
+	authCookie = (w.Header().Get("Set-Cookie"))[8:strings.Index(w.Header().Get("Set-Cookie"), ";")]
 
 	responseData, _ := io.ReadAll(w.Body)
 	assert.Equal(t, mockResponse, string(responseData))
@@ -105,110 +135,13 @@ func TestLoginHandler(t *testing.T) {
 }
 
 func TestMeHandler(t *testing.T) {
-	mockResponse := `{"user":null}`
-	req, _ := http.NewRequest("GET", "/v1/me", nil)
-	req.Header.Set("Set-Cookie", "adomate=MTY3NTI3MTkzOXxEdi1CQkFFQ180SUFBUkFCRUFBQUhfLUNBQUVHYzNSeWFXNW5EQWtBQjNWelpYSXRhV1FFZFdsdWRBWUNBQUU9fEBp5u2QlfoCxJQvlzz4RotL6lbp0Dkx6kk4Dyd1piMp")
+	user, _ := models.GetUser(1)
+	userString, _ := json.Marshal(user)
+	mockResponse := fmt.Sprintf(`{"user":%s}`, userString)
 	cookie := &http.Cookie{
-		Name:   "user-id",
-		Value:  "1",
+		Name:   "adomate",
+		Value:  authCookie,
 		MaxAge: 300,
 	}
-	req.AddCookie(cookie)
-	w := httptest.NewRecorder()
-	r.ServeHTTP(w, req)
-
-	responseData, _ := io.ReadAll(w.Body)
-	assert.Equal(t, mockResponse, string(responseData))
-	assert.Equal(t, http.StatusOK, w.Code)
+	RequestTesting("GET", "/v1/me", nil, mockResponse, http.StatusOK, t, cookie)
 }
-
-//
-//func TestCreateIndustryHandler(t *testing.T) {
-//	mockResponse := `{"message":"Successfully created industry"}`
-//
-//	industry := industry.CreateRequest{
-//		Industry: "Software",
-//	}
-//
-//	jsonValue, _ := json.Marshal(industry)
-//	req, _ := http.NewRequest("POST", "/v1/industry", bytes.NewBuffer(jsonValue))
-//	w := httptest.NewRecorder()
-//	r.ServeHTTP(w, req)
-//
-//	responseData, _ := io.ReadAll(w.Body)
-//	assert.Equal(t, mockResponse, string(responseData))
-//	assert.Equal(t, http.StatusOK, w.Code)
-//
-//	mockResponse = `{"error":"An industry by that name already exists"}`
-//	req, _ = http.NewRequest("POST", "/v1/industry", bytes.NewBuffer(jsonValue))
-//	w = httptest.NewRecorder()
-//	r.ServeHTTP(w, req)
-//
-//	responseData, _ = io.ReadAll(w.Body)
-//	assert.Equal(t, mockResponse, string(responseData))
-//	assert.Equal(t, http.StatusBadRequest, w.Code)
-//}
-//
-//func TestCreateCompanyHandler(t *testing.T) {
-//	mockResponse := `{"message":"Successfully registered company"}`
-//
-//	company := company.CreateRequest{
-//		Name:     "Raaj Inc.",
-//		Email:    "the@raajpatel.dev",
-//		Industry: "Software",
-//		Domain:   "https://raajpatel.dev",
-//		Budget:   10,
-//	}
-//
-//	jsonValue, _ := json.Marshal(company)
-//	req, _ := http.NewRequest("POST", "/v1/company", bytes.NewBuffer(jsonValue))
-//	w := httptest.NewRecorder()
-//	r.ServeHTTP(w, req)
-//
-//	responseData, _ := io.ReadAll(w.Body)
-//	assert.Equal(t, mockResponse, string(responseData))
-//	assert.Equal(t, http.StatusCreated, w.Code)
-//
-//	mockResponse = `{"error":"An company by that email already exists"}`
-//	req, _ = http.NewRequest("POST", "/v1/company", bytes.NewBuffer(jsonValue))
-//	w = httptest.NewRecorder()
-//	r.ServeHTTP(w, req)
-//
-//	responseData, _ = io.ReadAll(w.Body)
-//	assert.Equal(t, mockResponse, string(responseData))
-//	assert.Equal(t, http.StatusBadRequest, w.Code)
-//}
-//
-//func TestCreateBillingHandler(t *testing.T) {
-//	mockResponse := `{"error":"That company does not exist"}`
-//
-//	billing := billing.CreateRequest{
-//		Company:  "Raaj123 Inc.",
-//		Amount:   100,
-//		Status:   "unpaid",
-//		Comments: "This is a test",
-//		DueAt:    time.Now(),
-//		IssuedAt: time.Now(),
-//	}
-//
-//	jsonValue, _ := json.Marshal(billing)
-//	req, _ := http.NewRequest("POST", "/v1/billing", bytes.NewBuffer(jsonValue))
-//	w := httptest.NewRecorder()
-//	r.ServeHTTP(w, req)
-//
-//	responseData, _ := io.ReadAll(w.Body)
-//	assert.Equal(t, mockResponse, string(responseData))
-//	assert.Equal(t, http.StatusBadRequest, w.Code)
-//
-//	mockResponse = `{"message":"Successfully created bill"}`
-//	billing.Company = "Raaj Inc."
-//
-//	jsonValue, _ = json.Marshal(billing)
-//	req, _ = http.NewRequest("POST", "/v1/billing", bytes.NewBuffer(jsonValue))
-//	w = httptest.NewRecorder()
-//	r.ServeHTTP(w, req)
-//
-//	responseData, _ = io.ReadAll(w.Body)
-//	assert.Equal(t, mockResponse, string(responseData))
-//	assert.Equal(t, http.StatusCreated, w.Code)
-//}
