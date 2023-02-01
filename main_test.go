@@ -34,7 +34,8 @@ func SetUpRouter() *gin.Engine {
 
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
-	r.Use(sessions.Sessions("adomate", sessions.NewCookieStore([]byte(""))))
+	r.Use(sessions.Sessions("adomate", sessions.NewCookieStore([]byte("testing"))))
+	r.Use(auth.Auth)
 
 	v1 := r.Group("v1")
 
@@ -55,20 +56,38 @@ func SetUpRouter() *gin.Engine {
 	return r
 }
 
-func TestOnlineCheck(t *testing.T) {
-	mockResponse := `{"message":"Adomate Ads API Online."}`
-	req, _ := http.NewRequest("GET", "/v1/", nil)
-	w := httptest.NewRecorder()
-	r.ServeHTTP(w, req)
+func RequestTesting(method string, url string, body *bytes.Buffer, expectedResponse string, expectedStatus int, t *testing.T) {
+	if body == nil {
+		req, err := http.NewRequest(method, url, nil)
+		if err != nil {
+			t.Fatal(err)
+		}
+		w := httptest.NewRecorder()
+		r.ServeHTTP(w, req)
 
-	responseData, _ := io.ReadAll(w.Body)
-	assert.Equal(t, mockResponse, string(responseData))
-	assert.Equal(t, http.StatusOK, w.Code)
+		responseData, _ := io.ReadAll(w.Body)
+		assert.Equal(t, expectedResponse, string(responseData))
+		assert.Equal(t, expectedStatus, w.Code)
+	} else {
+		req, err := http.NewRequest(method, url, body)
+		if err != nil {
+			t.Fatal(err)
+		}
+		w := httptest.NewRecorder()
+		r.ServeHTTP(w, req)
+
+		responseData, _ := io.ReadAll(w.Body)
+		assert.Equal(t, expectedResponse, string(responseData))
+		assert.Equal(t, expectedStatus, w.Code)
+	}
+}
+
+func TestOnlineCheck(t *testing.T) {
+	RequestTesting("GET", "/v1/", nil, `{"message":"Adomate Ads API Online."}`, http.StatusOK, t)
 }
 
 func TestLoginHandler(t *testing.T) {
 	mockResponse := `{"message":"Successfully authenticated user"}`
-	mockUserId := "1"
 	user := user.LoginRequest{
 		Email:    "the@raajpatel.dev",
 		Password: "Password123",
@@ -78,14 +97,29 @@ func TestLoginHandler(t *testing.T) {
 	w := httptest.NewRecorder()
 	r.ServeHTTP(w, req)
 
-	responseHeader := w.Result().Header
-	fmt.Println(responseHeader["Set-Cookie"])
-	assert.Equal(t, mockUserId, responseHeader.Get("user-id"))
+	fmt.Println(w.Header().Get("Set-Cookie"))
 
 	responseData, _ := io.ReadAll(w.Body)
 	assert.Equal(t, mockResponse, string(responseData))
 	assert.Equal(t, http.StatusOK, w.Code)
+}
 
+func TestMeHandler(t *testing.T) {
+	mockResponse := `{"user":null}`
+	req, _ := http.NewRequest("GET", "/v1/me", nil)
+	req.Header.Set("Set-Cookie", "adomate=MTY3NTI3MTkzOXxEdi1CQkFFQ180SUFBUkFCRUFBQUhfLUNBQUVHYzNSeWFXNW5EQWtBQjNWelpYSXRhV1FFZFdsdWRBWUNBQUU9fEBp5u2QlfoCxJQvlzz4RotL6lbp0Dkx6kk4Dyd1piMp")
+	cookie := &http.Cookie{
+		Name:   "user-id",
+		Value:  "1",
+		MaxAge: 300,
+	}
+	req.AddCookie(cookie)
+	w := httptest.NewRecorder()
+	r.ServeHTTP(w, req)
+
+	responseData, _ := io.ReadAll(w.Body)
+	assert.Equal(t, mockResponse, string(responseData))
+	assert.Equal(t, http.StatusOK, w.Code)
 }
 
 //
