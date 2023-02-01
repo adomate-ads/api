@@ -163,9 +163,13 @@ func Register(c *gin.Context) {
 		Role:      "owner",
 	}
 
-	//TODO - If we run into this error, that means it created the company but not the user, so we actually need to delete the company now and return an error.
 	if err := u.CreateUser(); err != nil {
-		u.Company.DeleteCompany();
+		err := newCompany.DeleteCompany()
+		if err != nil {
+			// TODO - We need to log this error in the future. Maybe a discord bot.
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -178,8 +182,8 @@ func Register(c *gin.Context) {
 	//
 	////TODO - If we run into this error, that means that we created the user and company, but not the stripe customer, so we actually need to delete the user and company now and return an error.
 	//if _, err := customer.New(params); err != nil {
-		//params.DeleteUser();
-		//params.DeleteCompany();
+	//params.DeleteUser();
+	//params.DeleteCompany();
 	//	c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	//	return
 	//}
