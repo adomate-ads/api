@@ -103,7 +103,7 @@ func engine() *gin.Engine {
 	r.Use(sessions.Sessions("adomate", sessions.NewCookieStore([]byte(os.Getenv("SESSION_SECRET")))))
 
 	docs.SwaggerInfo.BasePath = "/v1"
-	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	r.GET("/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	return r
 }
