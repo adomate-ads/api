@@ -75,11 +75,10 @@ func CreateBilling(c *gin.Context) {
 	//params := &stripe.CustomerSearchParams{}
 	//params.Query = *stripe.String(fmt.Sprintf("metadata['company_id']:'%s'", company.ID))
 	//// TODO - grab the customer ID from stripe
-	////customerID := "12345"
+	//customerID := "12345"
 	//iter := customer.Search(params)
 	//for iter.Next() {
 	//	result := iter.Current()
-	//	fmt.Println(result)
 	//
 	//}
 	//billParams := &stripe.InvoiceParams{

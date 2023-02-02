@@ -6,6 +6,7 @@ import (
 	"github.com/adomate-ads/api/middleware/auth"
 	"github.com/adomate-ads/api/models"
 	"github.com/adomate-ads/api/pkg/email"
+	google_ads "github.com/adomate-ads/api/pkg/google-ads"
 	"github.com/adomate-ads/api/v1/billing"
 	"github.com/adomate-ads/api/v1/campaign"
 	"github.com/adomate-ads/api/v1/company"
@@ -51,9 +52,7 @@ func main() {
 		log.Fatalf("Error loading .env file.")
 	}
 
-	//client_management.CreateClient("First test from API", "sdafasd@gmail.com")
-	//account_management.GetAccountInformation()
-	//account_management.ListAccessibleCustomers()
+	google_ads.Setup()
 
 	models.ConnectDatabase(models.Config(), false)
 	email.Setup()
