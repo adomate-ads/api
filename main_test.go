@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"github.com/adomate-ads/api/middleware/auth"
 	"github.com/adomate-ads/api/models"
 	"github.com/adomate-ads/api/v1/billing"
@@ -10,6 +11,7 @@ import (
 	"github.com/adomate-ads/api/v1/company"
 	"github.com/adomate-ads/api/v1/industry"
 	"github.com/adomate-ads/api/v1/user"
+	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
@@ -17,11 +19,12 @@ import (
 	"log"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
-	"time"
 )
 
 var r *gin.Engine = SetUpRouter()
+var authCookie string = ""
 
 func SetUpRouter() *gin.Engine {
 	err := godotenv.Load(".env")
@@ -31,7 +34,10 @@ func SetUpRouter() *gin.Engine {
 
 	models.ConnectDatabase(models.Config(), true)
 
+	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
+	r.Use(sessions.Sessions("adomate", sessions.NewCookieStore([]byte("testing"))))
+	r.Use(auth.Auth)
 
 	v1 := r.Group("v1")
 
@@ -45,21 +51,6 @@ func SetUpRouter() *gin.Engine {
 	v1.GET("/me", auth.NotGuest, user.Me)
 	v1.GET("/status", auth.NotGuest, user.Status)
 
-	// Test Groups
-	group := r.Group("/test-group")
-	group.GET("/super-admin", auth.NotGuest, auth.InGroup("super-admin"), user.Me)
-	group.GET("/support", auth.NotGuest, auth.InGroup("support"), user.Me)
-	group.GET("/admin", auth.NotGuest, auth.InGroup("admin"), user.Me)
-	group.GET("/user", auth.NotGuest, auth.InGroup("user"), user.Me)
-	// Test Roles
-	roles := r.Group("/test-roles")
-	roles.GET("/super-admin", auth.NotGuest, auth.HasRole("super-admin"), user.Me)
-	roles.GET("/support-billing", auth.NotGuest, auth.HasRole("support-billing"), user.Me)
-	roles.GET("/support-ticket", auth.NotGuest, auth.HasRole("support-ticket"), user.Me)
-	roles.GET("/owner", auth.NotGuest, auth.HasRole("owner"), user.Me)
-	roles.GET("/admin", auth.NotGuest, auth.HasRole("admin"), user.Me)
-	roles.GET("/user", auth.NotGuest, auth.HasRole("user"), user.Me)
-
 	company.Routes(v1)
 	industry.Routes(v1)
 	billing.Routes(v1)
@@ -67,103 +58,181 @@ func SetUpRouter() *gin.Engine {
 	return r
 }
 
+func RequestTesting(method string, url string, body *bytes.Buffer, expectedResponse string, expectedStatus int, t *testing.T, cookies ...*http.Cookie) {
+	if body == nil {
+		req, err := http.NewRequest(method, url, nil)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		for _, cookie := range cookies {
+			req.AddCookie(cookie)
+		}
+		w := httptest.NewRecorder()
+		r.ServeHTTP(w, req)
+
+		responseData, _ := io.ReadAll(w.Body)
+		assert.Equal(t, expectedResponse, string(responseData))
+		assert.Equal(t, expectedStatus, w.Code)
+	} else {
+		req, err := http.NewRequest(method, url, body)
+		if err != nil {
+			t.Fatal(err)
+		}
+		w := httptest.NewRecorder()
+		r.ServeHTTP(w, req)
+
+		responseData, _ := io.ReadAll(w.Body)
+		assert.Equal(t, expectedResponse, string(responseData))
+		assert.Equal(t, expectedStatus, w.Code)
+	}
+}
+
 func TestOnlineCheck(t *testing.T) {
-	mockResponse := `{"message":"Adomate Ads API Online."}`
-	req, _ := http.NewRequest("GET", "/v1/", nil)
-	w := httptest.NewRecorder()
-	r.ServeHTTP(w, req)
-
-	responseData, _ := io.ReadAll(w.Body)
-	assert.Equal(t, mockResponse, string(responseData))
-	assert.Equal(t, http.StatusOK, w.Code)
+	RequestTesting("GET", "/v1/", nil, `{"message":"Adomate Ads API Online."}`, http.StatusOK, t)
 }
 
-func TestCreateIndustryHandler(t *testing.T) {
-	mockResponse := `{"message":"Successfully created industry"}`
-
-	industry := industry.CreateRequest{
-		Industry: "Software",
+func TestRegisterHandler(t *testing.T) {
+	industry := models.Industry{
+		Industry: "software",
+	}
+	if err := industry.CreateIndustry(); err != nil {
+		t.Fatal(err)
 	}
 
-	jsonValue, _ := json.Marshal(industry)
-	req, _ := http.NewRequest("POST", "/v1/industry", bytes.NewBuffer(jsonValue))
-	w := httptest.NewRecorder()
-	r.ServeHTTP(w, req)
+	mockResponse := `{"message":"Successfully created user and company"}`
+	emptyResponse := `{"error":"Parameters can't be empty"}`
+	duplicateUserResposne := `{"error":"An account by that email already exists"}`
+	sameCompanyResposne := `{"error":"A company by that name already exists"}`
+	industryDoesntExist := `{"error":"An industry by that name does not exist"}`
 
-	responseData, _ := io.ReadAll(w.Body)
-	assert.Equal(t, mockResponse, string(responseData))
-	assert.Equal(t, http.StatusOK, w.Code)
+	userIndustryExist := user.RegisterRequest{
+		FirstName:   "Raaj",
+		LastName:    "Patel",
+		Email:       "the2@raajpatel.dev",
+		Password:    "Password123",
+		CompanyName: "Raaj LLC2.",
+		Industry:    "ads",
+		Domain:      "raajpatel.dev",
+		Budget:      1000,
+	}
+	userWithNoBusiness := user.RegisterRequest{
+		FirstName:   "Raaj",
+		LastName:    "Patel",
+		Email:       "the@raajpatel.dev",
+		Password:    "Password123",
+		CompanyName: " ",
+		Industry:    "software",
+		Domain:      "raajpatel.dev",
+		Budget:      1000,
+	}
+	userWithNoName := user.RegisterRequest{
+		FirstName:   " ",
+		LastName:    "Patel",
+		Email:       "the@raajpatel.dev",
+		Password:    "Password123",
+		CompanyName: "Raaj LLC.",
+		Industry:    "software",
+		Domain:      "raajpatel.dev",
+		Budget:      1000,
+	}
+	userWithDupilicateCompany := user.RegisterRequest{
+		FirstName:   "Raaj",
+		LastName:    "Patel",
+		Email:       "the2@raajpatel2.dev",
+		Password:    "Password123",
+		CompanyName: "Raaj LLC.",
+		Industry:    "software",
+		Domain:      "raajpatel.dev",
+		Budget:      1000,
+	}
+	user := user.RegisterRequest{
+		FirstName:   "Raaj",
+		LastName:    "Patel",
+		Email:       "the@raajpatel.dev",
+		Password:    "Password123",
+		CompanyName: "Raaj LLC.",
+		Industry:    "software",
+		Domain:      "raajpatel.dev",
+		Budget:      1000,
+	}
 
-	mockResponse = `{"error":"An industry by that name already exists"}`
-	req, _ = http.NewRequest("POST", "/v1/industry", bytes.NewBuffer(jsonValue))
-	w = httptest.NewRecorder()
-	r.ServeHTTP(w, req)
+	jsonValue, _ := json.Marshal(user)
+	jsonValueIndustryDoesntexit, _ := json.Marshal(userIndustryExist)
+	jsonValueSameCompany, _ := json.Marshal(userWithDupilicateCompany)
+	jsonValueNoname, _ := json.Marshal(userWithNoName)
+	jsonValueBusiness, _ := json.Marshal(userWithNoBusiness)
 
-	responseData, _ = io.ReadAll(w.Body)
-	assert.Equal(t, mockResponse, string(responseData))
-	assert.Equal(t, http.StatusBadRequest, w.Code)
+	RequestTesting("POST", "/v1/register", bytes.NewBuffer(jsonValue), mockResponse, http.StatusCreated, t)
+	RequestTesting("POST", "/v1/register", bytes.NewBuffer(jsonValueNoname), emptyResponse, http.StatusBadRequest, t)
+	RequestTesting("POST", "/v1/register", bytes.NewBuffer(jsonValueBusiness), emptyResponse, http.StatusBadRequest, t)
+	RequestTesting("POST", "/v1/register", bytes.NewBuffer(jsonValue), duplicateUserResposne, http.StatusBadRequest, t)
+	RequestTesting("POST", "/v1/register", bytes.NewBuffer(jsonValue), duplicateUserResposne, http.StatusBadRequest, t)
+	RequestTesting("POST", "/v1/register", bytes.NewBuffer(jsonValueSameCompany), sameCompanyResposne, http.StatusBadRequest, t)
+	RequestTesting("POST", "/v1/register", bytes.NewBuffer(jsonValueIndustryDoesntexit), industryDoesntExist, http.StatusBadRequest, t)
+
 }
 
-func TestCreateCompanyHandler(t *testing.T) {
-	mockResponse := `{"message":"Successfully registered company"}`
-
-	company := company.CreateRequest{
-		Name:     "Raaj Inc.",
+func TestLoginHandler(t *testing.T) {
+	mockResponse := `{"message":"Successfully authenticated user"}`
+	mockResponseEmptyName := `{"error":"Parameters can't be empty"}`
+	mockResponseNoEmail := `{"error":"An account by that email does not exist"}`
+	mockResponseWrongPassword := `{"error":"Incorrect password"}`
+	userWrongPassword := user.LoginRequest{
 		Email:    "the@raajpatel.dev",
-		Industry: "Software",
-		Domain:   "https://raajpatel.dev",
-		Budget:   10,
+		Password: "123",
+	}
+	userDoesntExist := user.LoginRequest{
+		Email:    "Wyatt@raajpatel.dev",
+		Password: "Password123",
+	}
+	userEmptyName := user.LoginRequest{
+		Email:    " ",
+		Password: "Password123",
+	}
+	user := user.LoginRequest{
+		Email:    "the@raajpatel.dev",
+		Password: "Password123",
 	}
 
-	jsonValue, _ := json.Marshal(company)
-	req, _ := http.NewRequest("POST", "/v1/company", bytes.NewBuffer(jsonValue))
+	jsonValue, _ := json.Marshal(user)
+	jsonValue2, _ := json.Marshal(userEmptyName)
+	jsonValue3, _ := json.Marshal(userDoesntExist)
+	jsonValue4, _ := json.Marshal(userWrongPassword)
+	req, _ := http.NewRequest("POST", "/v1/login", bytes.NewBuffer(jsonValue))
 	w := httptest.NewRecorder()
 	r.ServeHTTP(w, req)
 
-	responseData, _ := io.ReadAll(w.Body)
-	assert.Equal(t, mockResponse, string(responseData))
-	assert.Equal(t, http.StatusCreated, w.Code)
+	authCookie = (w.Header().Get("Set-Cookie"))[8:strings.Index(w.Header().Get("Set-Cookie"), ";")]
 
-	mockResponse = `{"error":"An company by that email already exists"}`
-	req, _ = http.NewRequest("POST", "/v1/company", bytes.NewBuffer(jsonValue))
-	w = httptest.NewRecorder()
-	r.ServeHTTP(w, req)
+	//responseData, _ := io.ReadAll(w.Body)
+	//assert.Equal(t, mockResponse, string(responseData))
+	//assert.Equal(t, http.StatusOK, w.Code)
+	cookie := &http.Cookie{
+		Name:   "adomate",
+		Value:  authCookie,
+		MaxAge: 300,
+	}
+	RequestTesting("POST", "/v1/login", bytes.NewBuffer(jsonValue), mockResponse, http.StatusOK, t, cookie)
+	RequestTesting("POST", "/v1/login", bytes.NewBuffer(jsonValue2), mockResponseEmptyName, http.StatusBadRequest, t, cookie)
+	RequestTesting("POST", "/v1/login", bytes.NewBuffer(jsonValue3), mockResponseNoEmail, http.StatusBadRequest, t, cookie)
+	RequestTesting("POST", "/v1/login", bytes.NewBuffer(jsonValue4), mockResponseWrongPassword, http.StatusBadRequest, t, cookie)
+	RequestTesting("POST", "/v1/login", bytes.NewBuffer(jsonValue4), mockResponseWrongPassword, http.StatusBadRequest, t, cookie)
 
-	responseData, _ = io.ReadAll(w.Body)
-	assert.Equal(t, mockResponse, string(responseData))
-	assert.Equal(t, http.StatusBadRequest, w.Code)
 }
 
-func TestCreateBillingHandler(t *testing.T) {
-	mockResponse := `{"error":"That company does not exist"}`
-
-	billing := billing.CreateRequest{
-		Company:  "Raaj123 Inc.",
-		Amount:   100,
-		Status:   "unpaid",
-		Comments: "This is a test",
-		DueAt:    time.Now(),
-		IssuedAt: time.Now(),
+func TestMeHandler(t *testing.T) {
+	user, _ := models.GetUser(1)
+	userString, _ := json.Marshal(user)
+	mockResponse := fmt.Sprintf(`{"user":%s}`, userString)
+	cookie := &http.Cookie{
+		Name:   "adomate",
+		Value:  authCookie,
+		MaxAge: 300,
 	}
+	RequestTesting("GET", "/v1/me", nil, mockResponse, http.StatusOK, t, cookie)
+}
 
-	jsonValue, _ := json.Marshal(billing)
-	req, _ := http.NewRequest("POST", "/v1/billing", bytes.NewBuffer(jsonValue))
-	w := httptest.NewRecorder()
-	r.ServeHTTP(w, req)
+func TestIndustryHandler(t *testing.T) {
 
-	responseData, _ := io.ReadAll(w.Body)
-	assert.Equal(t, mockResponse, string(responseData))
-	assert.Equal(t, http.StatusBadRequest, w.Code)
-
-	mockResponse = `{"message":"Successfully created bill"}`
-	billing.Company = "Raaj Inc."
-
-	jsonValue, _ = json.Marshal(billing)
-	req, _ = http.NewRequest("POST", "/v1/billing", bytes.NewBuffer(jsonValue))
-	w = httptest.NewRecorder()
-	r.ServeHTTP(w, req)
-
-	responseData, _ = io.ReadAll(w.Body)
-	assert.Equal(t, mockResponse, string(responseData))
-	assert.Equal(t, http.StatusCreated, w.Code)
 }

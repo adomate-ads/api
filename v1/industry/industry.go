@@ -78,7 +78,7 @@ func GetIndustries(c *gin.Context) {
 }
 
 // GetIndustry godoc
-// @Summary Gets a industry 
+// @Summary Gets a industry
 // @Description Gets all information about specific industry
 // @Tags Industry
 // @Accept */*
