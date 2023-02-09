@@ -26,8 +26,13 @@ To run locally, you'll need to set up both a MySQL instance and a RabbitMQ insta
 
 The easiest way to do this is to use Docker.  You can use the following commands to get both instances up and running:
 
+MySQL Instance:
 ```bash
 docker run -d --name mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=password mysql:8.0
+```
+
+RabbitMQ Instance:
+```bash
 docker run -d --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-management
 ```
 
