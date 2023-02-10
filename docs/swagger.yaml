@@ -40,8 +40,6 @@ definitions:
     type: object
   company.CreateRequest:
     properties:
-      budget:
-        type: integer
       domain:
         type: string
       email:
@@ -51,7 +49,6 @@ definitions:
       name:
         type: string
     required:
-    - budget
     - domain
     - email
     - industry
@@ -165,12 +162,6 @@ definitions:
     type: object
   models.Company:
     properties:
-      ads_balance:
-        example: 500
-        type: integer
-      budget:
-        example: 1000
-        type: integer
       created_at:
         example: "2020-01-01T00:00:00Z"
         type: string
@@ -229,6 +220,53 @@ definitions:
         example: "2020-01-01T00:00:00Z"
         type: string
     type: object
+  models.Order:
+    properties:
+      amount:
+        example: 900.25
+        type: number
+      company:
+        $ref: '#/definitions/models.Company'
+      company_id:
+        example: 1
+        type: integer
+      created_at:
+        example: "2020-01-01T00:00:00Z"
+        type: string
+      end_at:
+        example: "2020-01-01T00:00:00Z"
+        type: string
+      id:
+        example: 1
+        type: integer
+      start_at:
+        description: TODO - Check Stripe transaction ID standards for better example
+          and update varchar length
+        example: "2020-01-01T00:00:00Z"
+        type: string
+      status:
+        description: 'Available options: pending, active, cancelled'
+        example: pending
+        type: string
+      type:
+        description: 'Available options: base, premium, enterprise, ads'
+        example: base
+        type: string
+      updated_at:
+        example: "2020-01-01T00:00:00Z"
+        type: string
+    type: object
+  models.UpdateOrder:
+    properties:
+      amount:
+        type: number
+      end_at:
+        type: string
+      status:
+        type: string
+      type:
+        type: string
+    type: object
   models.User:
     properties:
       company:
@@ -260,6 +298,28 @@ definitions:
       updated_at:
         example: "2020-01-01T00:00:00Z"
         type: string
+    type: object
+  order.CreateRequest:
+    properties:
+      amount:
+        type: number
+      company:
+        type: string
+      end_at:
+        type: string
+      start_at:
+        type: string
+      status:
+        type: string
+      type:
+        type: string
+    required:
+    - amount
+    - company
+    - end_at
+    - start_at
+    - status
+    - type
     type: object
   user.CreateRequest:
     properties:
@@ -295,8 +355,6 @@ definitions:
     type: object
   user.RegisterRequest:
     properties:
-      budget:
-        type: integer
       company_name:
         type: string
       domain:
@@ -312,7 +370,6 @@ definitions:
       password:
         type: string
     required:
-    - budget
     - company_name
     - domain
     - email
@@ -960,16 +1017,17 @@ paths:
       summary: Delete Industry
       tags:
       - Industry
+  /industry/{industry}:
     get:
       consumes:
       - '*/*'
       description: Gets all information about specific industry
       parameters:
-      - description: Industry ID
+      - description: Industry Name
         in: path
-        name: id
+        name: industry
         required: true
-        type: integer
+        type: string
       produces:
       - application/json
       responses:
@@ -991,7 +1049,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/dto.ErrorResponse'
-      summary: Gets a industry
+      summary: Gets an industry by name
       tags:
       - Industry
   /login:
@@ -1063,6 +1121,191 @@ paths:
       summary: Logout User
       tags:
       - Auth
+  /order:
+    get:
+      consumes:
+      - '*/*'
+      description: Get a slice of all orders
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Order'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Get all orders
+      tags:
+      - Order
+    post:
+      consumes:
+      - application/json
+      description: creates an order
+      parameters:
+      - description: Create Request
+        in: body
+        name: create
+        required: true
+        schema:
+          $ref: '#/definitions/order.CreateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Industry'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Create Order
+      tags:
+      - Order
+  /order/{id}:
+    delete:
+      consumes:
+      - '*/*'
+      description: Delete an order.
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.MessageResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Delete Order
+      tags:
+      - Order
+    get:
+      consumes:
+      - '*/*'
+      description: Gets all information about specific order
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Order'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Gets an order
+      tags:
+      - Order
+    patch:
+      consumes:
+      - application/json
+      description: Update an order.
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Update Request
+        in: body
+        name: update
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateOrder'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.MessageResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Update Order
+      tags:
+      - Order
   /register:
     post:
       consumes:

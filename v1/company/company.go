@@ -15,7 +15,6 @@ type CreateRequest struct {
 	Email    string `json:"email" binding:"required"`
 	Industry string `json:"industry" binding:"required"`
 	Domain   string `json:"domain" binding:"required"`
-	Budget   uint   `json:"budget" binding:"required"`
 }
 
 // Create Company godoc
@@ -64,7 +63,6 @@ func CreateCompany(c *gin.Context) {
 		IndustryID: industry.ID,
 		Industry:   *industry,
 		Domain:     request.Domain,
-		Budget:     request.Budget,
 	}
 
 	if err := company.CreateCompany(); err != nil {

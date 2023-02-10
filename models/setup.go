@@ -57,6 +57,7 @@ func ConnectDatabase(dbConfig *DBConfig, clearDB bool) {
 	DB.AutoMigrate(&EmailTemplate{})
 	DB.AutoMigrate(&Email{})
 	DB.AutoMigrate(&Campaign{})
+	DB.AutoMigrate(&Order{})
 	DB.AutoMigrate(&Billing{})
 	DB.AutoMigrate(&BiddingStrategy{})
 }
