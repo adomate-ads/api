@@ -11,6 +11,7 @@ import (
 	"github.com/adomate-ads/api/v1/campaign"
 	"github.com/adomate-ads/api/v1/company"
 	"github.com/adomate-ads/api/v1/industry"
+	"github.com/adomate-ads/api/v1/order"
 	"github.com/adomate-ads/api/v1/user"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/contrib/sessions"
@@ -54,7 +55,8 @@ func main() {
 
 	//google_ads.Setup()
 	stripe.Setup()
-	stripe.GetSubscriptions()
+	stripe.SetupProducts()
+	//stripe.GetSubscriptions()
 
 	models.ConnectDatabase(models.Config(), false)
 	email.Setup()
@@ -83,6 +85,7 @@ func main() {
 	industry.Routes(v1)
 	billing.Routes(v1)
 	campaign.Routes(v1)
+	order.Routes(v1)
 
 	if err := r.Run(fmt.Sprintf(":%s", os.Getenv("PORT"))); err != nil {
 		log.Fatal("Unable to start server:", err)

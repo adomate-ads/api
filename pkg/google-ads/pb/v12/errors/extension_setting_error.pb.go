@@ -177,7 +177,7 @@ const (
 	ExtensionSettingErrorEnum_PROMOTION_INVALID_TIME ExtensionSettingErrorEnum_ExtensionSettingError = 60
 	// Cannot set both percent discount and money discount fields.
 	ExtensionSettingErrorEnum_PROMOTION_CANNOT_SET_PERCENT_DISCOUNT_AND_MONEY_DISCOUNT ExtensionSettingErrorEnum_ExtensionSettingError = 61
-	// Cannot set both promotion code and orders over amount fields.
+	// Cannot set both promotion code and order over amount fields.
 	ExtensionSettingErrorEnum_PROMOTION_CANNOT_SET_PROMOTION_CODE_AND_ORDERS_OVER_AMOUNT ExtensionSettingErrorEnum_ExtensionSettingError = 62
 	// This field has too many decimal places specified.
 	ExtensionSettingErrorEnum_TOO_MANY_DECIMAL_PLACES_SPECIFIED ExtensionSettingErrorEnum_ExtensionSettingError = 63

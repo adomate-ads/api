@@ -72,7 +72,7 @@ const (
 	// Cannot set both percent off and money amount off fields of promotion
 	// asset.
 	AssetErrorEnum_PROMOTION_CANNOT_SET_PERCENT_OFF_AND_MONEY_AMOUNT_OFF AssetErrorEnum_AssetError = 15
-	// Cannot set both promotion code and orders over amount fields of promotion
+	// Cannot set both promotion code and order over amount fields of promotion
 	// asset.
 	AssetErrorEnum_PROMOTION_CANNOT_SET_PROMOTION_CODE_AND_ORDERS_OVER_AMOUNT AssetErrorEnum_AssetError = 16
 	// The field has too many decimal places specified.

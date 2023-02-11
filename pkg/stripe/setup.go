@@ -15,6 +15,8 @@ func Setup() {
 }
 
 func SetupProducts() bool {
+	// TODO - Add product URLs once front end is ready
+
 	// Check if plans already have been created
 	params := &stripe.ProductSearchParams{}
 	params.Query = "name~'Base Plan' OR name~'Premium Plan' OR name~'Enterprise Plan'"

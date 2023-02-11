@@ -79,18 +79,17 @@ func GetIndustries(c *gin.Context) {
 }
 
 // GetIndustry godoc
-// @Summary Gets a industry 
+// @Summary Gets an industry by name
 // @Description Gets all information about specific industry
 // @Tags Industry
 // @Accept */*
 // @Produce json
-// @Param id path int true "Industry ID"
+// @Param industry path string true "Industry Name"
 // @Success 200 {object} []models.Industry
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 403 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
-// @Router /industry/{id} [get]
-// Im not sure if we should do this by name or ID
+// @Router /industry/{industry} [get]
 func GetIndustry(c *gin.Context) {
 	industry, err := models.GetIndustryByName(c.Param("industry"))
 	if err != nil {
@@ -120,6 +119,7 @@ func DeleteIndustry(c *gin.Context) {
 	industryID, err := strconv.ParseUint(id, 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 
 	industry, err := models.GetIndustry(uint(industryID))

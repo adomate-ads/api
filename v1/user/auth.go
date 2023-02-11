@@ -4,7 +4,10 @@ import (
 	"github.com/adomate-ads/api/models"
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
+	"github.com/stripe/stripe-go/v74"
+	"github.com/stripe/stripe-go/v74/customer"
 	"net/http"
+	"strconv"
 	"strings"
 )
 
@@ -69,7 +72,6 @@ type RegisterRequest struct {
 	CompanyName string `json:"company_name" binding:"required"`
 	Industry    string `json:"industry" binding:"required"`
 	Domain      string `json:"domain" binding:"required"`
-	Budget      uint   `json:"budget" binding:"required"`
 }
 
 // Register godoc
@@ -138,7 +140,6 @@ func Register(c *gin.Context) {
 		IndustryID: industry.ID,
 		Industry:   *industry,
 		Domain:     request.Domain,
-		Budget:     request.Budget,
 	}
 
 	if err := company.CreateCompany(); err != nil {
@@ -174,19 +175,24 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	//params := &stripe.CustomerParams{
-	//	Name:  stripe.String(request.CompanyName),
-	//	Email: stripe.String(request.Email),
-	//}
-	//params.AddMetadata("company_id", strconv.Itoa(int(newCompany.ID)))
-	//
-	////TODO - If we run into this error, that means that we created the user and company, but not the stripe customer, so we actually need to delete the user and company now and return an error.
-	//if _, err := customer.New(params); err != nil {
-	//params.DeleteUser();
-	//params.DeleteCompany();
-	//	c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-	//	return
-	//}
+	session := sessions.Default(c)
+	session.Set("user-id", u.ID)
+	if err := session.Save(); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save session"})
+		return
+	}
+
+	params := &stripe.CustomerParams{
+		Name:  stripe.String(request.CompanyName),
+		Email: stripe.String(request.Email),
+	}
+	params.AddMetadata("company_id", strconv.Itoa(int(newCompany.ID)))
+
+	//TODO - If we run into this error, that means that we created the user and company, but not the stripe customer... We need to think about how to best handle this as we don't want to lose the customer.
+	if _, err := customer.New(params); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
 
 	c.JSON(http.StatusCreated, gin.H{"message": "Successfully created user and company"})
 	// TODO - In the future, we should send an email to the user with a link to verify their email address

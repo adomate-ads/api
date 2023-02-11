@@ -109,7 +109,6 @@ func TestRegisterHandler(t *testing.T) {
 		CompanyName: "Raaj LLC.",
 		Industry:    "software",
 		Domain:      "raajpatel.dev",
-		Budget:      1000,
 	}
 	jsonValue, _ := json.Marshal(user)
 

@@ -202,7 +202,7 @@ const (
 	FeedItemValidationErrorEnum_PROMOTION_INVALID_TIME FeedItemValidationErrorEnum_FeedItemValidationError = 73
 	// Both the percent off and money amount off fields are set.
 	FeedItemValidationErrorEnum_PROMOTION_CANNOT_SET_PERCENT_OFF_AND_MONEY_AMOUNT_OFF FeedItemValidationErrorEnum_FeedItemValidationError = 74
-	// Both the promotion code and orders over amount fields are set.
+	// Both the promotion code and order over amount fields are set.
 	FeedItemValidationErrorEnum_PROMOTION_CANNOT_SET_PROMOTION_CODE_AND_ORDERS_OVER_AMOUNT FeedItemValidationErrorEnum_FeedItemValidationError = 75
 	// Too many decimal places are specified.
 	FeedItemValidationErrorEnum_TOO_MANY_DECIMAL_PLACES_SPECIFIED FeedItemValidationErrorEnum_FeedItemValidationError = 76
