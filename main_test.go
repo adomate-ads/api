@@ -25,6 +25,7 @@ import (
 
 var r *gin.Engine = SetUpRouter()
 var authCookie string = ""
+var otherAuthCookie string = ""
 
 func SetUpRouter() *gin.Engine {
 	err := godotenv.Load(".env")
@@ -79,6 +80,11 @@ func RequestTesting(method string, url string, body *bytes.Buffer, expectedRespo
 		if err != nil {
 			t.Fatal(err)
 		}
+
+		for _, cookie := range cookies {
+			req.AddCookie(cookie)
+		}
+
 		w := httptest.NewRecorder()
 		r.ServeHTTP(w, req)
 
@@ -98,6 +104,16 @@ func TestRegisterHandler(t *testing.T) {
 	}
 	if err := industry.CreateIndustry(); err != nil {
 		t.Fatal(err)
+	}
+	user2 := user.RegisterRequest{
+		FirstName:   "wyatt",
+		LastName:    "griffin",
+		Email:       "test@gmail.com",
+		Password:    "Password123",
+		CompanyName: "LLC.",
+		Industry:    "software",
+		Domain:      "raajpatel.dev",
+		Budget:      1000,
 	}
 
 	mockResponse := `{"message":"Successfully created user and company"}`
@@ -158,12 +174,14 @@ func TestRegisterHandler(t *testing.T) {
 	}
 
 	jsonValue, _ := json.Marshal(user)
+	jsonValue2, _ := json.Marshal(user2)
 	jsonValueIndustryDoesntexit, _ := json.Marshal(userIndustryExist)
 	jsonValueSameCompany, _ := json.Marshal(userWithDupilicateCompany)
 	jsonValueNoname, _ := json.Marshal(userWithNoName)
 	jsonValueBusiness, _ := json.Marshal(userWithNoBusiness)
 
 	RequestTesting("POST", "/v1/register", bytes.NewBuffer(jsonValue), mockResponse, http.StatusCreated, t)
+	RequestTesting("POST", "/v1/register", bytes.NewBuffer(jsonValue2), mockResponse, http.StatusCreated, t)
 	RequestTesting("POST", "/v1/register", bytes.NewBuffer(jsonValueNoname), emptyResponse, http.StatusBadRequest, t)
 	RequestTesting("POST", "/v1/register", bytes.NewBuffer(jsonValueBusiness), emptyResponse, http.StatusBadRequest, t)
 	RequestTesting("POST", "/v1/register", bytes.NewBuffer(jsonValue), duplicateUserResposne, http.StatusBadRequest, t)
@@ -178,6 +196,10 @@ func TestLoginHandler(t *testing.T) {
 	mockResponseEmptyName := `{"error":"Parameters can't be empty"}`
 	mockResponseNoEmail := `{"error":"An account by that email does not exist"}`
 	mockResponseWrongPassword := `{"error":"Incorrect password"}`
+	user22 := user.LoginRequest{
+		Email:    "test@gmail.com",
+		Password: "Password123",
+	}
 	userWrongPassword := user.LoginRequest{
 		Email:    "the@raajpatel.dev",
 		Password: "123",
@@ -190,12 +212,14 @@ func TestLoginHandler(t *testing.T) {
 		Email:    " ",
 		Password: "Password123",
 	}
+
 	user := user.LoginRequest{
 		Email:    "the@raajpatel.dev",
 		Password: "Password123",
 	}
 
 	jsonValue, _ := json.Marshal(user)
+	jsonValue22, _ := json.Marshal(user22)
 	jsonValue2, _ := json.Marshal(userEmptyName)
 	jsonValue3, _ := json.Marshal(userDoesntExist)
 	jsonValue4, _ := json.Marshal(userWrongPassword)
@@ -203,8 +227,11 @@ func TestLoginHandler(t *testing.T) {
 	w := httptest.NewRecorder()
 	r.ServeHTTP(w, req)
 
+	req2, _ := http.NewRequest("POST", "/v1/login", bytes.NewBuffer(jsonValue22))
+	w2 := httptest.NewRecorder()
+	r.ServeHTTP(w2, req2)
 	authCookie = (w.Header().Get("Set-Cookie"))[8:strings.Index(w.Header().Get("Set-Cookie"), ";")]
-
+	otherAuthCookie = (w2.Header().Get("Set-Cookie"))[8:strings.Index(w2.Header().Get("Set-Cookie"), ";")]
 	//responseData, _ := io.ReadAll(w.Body)
 	//assert.Equal(t, mockResponse, string(responseData))
 	//assert.Equal(t, http.StatusOK, w.Code)
@@ -233,6 +260,146 @@ func TestMeHandler(t *testing.T) {
 	RequestTesting("GET", "/v1/me", nil, mockResponse, http.StatusOK, t, cookie)
 }
 
-func TestIndustryHandler(t *testing.T) {
+func TestGetIndustry(t *testing.T) {
+	userAdmin, _ := models.GetUser(1)
+	userAdmin.Role = "super-admin"
+	userAdmin.UpdateUser()
+	userIndustry, _ := models.GetIndustry(1)
+	jsonValue, _ := json.Marshal(userIndustry)
+	mockResponse := fmt.Sprintf(`{"industries":[%s]}`, jsonValue)
+	cookie := &http.Cookie{
+		Name:   "adomate",
+		Value:  authCookie,
+		MaxAge: 300,
+	}
+	RequestTesting("GET", "/v1/industry", nil, mockResponse, http.StatusOK, t, cookie)
+}
+
+func TestCreateIndustryHandler(t *testing.T) {
+
+	userAdmin, _ := models.GetUser(1)
+	userAdmin.Role = "super-admin"
+	userAdmin.UpdateUser()
+
+	newIndustry := industry.CreateRequest{
+		Industry: "advertisment",
+	}
+	EmptyIndustry := industry.CreateRequest{
+		Industry: " ",
+	}
+	jsonValue, _ := json.Marshal(newIndustry)
+	jsonValue2, _ := json.Marshal(EmptyIndustry)
+	mockResponse := `{"message":"Successfully created industry"}`
+	mockResponseEmptyParam := `{"error":"Parameters can't be empty"}`
+	mockResponse2 := `{"error":"An industry by that name already exists"}`
+	cookie := &http.Cookie{
+		Name:   "adomate",
+		Value:  authCookie,
+		MaxAge: 300,
+	}
+
+	RequestTesting("POST", "/v1/industry", bytes.NewBuffer(jsonValue), mockResponse, http.StatusCreated, t, cookie)
+	RequestTesting("POST", "/v1/industry", bytes.NewBuffer(jsonValue2), mockResponseEmptyParam, http.StatusBadRequest, t, cookie)
+	RequestTesting("POST", "/v1/industry", bytes.NewBuffer(jsonValue), mockResponse2, http.StatusBadRequest, t, cookie)
 
 }
+
+func TestGetSpecificIndustryHandler(t *testing.T) {
+	userIndustry, _ := models.GetIndustry(1)
+	jsonValue, _ := json.Marshal(userIndustry)
+	mockResponse := fmt.Sprintf(`{"industry":%s}`, jsonValue)
+	cookie := &http.Cookie{
+		Name:   "adomate",
+		Value:  authCookie,
+		MaxAge: 300,
+	}
+
+	RequestTesting("GET", "/v1/industry/software", nil, mockResponse, http.StatusOK, t, cookie)
+
+}
+
+func TestDeleteIndustryHandler(t *testing.T) {}
+
+func TestCreateCompanyHandler(t *testing.T) {
+	mockResponse := `{"message":"Successfully registered company"}`
+	mockResponseSameEmail := `{"error":"An company by that email already exists"}`
+	mockResponseEmptyParam := `{"error":"Parameters can't be empty"}`
+	mockResponseDNE := `{"error":"An industry by that name does not exist"}`
+	companyDNE := company.CreateRequest{
+		Name:     "twitter",
+		Email:    "neil@othee.com",
+		Industry: "chemical Engineering",
+		Domain:   "domain",
+		Budget:   1000,
+	}
+	companyEmptyName := company.CreateRequest{
+		Name:     " ",
+		Email:    "neil@othee.com",
+		Industry: "software",
+		Domain:   "domain",
+		Budget:   1000,
+	}
+	company := company.CreateRequest{
+		Name:     "twitter",
+		Email:    "wy@othee.com",
+		Industry: "software",
+		Domain:   "domain",
+		Budget:   1000,
+	}
+
+	jsonValue, _ := json.Marshal(company)
+	jsonValue2, _ := json.Marshal(companyEmptyName)
+	jsonValue3, _ := json.Marshal(companyDNE)
+	cookie := &http.Cookie{
+		Name:   "adomate",
+		Value:  authCookie,
+		MaxAge: 300,
+	}
+
+	RequestTesting("POST", "/v1/company", bytes.NewBuffer(jsonValue), mockResponse, http.StatusCreated, t, cookie)
+	RequestTesting("POST", "/v1/company", bytes.NewBuffer(jsonValue2), mockResponseEmptyParam, http.StatusBadRequest, t, cookie)
+	RequestTesting("POST", "/v1/company", bytes.NewBuffer(jsonValue), mockResponseSameEmail, http.StatusBadRequest, t, cookie)
+	RequestTesting("POST", "/v1/company", bytes.NewBuffer(jsonValue3), mockResponseDNE, http.StatusBadRequest, t, cookie)
+}
+
+func TestGetCompaniesHandler(t *testing.T) {
+	//user, _ := models.GetUserByEmail("test@gmail.com")
+	//user.Role = "super-admin"
+	//user.UpdateUser()
+
+	company, _ := models.GetCompanies()
+	jsonValue, _ := json.Marshal(company)
+	cookie := &http.Cookie{
+		Name:   "adomate",
+		Value:  authCookie,
+		MaxAge: 300,
+	}
+	mockResponse := fmt.Sprintf(`%s`, jsonValue)
+	RequestTesting("GET", "/v1/company", nil, mockResponse, http.StatusOK, t, cookie)
+}
+
+func TestGetCompanyHandler(t *testing.T) {
+	company1, _ := models.GetCompany(1)
+	jsonValue, _ := json.Marshal(company1)
+	mockResponse := fmt.Sprintf(`%s`, jsonValue)
+	mockResponseNotAuthorizedUser := `{"error":"You can only get information about your company"}`
+	mockResponseCompanyDNE := `{"error":"Company doesn't exist"}`
+	cookie := &http.Cookie{
+		Name:   "adomate",
+		Value:  authCookie,
+		MaxAge: 300,
+	}
+	cookie2 := &http.Cookie{
+		Name:   "adomate",
+		Value:  otherAuthCookie,
+		MaxAge: 300,
+	}
+	RequestTesting("GET", "/v1/company/1", nil, mockResponse, http.StatusOK, t, cookie)
+	RequestTesting("GET", "/v1/company/1", nil, mockResponseNotAuthorizedUser, http.StatusForbidden, t, cookie2)
+	RequestTesting("GET", "/v1/company/33", nil, mockResponseCompanyDNE, http.StatusNotFound, t, cookie)
+
+}
+
+func Test
+
+//get billing and don't do campaign
