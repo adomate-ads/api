@@ -6,6 +6,7 @@ import (
 	"github.com/adomate-ads/api/middleware/auth"
 	"github.com/adomate-ads/api/models"
 	"github.com/adomate-ads/api/pkg/email"
+	google_ads "github.com/adomate-ads/api/pkg/google-ads"
 	"github.com/adomate-ads/api/pkg/stripe"
 	"github.com/adomate-ads/api/v1/billing"
 	"github.com/adomate-ads/api/v1/campaign"
@@ -53,7 +54,7 @@ func main() {
 		log.Fatalf("Error loading .env file.")
 	}
 
-	//google_ads.Setup()
+	google_ads.Setup()
 	stripe.Setup()
 	stripe.SetupProducts()
 	//stripe.GetSubscriptions()
