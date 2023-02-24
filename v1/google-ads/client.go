@@ -35,15 +35,12 @@ func GetClients(c *gin.Context) {
 
 	var clients []Client
 
-	errOccured := false
-
 	for {
 		row, err := resp.Next()
 		if errors.Is(err, iterator.Done) {
 			break
 		} else if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			errOccured = true
 			return
 		}
 
@@ -62,10 +59,6 @@ func GetClients(c *gin.Context) {
 		clients = append(clients, client)
 	}
 
-	if errOccured {
-		return
-	}
-
 	c.JSON(http.StatusOK, gin.H{"clients": clients})
 }
 
@@ -82,6 +75,10 @@ func GetClients(c *gin.Context) {
 // @Router /gads/client/{clientId} [get]
 func GetClient(c *gin.Context) {
 	clientId := c.Param("clientId")
+	if clientId == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"err": "Client ID is required."})
+		return
+	}
 
 	//TODO - Only allow the user to get the client attached to their company
 

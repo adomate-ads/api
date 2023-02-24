@@ -68,6 +68,37 @@ definitions:
     required:
     - message
     type: object
+  gads.AdGroup:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      resource_name:
+        type: string
+    type: object
+  gads.AdGroupAd:
+    properties:
+      final_url:
+        items:
+          type: string
+        type: array
+      id:
+        type: integer
+      name:
+        type: string
+      resource_name:
+        type: string
+    type: object
+  gads.Campaign:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      resource_name:
+        type: string
+    type: object
   gads.Client:
     properties:
       current_code:
@@ -77,6 +108,13 @@ definitions:
       id:
         type: integer
       timezone:
+        type: string
+    type: object
+  gads.Keyword:
+    properties:
+      id:
+        type: integer
+      keyword:
         type: string
     type: object
   industry.CreateRequest:
@@ -923,6 +961,198 @@ paths:
       summary: Delete Company
       tags:
       - Company
+  /gads/adgroup/{clientId}/{campaignId}:
+    get:
+      consumes:
+      - '*/*'
+      description: Gets all Google Ads Groups for specific Campaign
+      parameters:
+      - description: Client ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Campaign ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/gads.AdGroup'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Get Google Ads AdGroup
+      tags:
+      - Google Ads
+  /gads/adgroup/{clientId}/{campaignId}/{adgroupId}:
+    get:
+      consumes:
+      - '*/*'
+      description: Gets all information about specific Google AdGroup
+      parameters:
+      - description: Client ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Campaign ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: AdGroup ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/gads.AdGroup'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Get Google Ads AdGroup
+      tags:
+      - Google Ads
+  /gads/adgroupad/{clientId}/{campaignId}/{adgroupId}:
+    get:
+      consumes:
+      - '*/*'
+      description: Gets all information about specific Google AdGroupAd
+      parameters:
+      - description: Client ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Campaign ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: AdGroup ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/gads.AdGroupAd'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Get Google Ads AdGroupAd
+      tags:
+      - Google Ads
+  /gads/campaign/{clientId}/{campaignId}:
+    get:
+      consumes:
+      - '*/*'
+      description: Gets all information about specific Google Ads Campaign
+      parameters:
+      - description: Client ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Campaign ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/gads.Campaign'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Get Google Ads Campaign
+      tags:
+      - Google Ads
+  /gads/campaigns/:
+    get:
+      consumes:
+      - '*/*'
+      description: Gets all Google Ads Campaigns
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/gads.Campaign'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Get Google Ads Campaigns
+      tags:
+      - Google Ads
+  /gads/campaigns/{clientId}:
+    get:
+      consumes:
+      - '*/*'
+      description: Gets all Google Ads Campaigns for specific Client
+      parameters:
+      - description: Client ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/gads.Campaign'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Get Google Ads Campaigns
+      tags:
+      - Google Ads
   /gads/client:
     get:
       consumes:
@@ -944,7 +1174,7 @@ paths:
       summary: Get Google Ads Clients
       tags:
       - Google Ads
-  /gads/client/{id}:
+  /gads/client/{clientId}:
     get:
       consumes:
       - '*/*'
@@ -971,6 +1201,45 @@ paths:
           schema:
             $ref: '#/definitions/dto.ErrorResponse'
       summary: Get Google Ads Client
+      tags:
+      - Google Ads
+  /gads/keyword/{clientId}/{campaignId}/{adgroupId}:
+    get:
+      consumes:
+      - '*/*'
+      description: Gets all information about specific Google Keyword
+      parameters:
+      - description: Client ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Campaign ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: AdGroup ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/gads.Keyword'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Get Google Ads Keyword
       tags:
       - Google Ads
   /industry:

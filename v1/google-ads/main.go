@@ -10,13 +10,14 @@ func Routes(r *gin.RouterGroup) {
 	googleAds.GET("/client", auth.NotGuest, auth.InGroup("super-admin"), GetClients)
 	googleAds.GET("/client/:clientId", auth.NotGuest, GetClient)
 
-	googleAds.GET("/campaigns/:clientId", auth.NotGuest, auth.InGroup("super-admin"), GetCampaigns)
+	googleAds.GET("/campaigns/", auth.NotGuest, auth.InGroup("super-admin"), GetCampaigns)
+	googleAds.GET("/campaigns/:clientId", auth.NotGuest, GetCampaignsInClient)
 	googleAds.GET("/campaign/:clientId/:campaignId", auth.NotGuest, GetCampaign)
-	//
-	//googleAds.GET("/adgroup", auth.NotGuest, auth.InGroup("super-admin"), GetAdGroups)
-	//googleAds.GET("/adgroup/:id", auth.NotGuest, GetAdGroup)
-	//
-	//googleAds.GET("/ad", auth.NotGuest, auth.InGroup("super-admin"), GetAds)
-	//googleAds.GET("/ad/:id", auth.NotGuest, GetAd)
-	//
+
+	googleAds.GET("/adgroup/:clientId/:campaignId", auth.NotGuest, auth.InGroup("super-admin"), GetAdGroupsInCampaign)
+	googleAds.GET("/adgroup/:clientId/:campaignId/:adgroupId", auth.NotGuest, GetAdGroup)
+
+	googleAds.GET("/adgroupad/:clientId/:campaignId/:adgroupId", auth.NotGuest, GetAdGroupAds)
+
+	googleAds.GET("/keyword/:clientId/:campaignId/:adgroupId", auth.NotGuest, GetKeywords)
 }
