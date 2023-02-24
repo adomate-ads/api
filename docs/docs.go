@@ -812,6 +812,82 @@ const docTemplate = `{
                 }
             }
         },
+        "/gads/client": {
+            "get": {
+                "description": "Gets all Google Ads Clients",
+                "consumes": [
+                    "*/*"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Google Ads"
+                ],
+                "summary": "Get Google Ads Clients",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/gads.Client"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/gads/client/{id}": {
+            "get": {
+                "description": "Gets all information about specific Google Ads Client",
+                "consumes": [
+                    "*/*"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Google Ads"
+                ],
+                "summary": "Get Google Ads Client",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Client ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/gads.Client"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/industry": {
             "get": {
                 "description": "Get a slice of all industries",
@@ -1901,6 +1977,23 @@ const docTemplate = `{
             ],
             "properties": {
                 "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "gads.Client": {
+            "type": "object",
+            "properties": {
+                "current_code": {
+                    "type": "string"
+                },
+                "descriptive_name": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "timezone": {
                     "type": "string"
                 }
             }

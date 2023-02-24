@@ -19,8 +19,12 @@ import (
 
 const GoogleAdsEndpoint string = "googleads.googleapis.com:443"
 
+var GADSClient *googleAdsApi.Client
+var SuperUser string
+var Ctx context.Context
+
 func Setup() {
-	ctx := context.Background()
+	Ctx = context.Background()
 	oAuthToken := oauth2.Token{
 		RefreshToken: os.Getenv("GADS_REFRESH_TOKEN"),
 		TokenType:    "Bearer",
@@ -35,42 +39,31 @@ func Setup() {
 	}
 
 	opts := []option.ClientOption{
-		option.WithTokenSource(oAuthConf.TokenSource(ctx, &oAuthToken)),
+		option.WithTokenSource(oAuthConf.TokenSource(Ctx, &oAuthToken)),
 		option.WithEndpoint(GoogleAdsEndpoint),
 	}
 
-	ctx = metadata.AppendToOutgoingContext(ctx, "developer-token", os.Getenv("GADS_DEVELOPER_TOKEN"))
-	ctx = metadata.AppendToOutgoingContext(ctx, "login-customer-id", os.Getenv("GADS_LOGIN_ID")) // Manager Account ID
+	Ctx = metadata.AppendToOutgoingContext(Ctx, "developer-token", os.Getenv("GADS_DEVELOPER_TOKEN"))
+	Ctx = metadata.AppendToOutgoingContext(Ctx, "login-customer-id", os.Getenv("GADS_LOGIN_ID")) // Manager Account ID
 
-	getAndListCampaigns(ctx, "1644244393", opts...)
-	getAndListClients(ctx, "1644244393", opts...)
-	getAndListCustomers(ctx, opts...)
-	getAndListAdGroups(ctx, "1644244393", opts...)
-	getAndListAdGroupAds(ctx, "1644244393", opts...)
-	getAndListKeywords(ctx, "1644244393", "1644244393", opts...)
-}
-
-func getAndListCustomers(ctx context.Context, opts ...option.ClientOption) {
-	customerServiceClient, err := googleAdsApi.NewCustomerClient(ctx, opts...)
+	var err error
+	GADSClient, err = googleAdsApi.NewClient(Ctx, opts...)
 	if err != nil {
-		log.Fatalf("Error occured when creating NewCustomerClient:%v\n", err)
+		log.Fatalf("Error occured when creating googleAdsClient:%v\n", err)
 	}
 
-	listAccessibleAccountsRequest := services.ListAccessibleCustomersRequest{}
+	SuperUser = os.Getenv("GADS_LOGIN_ID")
 
-	accessibleCustomersResponse, err := customerServiceClient.ListAccessibleCustomers(ctx, &listAccessibleAccountsRequest)
-	if err != nil {
-		log.Fatalf("Error occured when calling ListAccessibleCustomers:%v\n", err)
-	}
-
-	log.Printf("Accessible Accounts from Manager ID: %s", os.Getenv("GADS_LOGIN_ID"))
-	for _, accountResource := range accessibleCustomersResponse.ResourceNames {
-		log.Printf("Account Resource: %s\n", accountResource)
-	}
+	//getAndListCampaigns(ctx, "1644244393", opts...)
+	//getAndListClients(ctx, "1644244393", opts...)
+	//getAndListAdGroups(ctx, "1787212549", opts...)
+	//getAndListAdGroupAds(ctx, "1787212549", opts...)
+	//getAndListKeywords(ctx, "1787212549", "149197460347", opts...)
+	//GetClientInfo(ctx, "1787212549", opts...)
 }
 
 func getAndListClients(ctx context.Context, customerId string, opts ...option.ClientOption) {
-	fmt.Println("Getting and listing clients for customer ID " + customerId)
+	fmt.Println("\n\nGetting and listing clients for customer ID " + customerId)
 	googleAdsClient, err := googleAdsApi.NewClient(ctx, opts...)
 	if err != nil {
 		log.Fatalf("Error occured when creating googleAdsClient:%v\n", err)
@@ -101,7 +94,7 @@ func getAndListClients(ctx context.Context, customerId string, opts ...option.Cl
 }
 
 func getAndListCampaigns(ctx context.Context, customerId string, opts ...option.ClientOption) {
-	fmt.Println("Getting and listing campaigns for customer ID " + customerId)
+	fmt.Println("\n\nGetting and listing campaigns for customer ID " + customerId)
 	googleAdsClient, err := googleAdsApi.NewClient(ctx, opts...)
 	if err != nil {
 		log.Fatalf("Error occured when creating googleAdsClient:%v\n", err)
@@ -130,7 +123,7 @@ func getAndListCampaigns(ctx context.Context, customerId string, opts ...option.
 }
 
 func getAndListAdGroups(ctx context.Context, customerId string, opts ...option.ClientOption) {
-	fmt.Println("Getting and listing ad groups for customer ID " + customerId)
+	fmt.Println("\n\nGetting and listing ad groups for customer ID " + customerId)
 	googleAdsClient, err := googleAdsApi.NewClient(ctx, opts...)
 	if err != nil {
 		log.Fatalf("Error occured when creating googleAdsClient:%v\n", err)
@@ -159,7 +152,7 @@ func getAndListAdGroups(ctx context.Context, customerId string, opts ...option.C
 }
 
 func getAndListAdGroupAds(ctx context.Context, customerId string, opts ...option.ClientOption) {
-	fmt.Println("Getting and listing ad group ads for customer ID " + customerId)
+	fmt.Println("\n\nGetting and listing ad group ads for customer ID " + customerId)
 	googleAdsClient, err := googleAdsApi.NewClient(ctx, opts...)
 	if err != nil {
 		log.Fatalf("Error occured when creating googleAdsClient:%v\n", err)
@@ -188,7 +181,7 @@ func getAndListAdGroupAds(ctx context.Context, customerId string, opts ...option
 }
 
 func getAndListKeywords(ctx context.Context, customerId string, adGroupId string, opts ...option.ClientOption) {
-	fmt.Println("Getting and listing keywords for adGroup ID " + adGroupId + "customer ID " + customerId)
+	fmt.Println("\n\nGetting and listing keywords for adGroup ID " + adGroupId + " customer ID " + customerId)
 	googleAdsClient, err := googleAdsApi.NewClient(ctx, opts...)
 	if err != nil {
 		log.Fatalf("Error occured when creating googleAdsClient:%v\n", err)
@@ -215,3 +208,40 @@ func getAndListKeywords(ctx context.Context, customerId string, adGroupId string
 	}
 
 }
+
+// GetAllCustomers - No params
+// GetCustomer - Customer ID
+func GetClientInfo(ctx context.Context, customerId string, opts ...option.ClientOption) {
+	fmt.Println("\n\nGetting client info for customer ID " + customerId)
+	googleAdsClient, err := googleAdsApi.NewClient(ctx, opts...)
+	if err != nil {
+		log.Fatalf("Error occured when creating googleAdsClient:%v\n", err)
+	}
+
+	request := services.SearchGoogleAdsRequest{
+		CustomerId: customerId,
+		Query:      "SELECT customer.id, customer.descriptive_name, customer.currency_code, customer.time_zone FROM customer LIMIT 1",
+	}
+
+	resp := googleAdsClient.Search(ctx, &request)
+
+	for {
+		row, err := resp.Next()
+		customer := row.GetCustomer()
+
+		if errors.Is(err, iterator.Done) {
+			break
+		} else if err != nil {
+			log.Fatalf("An error occured: %v", err)
+		}
+
+		log.Printf("Customer: %v", customer)
+	}
+}
+
+//GetAllCampaignsForCustomer - CustomerID
+//GetCampaign - Campaign ID
+//GetAllAdGroups - CustomerID, CampaignID
+//GetAdGroup - AdGroupID
+//GetAllAds - CustomerID, CampaignID, AdGroupID
+//GetAd - AdID
