@@ -57,8 +57,8 @@ func main() {
 
 	google_ads.Setup()
 	stripe.Setup()
-	//stripe.SetupProducts()
-	//stripe.GetSubscriptions()
+  stripe.SetupProducts()
+  //stripe.GetSubscriptions()
 
 	models.ConnectDatabase(models.Config(), false)
 	email.Setup()
