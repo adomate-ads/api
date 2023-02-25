@@ -41,6 +41,11 @@ docker run -d --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-management
 3. Rename .env.example and edit filling in the values as appropriate
 4. Run `go run main.go` to bootstrap the database and start the webserver
 
+Alternatively you can run the API using docker:
+```bash
+docker build -t adomate-api .
+docker run -d --name adomate-api -p 3000:3000 adomate-api
+```
 
 ### FAQ
 

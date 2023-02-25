@@ -6,10 +6,12 @@ import (
 	"github.com/adomate-ads/api/middleware/auth"
 	"github.com/adomate-ads/api/models"
 	"github.com/adomate-ads/api/pkg/email"
+	google_ads "github.com/adomate-ads/api/pkg/google-ads"
 	"github.com/adomate-ads/api/pkg/stripe"
 	"github.com/adomate-ads/api/v1/billing"
 	"github.com/adomate-ads/api/v1/campaign"
 	"github.com/adomate-ads/api/v1/company"
+	gads "github.com/adomate-ads/api/v1/google-ads"
 	"github.com/adomate-ads/api/v1/industry"
 	"github.com/adomate-ads/api/v1/order"
 	"github.com/adomate-ads/api/v1/user"
@@ -53,10 +55,10 @@ func main() {
 		log.Fatalf("Error loading .env file.")
 	}
 
-	//google_ads.Setup()
+	google_ads.Setup()
 	stripe.Setup()
-	stripe.SetupProducts()
-	//stripe.GetSubscriptions()
+  stripe.SetupProducts()
+  //stripe.GetSubscriptions()
 
 	models.ConnectDatabase(models.Config(), false)
 	email.Setup()
@@ -86,6 +88,7 @@ func main() {
 	billing.Routes(v1)
 	campaign.Routes(v1)
 	order.Routes(v1)
+	gads.Routes(v1)
 
 	if err := r.Run(fmt.Sprintf(":%s", os.Getenv("PORT"))); err != nil {
 		log.Fatal("Unable to start server:", err)
