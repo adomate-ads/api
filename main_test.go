@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/adomate-ads/api/middleware/auth"
 	"github.com/adomate-ads/api/models"
+	"github.com/adomate-ads/api/pkg/email"
 	"github.com/adomate-ads/api/v1/billing"
 	"github.com/adomate-ads/api/v1/campaign"
 	"github.com/adomate-ads/api/v1/company"
@@ -21,6 +22,7 @@ import (
 	"net/http/httptest"
 	"strings"
 	"testing"
+	"time"
 )
 
 var r *gin.Engine = SetUpRouter()
@@ -33,6 +35,7 @@ func SetUpRouter() *gin.Engine {
 		log.Fatalf("Error loading .env file.")
 	}
 
+	email.Setup()
 	models.ConnectDatabase(models.Config(), true)
 
 	gin.SetMode(gin.ReleaseMode)
@@ -400,6 +403,140 @@ func TestGetCompanyHandler(t *testing.T) {
 
 }
 
-func Test
+func TestCreateBilling(t *testing.T) {
 
+	company1, _ := models.GetCompany(1)
+	cookie := &http.Cookie{
+		Name:   "adomate",
+		Value:  authCookie,
+		MaxAge: 300,
+	}
+
+	now := time.Now()
+	later := now.Add(time.Hour)
+	billRequest := billing.CreateRequest{
+		Company:  company1.Name,
+		Amount:   34.12,
+		Status:   "unpaid",
+		Comments: "something about something",
+		IssuedAt: time.Now(),
+		DueAt:    later,
+	}
+	billRequest2 := billing.CreateRequest{
+		Company:  company1.Name + "nonSense",
+		Amount:   34.12,
+		Status:   "unpaid",
+		Comments: "something about something",
+		IssuedAt: time.Now(),
+		DueAt:    later,
+	}
+	billRequest3 := billing.CreateRequest{
+		Company:  company1.Name,
+		Amount:   34.12,
+		Status:   "not valid status",
+		Comments: "something about something",
+		IssuedAt: time.Now(),
+		DueAt:    later,
+	}
+	billRequest4 := billing.CreateRequest{
+		Company:  company1.Name,
+		Amount:   34.12,
+		Status:   " ",
+		Comments: "something about something",
+		IssuedAt: time.Now(),
+		DueAt:    later,
+	}
+	jsonValue, _ := json.Marshal(billRequest)
+	jsonValue2, _ := json.Marshal(billRequest2)
+	jsonValue3, _ := json.Marshal(billRequest3)
+	jsonValue4, _ := json.Marshal(billRequest4)
+
+	mockResponse := `{"message":"Successfully created bill"}`
+	mockCompNoExist := `{"error":"That company does not exist"}`
+	mockResponseBadInput := `{"error":"Invalid Status input"}`
+	mockResponseEmpty := `{"error":"Parameters can't be empty"}`
+	RequestTesting("POST", "/v1/billing", bytes.NewBuffer(jsonValue), mockResponse, http.StatusCreated, t, cookie)
+	RequestTesting("POST", "/v1/billing", bytes.NewBuffer(jsonValue2), mockCompNoExist, http.StatusBadRequest, t, cookie)
+	RequestTesting("POST", "/v1/billing", bytes.NewBuffer(jsonValue3), mockResponseBadInput, http.StatusBadRequest, t, cookie)
+	RequestTesting("POST", "/v1/billing", bytes.NewBuffer(jsonValue4), mockResponseEmpty, http.StatusBadRequest, t, cookie)
+
+}
+
+func TestGetBilling(t *testing.T) {
+	//industry := models.Industry{
+	//	Industry: "software",
+	//}
+	//newC := models.Company{
+	//	ID:         2,
+	//	Name:       "wyattomate",
+	//	Email:      "theman#gmail.com",
+	//	IndustryID: 1,
+	//	Industry:   industry,
+	//	Domain:     "fourlokodev.com",
+	//	Budget:     10000,
+	//	AdsBalance: 342,
+	//	CreatedAt:  time.Now(),
+	//	UpdatedAt:  time.Now(),
+	//}
+	//newC.CreateCompany()
+	cookie := &http.Cookie{
+		Name:   "adomate",
+		Value:  authCookie,
+		MaxAge: 300,
+	}
+	cookie2 := &http.Cookie{
+		Name:   "adomate",
+		Value:  otherAuthCookie,
+		MaxAge: 300,
+	}
+	company1, _ := models.GetCompany(1)
+
+	billing, _ := models.GetBilling(uint(company1.ID))
+	jsonValue, _ := json.Marshal(billing)
+	mockResponse := fmt.Sprintf(`%s`, jsonValue)
+	mockResponse2 := `{"error":"You can only get bills from your company"}`
+	RequestTesting("GET", "/v1/billing/1", nil, mockResponse, http.StatusOK, t, cookie)
+	RequestTesting("GET", "/v1/billing/1", nil, mockResponse2, http.StatusForbidden, t, cookie2)
+}
+
+//skip testupdate
+
+//func TestUpdateBilling(t *testing.T) {
+//	cookie := &http.Cookie{
+//		Name:   "adomate",
+//		Value:  authCookie,
+//		MaxAge: 300,
+//	}
+//	company, _ := models.GetCompany(1)
+//	//billings, _ := models.GetBillings()
+//	//var bill Billing
+//	//json.Unmarshal(billings[0], &bill)
+//	//json.Unmarshal([]byte(billings[0]), &bill)
+//	updateRequest := billing.UpdateRequest{
+//		Company: company.Name,
+//		Status:  "paid",
+//		//DueAt:    billings[0].DueAt,
+//		//IssuedAt: billings[0].IssuedAt,
+//	}
+//
+//	//vals, _ := json.Marshal(billings[0])
+//	jsonValue, _ := json.Marshal(updateRequest)
+//	mockResponse := fmt.Sprintf(`%s`, jsonValue)
+//
+//	RequestTesting("PATCH", "/v1/billing/1", bytes.NewBuffer(jsonValue), mockResponse, http.StatusAccepted, t, cookie)
+//
+//}
+
+func TestDeleteBilling(t *testing.T) {
+	cookie := &http.Cookie{
+		Name:   "adomate",
+		Value:  authCookie,
+		MaxAge: 300,
+	}
+	mockResponse := `{"message":"Bill deleted successfully"}`
+	RequestTesting("DELETE", "/v1/billing/1", nil, mockResponse, http.StatusOK, t, cookie)
+}
+
+//skipped update user and delete user
+//skipped most company and compaing routes
 //get billing and don't do campaign

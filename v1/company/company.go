@@ -71,7 +71,7 @@ func CreateCompany(c *gin.Context) {
 		return
 	}
 
-	email.SendEmail(company.Email, email.Templates["registration"].Subject, email.Templates["registration"].Body)
+	//email.SendEmail(company.Email, email.Templates["registration"].Subject, email.Templates["registration"].Body)
 
 	c.JSON(http.StatusCreated, gin.H{"message": "Successfully registered company"})
 }
