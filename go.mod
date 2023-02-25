@@ -9,7 +9,6 @@ require (
 	github.com/gin-gonic/gin v1.8.2
 	github.com/googleapis/gax-go/v2 v2.7.0
 	github.com/jinzhu/gorm v1.9.16
-	github.com/joeshaw/envdecode v0.0.0-20200121155833-099f1fc765bd
 	github.com/joho/godotenv v1.5.1
 	github.com/rabbitmq/amqp091-go v1.7.0
 	github.com/stretchr/testify v1.8.1
@@ -63,7 +62,7 @@ require (
 	github.com/rogpeppe/go-internal v1.9.0 // indirect
 	github.com/ugorji/go/codec v1.2.9 // indirect
 	go.opencensus.io v0.24.0 // indirect
-	golang.org/x/net v0.6.0 // indirect
+	golang.org/x/net v0.7.0 // indirect
 	golang.org/x/sys v0.5.0 // indirect
 	golang.org/x/text v0.7.0 // indirect
 	golang.org/x/tools v0.6.0 // indirect
