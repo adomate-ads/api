@@ -22,12 +22,12 @@ import (
 	"net/http/httptest"
 	"strings"
 	"testing"
+	"time"
 )
 
 var r *gin.Engine = SetUpRouter()
 var authCookie string = ""
 var otherAuthCookie string = ""
-
 
 func SetUpRouter() *gin.Engine {
 	err := godotenv.Load(".env")
@@ -87,7 +87,6 @@ func RequestTesting(method string, url string, body *bytes.Buffer, expectedRespo
 		for _, cookie := range cookies {
 			req.AddCookie(cookie)
 		}
-
 
 		w := httptest.NewRecorder()
 		r.ServeHTTP(w, req)
@@ -407,58 +406,6 @@ func TestGetCompanyHandler(t *testing.T) {
 func TestCreateBilling(t *testing.T) {
 
 	company1, _ := models.GetCompany(1)
-
-}
-
-func TestOnlineCheck(t *testing.T) {
-	RequestTesting("GET", "/v1/", nil, `{"message":"Adomate Ads API Online."}`, http.StatusOK, t)
-}
-
-func TestRegisterHandler(t *testing.T) {
-	industry := models.Industry{
-		Industry: "software",
-	}
-	if err := industry.CreateIndustry(); err != nil {
-		t.Fatal(err)
-	}
-
-	mockResponse := `{"message":"Successfully created user and company"}`
-	user := user.RegisterRequest{
-		FirstName:   "Raaj",
-		LastName:    "Patel",
-		Email:       "the@raajpatel.dev",
-		Password:    "Password123",
-		CompanyName: "Raaj LLC.",
-		Industry:    "software",
-		Domain:      "raajpatel.dev",
-	}
-	jsonValue, _ := json.Marshal(user)
-
-	RequestTesting("POST", "/v1/register", bytes.NewBuffer(jsonValue), mockResponse, http.StatusCreated, t)
-}
-
-func TestLoginHandler(t *testing.T) {
-	mockResponse := `{"message":"Successfully authenticated user"}`
-	user := user.LoginRequest{
-		Email:    "the@raajpatel.dev",
-		Password: "Password123",
-	}
-	jsonValue, _ := json.Marshal(user)
-	req, _ := http.NewRequest("POST", "/v1/login", bytes.NewBuffer(jsonValue))
-	w := httptest.NewRecorder()
-	r.ServeHTTP(w, req)
-
-	authCookie = (w.Header().Get("Set-Cookie"))[8:strings.Index(w.Header().Get("Set-Cookie"), ";")]
-
-	responseData, _ := io.ReadAll(w.Body)
-	assert.Equal(t, mockResponse, string(responseData))
-	assert.Equal(t, http.StatusOK, w.Code)
-}
-
-func TestMeHandler(t *testing.T) {
-	user, _ := models.GetUser(1)
-	userString, _ := json.Marshal(user)
-	mockResponse := fmt.Sprintf(`{"user":%s}`, userString)
 	cookie := &http.Cookie{
 		Name:   "adomate",
 		Value:  authCookie,
@@ -552,8 +499,6 @@ func TestGetBilling(t *testing.T) {
 	RequestTesting("GET", "/v1/billing/1", nil, mockResponse2, http.StatusForbidden, t, cookie2)
 }
 
-//skip testupdate
-
 //func TestUpdateBilling(t *testing.T) {
 //	cookie := &http.Cookie{
 //		Name:   "adomate",
@@ -588,11 +533,6 @@ func TestDeleteBilling(t *testing.T) {
 	}
 	mockResponse := `{"message":"Bill deleted successfully"}`
 	RequestTesting("DELETE", "/v1/billing/1", nil, mockResponse, http.StatusOK, t, cookie)
-
-	}
-	RequestTesting("GET", "/v1/me", nil, mockResponse, http.StatusOK, t, cookie)
 }
 
-//skipped update user and delete user
-//skipped most company and compaing routes
 //get billing and don't do campaign
