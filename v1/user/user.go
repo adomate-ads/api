@@ -23,8 +23,9 @@ type CreateRequest struct {
 // @Summary Create User
 // @Description Create a new user.
 // @Tags User
-// @Accept */*
+// @Accept json
 // @Produce json
+// @Param create body CreateRequest true "Create Request"
 // @Success 201 {object} []models.User
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 401 {object} dto.ErrorResponse
@@ -115,13 +116,13 @@ func GetUsers(c *gin.Context) {
 // @Tags User
 // @Accept */*
 // @Produce json
-// @Param id path string true "User ID"
+// @Param id path int true "User ID"
 // @Success 200 {object} []models.User
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 403 {object} dto.ErrorResponse
 // @Failure 404 {object} dto.ErrorResponse
-// @Router /user/company/:id [get]
+// @Router /user/company/{id} [get]
 func GetUsersByCompanyID(c *gin.Context) {
 	id := c.Param("id")
 	CompanyID, err := strconv.ParseUint(id, 10, 64)
@@ -155,13 +156,13 @@ func GetUsersByCompanyID(c *gin.Context) {
 // @Tags User
 // @Accept */*
 // @Produce json
-// @Param id path string true "User ID"
+// @Param id path int true "User ID"
 // @Success 200 {object} models.User
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 403 {object} dto.ErrorResponse
 // @Failure 404 {object} dto.ErrorResponse
-// @Router /user/:id [get]
+// @Router /user/{id} [get]
 func GetUser(c *gin.Context) {
 	id := c.Param("id")
 	userID, err := strconv.ParseUint(id, 10, 64)
@@ -193,14 +194,14 @@ func GetUser(c *gin.Context) {
 // @Tags User
 // @Accept */*
 // @Produce json
-// @Param id path string true "User ID"
+// @Param id path int true "User ID"
 // @Success 202 {object} models.User
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 403 {object} dto.ErrorResponse
 // @Failure 404 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
-// @Router /user/:id [patch]
+// @Router /user/{id} [patch]
 func UpdateUser(c *gin.Context) {
 
 }
@@ -211,14 +212,14 @@ func UpdateUser(c *gin.Context) {
 // @Tags User
 // @Accept */*
 // @Produce json
-// @Param id path string true "User ID"
+// @Param id path int true "User ID"
 // @Success 200 {object} dto.MessageResponse
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 403 {object} dto.ErrorResponse
 // @Failure 404 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
-// @Router /user/:id [delete]
+// @Router /user/{id} [delete]
 func DeleteUser(c *gin.Context) {
 	id := c.Param("id")
 	userID, err := strconv.ParseUint(id, 10, 64)

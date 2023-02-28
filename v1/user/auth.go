@@ -4,7 +4,10 @@ import (
 	"github.com/adomate-ads/api/models"
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
+	"github.com/stripe/stripe-go/v74"
+	"github.com/stripe/stripe-go/v74/customer"
 	"net/http"
+	"strconv"
 	"strings"
 )
 
@@ -17,14 +20,15 @@ type LoginRequest struct {
 // @Summary Login User
 // @Description Login using user credentials.
 // @Tags Auth
-// @Accept */*
+// @Accept json
 // @Produce json
+// @Param login body LoginRequest true "Login Request"
 // @Success 201 {object} dto.MessageResponse
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 403 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
-// @Router /user [get]
+// @Router /login [post]
 func Login(c *gin.Context) {
 	session := sessions.Default(c)
 	var request LoginRequest
@@ -60,7 +64,6 @@ func Login(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Successfully authenticated user"})
 }
 
-
 type RegisterRequest struct {
 	FirstName   string `json:"first_name" binding:"required"`
 	LastName    string `json:"last_name" binding:"required"`
@@ -69,21 +72,21 @@ type RegisterRequest struct {
 	CompanyName string `json:"company_name" binding:"required"`
 	Industry    string `json:"industry" binding:"required"`
 	Domain      string `json:"domain" binding:"required"`
-	Budget      uint   `json:"budget" binding:"required"`
 }
 
 // Register godoc
 // @Summary Register New User
 // @Description Registers a new user.
 // @Tags Auth
-// @Accept */*
+// @Accept json
+// @Param register body RegisterRequest true "Register Request"
 // @Produce json
 // @Success 201 {object} dto.MessageResponse
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 403 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
-// @Router /user [post]
+// @Router /register [post]
 func Register(c *gin.Context) {
 	var request RegisterRequest
 	if err := c.ShouldBindJSON(&request); err != nil {
@@ -137,7 +140,6 @@ func Register(c *gin.Context) {
 		IndustryID: industry.ID,
 		Industry:   *industry,
 		Domain:     request.Domain,
-		Budget:     request.Budget,
 	}
 
 	if err := company.CreateCompany(); err != nil {
@@ -163,13 +165,37 @@ func Register(c *gin.Context) {
 	}
 
 	if err := u.CreateUser(); err != nil {
+		err := newCompany.DeleteCompany()
+		if err != nil {
+			// TODO - We need to log this error in the future. Maybe a discord bot.
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	session := sessions.Default(c)
+	session.Set("user-id", u.ID)
+	if err := session.Save(); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save session"})
+		return
+	}
+
+	params := &stripe.CustomerParams{
+		Name:  stripe.String(request.CompanyName),
+		Email: stripe.String(request.Email),
+	}
+	params.AddMetadata("company_id", strconv.Itoa(int(newCompany.ID)))
+
+	//TODO - If we run into this error, that means that we created the user and company, but not the stripe customer... We need to think about how to best handle this as we don't want to lose the customer.
+	if _, err := customer.New(params); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
 	c.JSON(http.StatusCreated, gin.H{"message": "Successfully created user and company"})
 	// TODO - In the future, we should send an email to the user with a link to verify their email address
-	// TODO - In the future, we should send an email to the company admin notifying them of the new user
 	// TODO - In the future, we should possibly send a session token back to the user
 }
 
@@ -184,7 +210,7 @@ func Register(c *gin.Context) {
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 403 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
-// @Router /user [post]
+// @Router /logout [get]
 func Logout(c *gin.Context) {
 	session := sessions.Default(c)
 	user := session.Get("user-id")

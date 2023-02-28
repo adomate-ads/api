@@ -15,15 +15,15 @@ type CreateRequest struct {
 	Email    string `json:"email" binding:"required"`
 	Industry string `json:"industry" binding:"required"`
 	Domain   string `json:"domain" binding:"required"`
-	Budget   uint   `json:"budget" binding:"required"`
 }
 
 // Create Company godoc
 // @Summary Create Company
 // @Description creates a company that can start campaigns, etc
 // @Tags Company
-// @Accept */*
+// @Accept json
 // @Produce json
+// @Param create body CreateRequest true "Create Request"
 // @Success 200 {object} []models.Company
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 403 {object} dto.ErrorResponse
@@ -63,7 +63,6 @@ func CreateCompany(c *gin.Context) {
 		IndustryID: industry.ID,
 		Industry:   *industry,
 		Domain:     request.Domain,
-		Budget:     request.Budget,
 	}
 
 	if err := company.CreateCompany(); err != nil {
@@ -129,14 +128,14 @@ func GetCompany(c *gin.Context) {
 // @Tags Company
 // @Accept */*
 // @Produce json
-// @Param id path string true "Company ID"
+// @Param id path int true "Company ID"
 // @Success 200 {object} dto.MessageResponse
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 403 {object} dto.ErrorResponse
 // @Failure 404 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
-// @Router /company/:id [delete]
+// @Router /company/{id} [delete]
 func DeleteCompany(c *gin.Context) {
 	id := c.Param("id")
 	companyID, err := strconv.ParseUint(id, 10, 64)

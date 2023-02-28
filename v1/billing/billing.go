@@ -24,8 +24,9 @@ type CreateRequest struct {
 // @Summary Create Bill
 // @Description Create a new bill.
 // @Tags Billing
-// @Accept */*
+// @Accept json
 // @Produce json
+// @Param create body CreateRequest true "Create Request"
 // @Success 201 {object} dto.MessageResponse
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 401 {object} dto.ErrorResponse
@@ -71,6 +72,20 @@ func CreateBilling(c *gin.Context) {
 		return
 	}
 
+	//params := &stripe.CustomerSearchParams{}
+	//params.Query = *stripe.String(fmt.Sprintf("metadata['company_id']:'%s'", company.ID))
+	//// TODO - grab the customer ID from stripe
+	//customerID := "12345"
+	//iter := customer.Search(params)
+	//for iter.Next() {
+	//	result := iter.Current()
+	//
+	//}
+	//billParams := &stripe.InvoiceParams{
+	//	Customer:    stripe.String(customerID),
+	//	Description: "10/12-12/10 something like that..",
+	//}
+
 	email.SendEmail(company.Email, email.Templates["new-invoice"].Subject, email.Templates["new-invoice"].Body)
 
 	c.JSON(http.StatusCreated, gin.H{"message": "Successfully created bill"})
@@ -102,13 +117,13 @@ func GetBillings(c *gin.Context) {
 // @Tags Billing
 // @Accept */*
 // @Produce json
-// @Param id path string true "Billing ID"
+// @Param id path integer true "Billing ID"
 // @Success 200 {object} []models.Billing
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 403 {object} dto.ErrorResponse
 // @Failure 404 {object} dto.ErrorResponse
-// @Router /billing/company/:id [get]
+// @Router /billing/company/{id} [get]
 func GetBillingsForCompany(c *gin.Context) {
 	id := c.Param("id")
 	companyID, err := strconv.ParseUint(id, 10, 64)
@@ -139,13 +154,13 @@ func GetBillingsForCompany(c *gin.Context) {
 // @Tags Billing
 // @Accept */*
 // @Produce json
-// @Param id path string true "Billing ID"
+// @Param id path integer true "Billing ID"
 // @Success 200 {object} models.Billing
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 403 {object} dto.ErrorResponse
 // @Failure 404 {object} dto.ErrorResponse
-// @Router /billing/:id [get]
+// @Router /billing/{id} [get]
 func GetBilling(c *gin.Context) {
 	id := c.Param("id")
 	billingID, err := strconv.ParseUint(id, 10, 64)
@@ -183,16 +198,17 @@ type UpdateRequest struct {
 // @Summary Update Bill
 // @Description Update information about a bill.
 // @Tags Billing
-// @Accept */*
+// @Accept  json
 // @Produce json
-// @Param id path string true "Billing ID"
+// @Param update body CreateRequest true "Create Request"
+// @Param id path integer true "Billing ID"
 // @Success 202 {object} models.Billing
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 403 {object} dto.ErrorResponse
 // @Failure 404 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
-// @Router /billing/:id [patch]
+// @Router /billing/{id} [patch]
 func UpdateBilling(c *gin.Context) {
 	id := c.Param("id")
 	billingID, err := strconv.ParseUint(id, 10, 64)
@@ -265,14 +281,14 @@ func UpdateBilling(c *gin.Context) {
 // @Tags Billing
 // @Accept */*
 // @Produce json
-// @Param id path string true "Billing ID"
+// @Param id path integer true "Billing ID"
 // @Success 200 {object} dto.MessageResponse
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 403 {object} dto.ErrorResponse
 // @Failure 404 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
-// @Router /billing/:id [delete]
+// @Router /billing/{id} [delete]
 func DeleteBilling(c *gin.Context) {
 	id := c.Param("id")
 	billingID, err := strconv.ParseUint(id, 10, 64)

@@ -26,8 +26,13 @@ To run locally, you'll need to set up both a MySQL instance and a RabbitMQ insta
 
 The easiest way to do this is to use Docker.  You can use the following commands to get both instances up and running:
 
+MySQL Instance:
 ```bash
 docker run -d --name mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=password mysql:8.0
+```
+
+RabbitMQ Instance:
+```bash
 docker run -d --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-management
 ```
 
@@ -36,6 +41,11 @@ docker run -d --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-management
 3. Rename .env.example and edit filling in the values as appropriate
 4. Run `go run main.go` to bootstrap the database and start the webserver
 
+Alternatively you can run the API using docker:
+```bash
+docker build -t adomate-api .
+docker run -d --name adomate-api -p 3000:3000 adomate-api
+```
 
 ### FAQ
 
