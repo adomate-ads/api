@@ -7,6 +7,7 @@ import (
 	"github.com/adomate-ads/api/middleware/auth"
 	"github.com/adomate-ads/api/models"
 	"github.com/adomate-ads/api/pkg/email"
+	"github.com/adomate-ads/api/pkg/stripe"
 	"github.com/adomate-ads/api/v1/billing"
 	"github.com/adomate-ads/api/v1/campaign"
 	"github.com/adomate-ads/api/v1/company"
@@ -36,6 +37,7 @@ func SetUpRouter() *gin.Engine {
 	}
 
 	email.Setup()
+	stripe.Setup()
 	models.ConnectDatabase(models.Config(), true)
 
 	gin.SetMode(gin.ReleaseMode)
@@ -116,7 +118,6 @@ func TestRegisterHandler(t *testing.T) {
 		CompanyName: "LLC.",
 		Industry:    "software",
 		Domain:      "raajpatel.dev",
-		Budget:      1000,
 	}
 
 	mockResponse := `{"message":"Successfully created user and company"}`
@@ -133,7 +134,6 @@ func TestRegisterHandler(t *testing.T) {
 		CompanyName: "Raaj LLC2.",
 		Industry:    "ads",
 		Domain:      "raajpatel.dev",
-		Budget:      1000,
 	}
 	userWithNoBusiness := user.RegisterRequest{
 		FirstName:   "Raaj",
@@ -143,7 +143,6 @@ func TestRegisterHandler(t *testing.T) {
 		CompanyName: " ",
 		Industry:    "software",
 		Domain:      "raajpatel.dev",
-		Budget:      1000,
 	}
 	userWithNoName := user.RegisterRequest{
 		FirstName:   " ",
@@ -153,7 +152,6 @@ func TestRegisterHandler(t *testing.T) {
 		CompanyName: "Raaj LLC.",
 		Industry:    "software",
 		Domain:      "raajpatel.dev",
-		Budget:      1000,
 	}
 	userWithDupilicateCompany := user.RegisterRequest{
 		FirstName:   "Raaj",
@@ -163,7 +161,6 @@ func TestRegisterHandler(t *testing.T) {
 		CompanyName: "Raaj LLC.",
 		Industry:    "software",
 		Domain:      "raajpatel.dev",
-		Budget:      1000,
 	}
 	user := user.RegisterRequest{
 		FirstName:   "Raaj",
@@ -173,7 +170,6 @@ func TestRegisterHandler(t *testing.T) {
 		CompanyName: "Raaj LLC.",
 		Industry:    "software",
 		Domain:      "raajpatel.dev",
-		Budget:      1000,
 	}
 
 	jsonValue, _ := json.Marshal(user)
@@ -182,8 +178,12 @@ func TestRegisterHandler(t *testing.T) {
 	jsonValueSameCompany, _ := json.Marshal(userWithDupilicateCompany)
 	jsonValueNoname, _ := json.Marshal(userWithNoName)
 	jsonValueBusiness, _ := json.Marshal(userWithNoBusiness)
-
-	RequestTesting("POST", "/v1/register", bytes.NewBuffer(jsonValue), mockResponse, http.StatusCreated, t)
+	cookie := &http.Cookie{
+		Name:   "adomate",
+		Value:  authCookie,
+		MaxAge: 300,
+	}
+	RequestTesting("POST", "/v1/register", bytes.NewBuffer(jsonValue), mockResponse, http.StatusCreated, t, cookie)
 	RequestTesting("POST", "/v1/register", bytes.NewBuffer(jsonValue2), mockResponse, http.StatusCreated, t)
 	RequestTesting("POST", "/v1/register", bytes.NewBuffer(jsonValueNoname), emptyResponse, http.StatusBadRequest, t)
 	RequestTesting("POST", "/v1/register", bytes.NewBuffer(jsonValueBusiness), emptyResponse, http.StatusBadRequest, t)
@@ -333,21 +333,18 @@ func TestCreateCompanyHandler(t *testing.T) {
 		Email:    "neil@othee.com",
 		Industry: "chemical Engineering",
 		Domain:   "domain",
-		Budget:   1000,
 	}
 	companyEmptyName := company.CreateRequest{
 		Name:     " ",
 		Email:    "neil@othee.com",
 		Industry: "software",
 		Domain:   "domain",
-		Budget:   1000,
 	}
 	company := company.CreateRequest{
 		Name:     "twitter",
 		Email:    "wy@othee.com",
 		Industry: "software",
 		Domain:   "domain",
-		Budget:   1000,
 	}
 
 	jsonValue, _ := json.Marshal(company)
@@ -499,6 +496,8 @@ func TestGetBilling(t *testing.T) {
 	RequestTesting("GET", "/v1/billing/1", nil, mockResponse2, http.StatusForbidden, t, cookie2)
 }
 
+//skip testupdate
+
 //func TestUpdateBilling(t *testing.T) {
 //	cookie := &http.Cookie{
 //		Name:   "adomate",
@@ -535,4 +534,6 @@ func TestDeleteBilling(t *testing.T) {
 	RequestTesting("DELETE", "/v1/billing/1", nil, mockResponse, http.StatusOK, t, cookie)
 }
 
+//skipped update user and delete user
+//skipped most company and compaing routes
 //get billing and don't do campaign
