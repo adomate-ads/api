@@ -40,7 +40,7 @@ func SetUpRouter() *gin.Engine {
 	stripe.Setup()
 	models.ConnectDatabase(models.Config(), true)
 
-	gin.SetMode(gin.ReleaseMode)
+	gin.SetMode(gin.DebugMode)
 	r := gin.Default()
 	r.Use(sessions.Sessions("adomate", sessions.NewCookieStore([]byte("testing"))))
 	r.Use(auth.Auth)
@@ -407,7 +407,6 @@ func TestGetCompanyHandler(t *testing.T) {
 }
 
 func TestCreateBilling(t *testing.T) {
-
 	company1, _ := models.GetCompany(1)
 	cookie := &http.Cookie{
 		Name:   "adomate",
@@ -466,22 +465,6 @@ func TestCreateBilling(t *testing.T) {
 }
 
 func TestGetBilling(t *testing.T) {
-	//industry := models.Industry{
-	//	Industry: "software",
-	//}
-	//newC := models.Company{
-	//	ID:         2,
-	//	Name:       "wyattomate",
-	//	Email:      "theman#gmail.com",
-	//	IndustryID: 1,
-	//	Industry:   industry,
-	//	Domain:     "fourlokodev.com",
-	//	Budget:     10000,
-	//	AdsBalance: 342,
-	//	CreatedAt:  time.Now(),
-	//	UpdatedAt:  time.Now(),
-	//}
-	//newC.CreateCompany()
 	cookie := &http.Cookie{
 		Name:   "adomate",
 		Value:  authCookie,
@@ -502,34 +485,6 @@ func TestGetBilling(t *testing.T) {
 	RequestTesting("GET", "/v1/billing/1", nil, mockResponse2, http.StatusForbidden, t, cookie2)
 }
 
-//skip testupdate
-
-//func TestUpdateBilling(t *testing.T) {
-//	cookie := &http.Cookie{
-//		Name:   "adomate",
-//		Value:  authCookie,
-//		MaxAge: 300,
-//	}
-//	company, _ := models.GetCompany(1)
-//	//billings, _ := models.GetBillings()
-//	//var bill Billing
-//	//json.Unmarshal(billings[0], &bill)
-//	//json.Unmarshal([]byte(billings[0]), &bill)
-//	updateRequest := billing.UpdateRequest{
-//		Company: company.Name,
-//		Status:  "paid",
-//		//DueAt:    billings[0].DueAt,
-//		//IssuedAt: billings[0].IssuedAt,
-//	}
-//
-//	//vals, _ := json.Marshal(billings[0])
-//	jsonValue, _ := json.Marshal(updateRequest)
-//	mockResponse := fmt.Sprintf(`%s`, jsonValue)
-//
-//	RequestTesting("PATCH", "/v1/billing/1", bytes.NewBuffer(jsonValue), mockResponse, http.StatusAccepted, t, cookie)
-//
-//}
-
 func TestDeleteBilling(t *testing.T) {
 	cookie := &http.Cookie{
 		Name:   "adomate",
@@ -539,7 +494,3 @@ func TestDeleteBilling(t *testing.T) {
 	mockResponse := `{"message":"Bill deleted successfully"}`
 	RequestTesting("DELETE", "/v1/billing/1", nil, mockResponse, http.StatusOK, t, cookie)
 }
-
-//skipped update user and delete user
-//skipped most company and compaing routes
-//get billing and don't do campaign
