@@ -17,7 +17,7 @@ type CreateRequest struct {
 	Domain   string `json:"domain" binding:"required"`
 }
 
-// Create Company godoc
+// CreateCompany godoc
 // @Summary Create Company
 // @Description creates a company that can start campaigns, etc
 // @Tags Company
@@ -95,6 +95,19 @@ func GetCompanies(c *gin.Context) {
 	c.JSON(http.StatusOK, companies)
 }
 
+// GetCompany godoc
+// @Summary Get Company
+// @Description Get a company.
+// @Tags Company
+// @Accept */*
+// @Produce json
+// @Param id path int true "Company ID"
+// @Success 200 {object} dto.MessageResponse
+// @Failure 400 {object} dto.ErrorResponse
+// @Failure 403 {object} dto.ErrorResponse
+// @Failure 404 {object} dto.ErrorResponse
+// @Failure 500 {object} dto.ErrorResponse
+// @Router /company/{id} [get]
 func GetCompany(c *gin.Context) {
 	id := c.Param("id")
 	companyID, err := strconv.ParseUint(id, 10, 64)
