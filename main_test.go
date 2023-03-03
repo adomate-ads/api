@@ -268,6 +268,7 @@ func TestGetIndustry(t *testing.T) {
 	userAdmin.Role = "super-admin"
 	if _, err := userAdmin.UpdateUser(); err != nil {
 		//error has occured?
+		fmt.Println(err.Error())
 	}
 	userIndustry, _ := models.GetIndustry(1)
 	jsonValue, _ := json.Marshal(userIndustry)
@@ -284,8 +285,11 @@ func TestCreateIndustryHandler(t *testing.T) {
 
 	userAdmin, _ := models.GetUser(1)
 	userAdmin.Role = "super-admin"
-	userAdmin.UpdateUser()
+	if _, err := userAdmin.UpdateUser(); err != nil {
+		//error has occured?
+		fmt.Println(err.Error())
 
+	}
 	newIndustry := industry.CreateRequest{
 		Industry: "advertisment",
 	}
@@ -376,14 +380,14 @@ func TestGetCompaniesHandler(t *testing.T) {
 		Value:  authCookie,
 		MaxAge: 300,
 	}
-	mockResponse := fmt.Sprintf(`%s`, jsonValue)
+	mockResponse := string(jsonValue)
 	RequestTesting("GET", "/v1/company", nil, mockResponse, http.StatusOK, t, cookie)
 }
 
 func TestGetCompanyHandler(t *testing.T) {
 	company1, _ := models.GetCompany(1)
 	jsonValue, _ := json.Marshal(company1)
-	mockResponse := fmt.Sprintf(`%s`, jsonValue)
+	mockResponse := string(jsonValue)
 	mockResponseNotAuthorizedUser := `{"error":"You can only get information about your company"}`
 	mockResponseCompanyDNE := `{"error":"Company doesn't exist"}`
 	cookie := &http.Cookie{
@@ -492,7 +496,7 @@ func TestGetBilling(t *testing.T) {
 
 	billing, _ := models.GetBilling(uint(company1.ID))
 	jsonValue, _ := json.Marshal(billing)
-	mockResponse := fmt.Sprintf(`%s`, jsonValue)
+	mockResponse := string(jsonValue)
 	mockResponse2 := `{"error":"You can only get bills from your company"}`
 	RequestTesting("GET", "/v1/billing/1", nil, mockResponse, http.StatusOK, t, cookie)
 	RequestTesting("GET", "/v1/billing/1", nil, mockResponse2, http.StatusForbidden, t, cookie2)
