@@ -266,7 +266,9 @@ func TestMeHandler(t *testing.T) {
 func TestGetIndustry(t *testing.T) {
 	userAdmin, _ := models.GetUser(1)
 	userAdmin.Role = "super-admin"
-	userAdmin.UpdateUser()
+	if _, err := userAdmin.UpdateUser(); err != nil {
+		//error has occured?
+	}
 	userIndustry, _ := models.GetIndustry(1)
 	jsonValue, _ := json.Marshal(userIndustry)
 	mockResponse := fmt.Sprintf(`{"industries":[%s]}`, jsonValue)
