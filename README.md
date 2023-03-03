@@ -73,6 +73,9 @@ Yes, we have Swagger (OpenAPI 2.0) documentation available. When you start the A
 ## Unit Testing
 Unit Testing is under development using the standard go testing pkg.  To run the tests, simply run `go test` in the root directory. I highly suggest setting gin to release and using verbose output for local testing, this can be done by setting the environment variable `GIN_MODE=release` and `go test -v` or as a single command `GIN_MODE=release go test -v`.
 
+## Linting
+Linting is done using golangci-lint.  To run the linter, simply run `golangci-lint run` in the root directory. To install golangci-lint, please visit the [golangci-lint](https://golangci-lint.run/usage/install/) website. All PRs must pass the linter before being merged.
+
 ## Email Templates
 
 The following are the coded email templates and available variables:
