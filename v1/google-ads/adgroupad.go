@@ -22,9 +22,9 @@ type AdGroupAd struct {
 // @Tags Google Ads
 // @Accept */*
 // @Produce json
-// @Param id path int true "Client ID"
-// @Param id path int true "Campaign ID"
-// @Param id path int true "AdGroup ID"
+// @Param clientId path int true "Client ID"
+// @Param campaignId path int true "Campaign ID"
+// @Param adgroupId path int true "AdGroup ID"
 // @Success 200 {object} AdGroupAd
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse

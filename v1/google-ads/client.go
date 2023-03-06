@@ -68,7 +68,7 @@ func GetClients(c *gin.Context) {
 // @Tags Google Ads
 // @Accept */*
 // @Produce json
-// @Param id path int true "Client ID"
+// @Param clientId path int true "Client ID"
 // @Success 200 {object} Client
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse

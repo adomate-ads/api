@@ -1005,12 +1005,12 @@ paths:
       parameters:
       - description: Client ID
         in: path
-        name: id
+        name: clientId
         required: true
         type: integer
       - description: Campaign ID
         in: path
-        name: id
+        name: campaignId
         required: true
         type: integer
       produces:
@@ -1037,17 +1037,17 @@ paths:
       parameters:
       - description: Client ID
         in: path
-        name: id
+        name: clientId
         required: true
         type: integer
       - description: Campaign ID
         in: path
-        name: id
+        name: campaignId
         required: true
         type: integer
       - description: AdGroup ID
         in: path
-        name: id
+        name: adgroupId
         required: true
         type: integer
       produces:
@@ -1076,17 +1076,17 @@ paths:
       parameters:
       - description: Client ID
         in: path
-        name: id
+        name: clientId
         required: true
         type: integer
       - description: Campaign ID
         in: path
-        name: id
+        name: campaignId
         required: true
         type: integer
       - description: AdGroup ID
         in: path
-        name: id
+        name: adgroupId
         required: true
         type: integer
       produces:
@@ -1115,12 +1115,12 @@ paths:
       parameters:
       - description: Client ID
         in: path
-        name: id
+        name: clientId
         required: true
         type: integer
       - description: Campaign ID
         in: path
-        name: id
+        name: campaignId
         required: true
         type: integer
       produces:
@@ -1170,7 +1170,7 @@ paths:
       parameters:
       - description: Client ID
         in: path
-        name: id
+        name: clientId
         required: true
         type: integer
       produces:
@@ -1218,7 +1218,7 @@ paths:
       parameters:
       - description: Client ID
         in: path
-        name: id
+        name: clientId
         required: true
         type: integer
       produces:
@@ -1247,17 +1247,17 @@ paths:
       parameters:
       - description: Client ID
         in: path
-        name: id
+        name: clientId
         required: true
         type: integer
       - description: Campaign ID
         in: path
-        name: id
+        name: campaignId
         required: true
         type: integer
       - description: AdGroup ID
         in: path
-        name: id
+        name: adgroupId
         required: true
         type: integer
       produces:
@@ -1383,7 +1383,7 @@ paths:
       summary: Delete Industry
       tags:
       - Industry
-  /industry/{industry}:
+  /industry/{industryName}:
     get:
       consumes:
       - '*/*'
@@ -1391,7 +1391,7 @@ paths:
       parameters:
       - description: Industry Name
         in: path
-        name: industry
+        name: industryName
         required: true
         type: string
       produces:

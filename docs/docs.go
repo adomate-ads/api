@@ -883,14 +883,14 @@ const docTemplate = `{
                     {
                         "type": "integer",
                         "description": "Client ID",
-                        "name": "id",
+                        "name": "clientId",
                         "in": "path",
                         "required": true
                     },
                     {
                         "type": "integer",
                         "description": "Campaign ID",
-                        "name": "id",
+                        "name": "campaignId",
                         "in": "path",
                         "required": true
                     }
@@ -931,21 +931,21 @@ const docTemplate = `{
                     {
                         "type": "integer",
                         "description": "Client ID",
-                        "name": "id",
+                        "name": "clientId",
                         "in": "path",
                         "required": true
                     },
                     {
                         "type": "integer",
                         "description": "Campaign ID",
-                        "name": "id",
+                        "name": "campaignId",
                         "in": "path",
                         "required": true
                     },
                     {
                         "type": "integer",
                         "description": "AdGroup ID",
-                        "name": "id",
+                        "name": "adgroupId",
                         "in": "path",
                         "required": true
                     }
@@ -989,21 +989,21 @@ const docTemplate = `{
                     {
                         "type": "integer",
                         "description": "Client ID",
-                        "name": "id",
+                        "name": "clientId",
                         "in": "path",
                         "required": true
                     },
                     {
                         "type": "integer",
                         "description": "Campaign ID",
-                        "name": "id",
+                        "name": "campaignId",
                         "in": "path",
                         "required": true
                     },
                     {
                         "type": "integer",
                         "description": "AdGroup ID",
-                        "name": "id",
+                        "name": "adgroupId",
                         "in": "path",
                         "required": true
                     }
@@ -1047,14 +1047,14 @@ const docTemplate = `{
                     {
                         "type": "integer",
                         "description": "Client ID",
-                        "name": "id",
+                        "name": "clientId",
                         "in": "path",
                         "required": true
                     },
                     {
                         "type": "integer",
                         "description": "Campaign ID",
-                        "name": "id",
+                        "name": "campaignId",
                         "in": "path",
                         "required": true
                     }
@@ -1130,7 +1130,7 @@ const docTemplate = `{
                     {
                         "type": "integer",
                         "description": "Client ID",
-                        "name": "id",
+                        "name": "clientId",
                         "in": "path",
                         "required": true
                     }
@@ -1203,7 +1203,7 @@ const docTemplate = `{
                     {
                         "type": "integer",
                         "description": "Client ID",
-                        "name": "id",
+                        "name": "clientId",
                         "in": "path",
                         "required": true
                     }
@@ -1247,21 +1247,21 @@ const docTemplate = `{
                     {
                         "type": "integer",
                         "description": "Client ID",
-                        "name": "id",
+                        "name": "clientId",
                         "in": "path",
                         "required": true
                     },
                     {
                         "type": "integer",
                         "description": "Campaign ID",
-                        "name": "id",
+                        "name": "campaignId",
                         "in": "path",
                         "required": true
                     },
                     {
                         "type": "integer",
                         "description": "AdGroup ID",
-                        "name": "id",
+                        "name": "adgroupId",
                         "in": "path",
                         "required": true
                     }
@@ -1447,7 +1447,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/industry/{industry}": {
+        "/industry/{industryName}": {
             "get": {
                 "description": "Gets all information about specific industry",
                 "consumes": [
@@ -1464,7 +1464,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "Industry Name",
-                        "name": "industry",
+                        "name": "industryName",
                         "in": "path",
                         "required": true
                     }

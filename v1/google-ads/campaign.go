@@ -96,7 +96,7 @@ func GetCampaigns(c *gin.Context) {
 // @Tags Google Ads
 // @Accept */*
 // @Produce json
-// @Param id path int true "Client ID"
+// @Param clientId path int true "Client ID"
 // @Success 200 {object} []Campaign
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /gads/campaigns/{clientId} [get]
@@ -146,8 +146,8 @@ func GetCampaignsInClient(c *gin.Context) {
 // @Tags Google Ads
 // @Accept */*
 // @Produce json
-// @Param id path int true "Client ID"
-// @Param id path int true "Campaign ID"
+// @Param clientId path int true "Client ID"
+// @Param campaignId path int true "Campaign ID"
 // @Success 200 {object} Campaign
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
