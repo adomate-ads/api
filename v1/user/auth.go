@@ -4,6 +4,7 @@ import (
 	"github.com/adomate-ads/api/models"
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"github.com/stripe/stripe-go/v74"
 	"github.com/stripe/stripe-go/v74/customer"
 	"net/http"
@@ -226,6 +227,115 @@ func Logout(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Successfully logged out"})
 }
 
+type ForgotPasswordRequest struct {
+	Email string `json:"email" binding:"required"`
+}
+
+// ForgotPassword godoc
+// @Summary Sends email to user with password reset link
+// @Description Generates Password Reset Token & Sends Email to User with Password Reset Link
+// @Tags Auth
+// @Accept json
+// @Param forgot body ForgotPasswordRequest true "Forgot Password Request"
+// @Produce json
+// @Success 200 {object} dto.MessageResponse
+// @Failure 400 {object} dto.ErrorResponse
+// @Router /forgot [post]
+func ForgotPassword(c *gin.Context) {
+	var request ForgotPasswordRequest
+	if err := c.ShouldBindJSON(&request); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	user, err := models.GetUserByEmail(request.Email)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "No user found with that email"})
+		return
+	}
+
+	pr := models.PasswordReset{
+		UserID: user.ID,
+		User:   *user,
+	}
+	pr.UUID = uuid.New().String()
+	if err := pr.CreatePasswordReset(); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	// TODO - Send email to user with password reset link
+	c.JSON(http.StatusOK, gin.H{"message": "Successfully sent password reset email"})
+}
+
+type ResetPasswordRequest struct {
+	Password string `json:"password" binding:"required"`
+}
+
+// ResetPassword godoc
+// @Summary Handle password reset
+// @Description Handles the password reset process from the link sent to the users email
+// @Tags Auth
+// @Accept json
+// @Param reset body ResetPasswordRequest true "Reset Password Request"
+// @Param resetToken path string true "Reset Token"
+// @Produce json
+// @Success 200 {object} dto.MessageResponse
+// @Failure 400 {object} dto.ErrorResponse
+// @Router /reset/{resetToken} [post]
+func ResetPassword(c *gin.Context) {
+	Token := c.Param("resetToken")
+	if Token == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Reset Token is required."})
+		return
+	}
+
+	pr, err := models.GetPasswordResetByUUID(Token)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Reset Token."})
+		return
+	}
+
+	if pr.Expired() {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Reset Token has expired, please request a new one."})
+		return
+	}
+
+	var request ResetPasswordRequest
+	if err := c.ShouldBindJSON(&request); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	user, err := models.GetUser(pr.UserID)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "User no longer exists."})
+		return
+	}
+
+	user.Password = request.Password
+	if err := user.HashPassword(); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "An Error occurred while trying to reset your password. Please try again later."})
+		return
+	}
+
+	_, err = user.UpdateUser()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Successfully reset password"})
+}
+
+// Me godoc
+// @Summary Gets self user struct
+// @Description Gets the DB Struct that belongs to the user
+// @Tags Auth
+// @Accept */*
+// @Produce json
+// @Success 200 {object} models.User
+// @Router /me [get]
 func Me(c *gin.Context) {
 	//session := sessions.Default(c)
 	//user := session.Get("user-id")
@@ -233,6 +343,14 @@ func Me(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"user": user})
 }
 
+// Status godoc
+// @Summary Determines if user is logged in
+// @Description Gets whether the user is logged in
+// @Tags Auth
+// @Accept */*
+// @Produce json
+// @Success 200 {object} dto.MessageResponse
+// @Router /status [get]
 func Status(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{"status": "You are logged in"})
+	c.JSON(http.StatusOK, gin.H{"message": "You are logged in"})
 }

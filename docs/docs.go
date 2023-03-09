@@ -866,6 +866,46 @@ const docTemplate = `{
                 }
             }
         },
+        "/forgot": {
+            "post": {
+                "description": "Generates Password Reset Token \u0026 Sends Email to User with Password Reset Link",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Sends email to user with password reset link",
+                "parameters": [
+                    {
+                        "description": "Forgot Password Request",
+                        "name": "forgot",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user.ForgotPasswordRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.MessageResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/gads/adgroup/{clientId}/{campaignId}": {
             "get": {
                 "description": "Gets all Google Ads Groups for specific Campaign",
@@ -1447,7 +1487,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/industry/{industryName}": {
+        "/industry/{industry}": {
             "get": {
                 "description": "Gets all information about specific industry",
                 "consumes": [
@@ -1464,7 +1504,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "Industry Name",
-                        "name": "industryName",
+                        "name": "industry",
                         "in": "path",
                         "required": true
                     }
@@ -1600,6 +1640,29 @@ const docTemplate = `{
                         "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/me": {
+            "get": {
+                "description": "Gets the DB Struct that belongs to the user",
+                "consumes": [
+                    "*/*"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Gets self user struct",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.User"
                         }
                     }
                 }
@@ -1937,6 +2000,76 @@ const docTemplate = `{
                         "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/reset/{resetToken}": {
+            "post": {
+                "description": "Handles the password reset process from the link sent to the users email",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Handle password reset",
+                "parameters": [
+                    {
+                        "description": "Reset Password Request",
+                        "name": "reset",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user.ResetPasswordRequest"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Reset Token",
+                        "name": "resetToken",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.MessageResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/status": {
+            "get": {
+                "description": "Gets whether the user is logged in",
+                "consumes": [
+                    "*/*"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Determines if user is logged in",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.MessageResponse"
                         }
                     }
                 }
@@ -2837,6 +2970,17 @@ const docTemplate = `{
                 }
             }
         },
+        "user.ForgotPasswordRequest": {
+            "type": "object",
+            "required": [
+                "email"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                }
+            }
+        },
         "user.LoginRequest": {
             "type": "object",
             "required": [
@@ -2882,6 +3026,17 @@ const docTemplate = `{
                 "last_name": {
                     "type": "string"
                 },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "user.ResetPasswordRequest": {
+            "type": "object",
+            "required": [
+                "password"
+            ],
+            "properties": {
                 "password": {
                     "type": "string"
                 }

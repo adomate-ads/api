@@ -98,3 +98,15 @@ func (u *User) DeleteUser() error {
 	}
 	return nil
 }
+
+func (u *User) GeneratePasswordResetToken() (string, error) {
+	token, err := bcrypt.GenerateFromPassword([]byte(u.Email), bcrypt.DefaultCost)
+	if err != nil {
+		return "", err
+	}
+	return string(token), nil
+}
+
+func (u *User) VerifyPasswordResetToken(token string) error {
+	return bcrypt.CompareHashAndPassword([]byte(token), []byte(u.Email))
+}
