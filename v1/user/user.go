@@ -107,6 +107,11 @@ func GetUsers(c *gin.Context) {
 		return
 	}
 
+	// Sanitize Response
+	for _, user := range users {
+		user.RemovePassword()
+	}
+
 	c.JSON(http.StatusOK, gin.H{"users": users})
 }
 
@@ -147,6 +152,11 @@ func GetUsersByCompanyID(c *gin.Context) {
 		return
 	}
 
+	// Sanitize Response
+	for _, user := range users {
+		user.RemovePassword()
+	}
+
 	c.JSON(http.StatusOK, gin.H{"users": users})
 }
 
@@ -184,6 +194,9 @@ func GetUser(c *gin.Context) {
 			return
 		}
 	}
+
+	// Sanitize Response
+	user.RemovePassword()
 
 	c.JSON(http.StatusOK, gin.H{"user": user})
 }
