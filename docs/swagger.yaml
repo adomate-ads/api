@@ -436,12 +436,9 @@ definitions:
     type: object
   user.ResetPasswordRequest:
     properties:
-      email:
-        type: string
       password:
         type: string
     required:
-    - email
     - password
     type: object
 host: localhost:3000
@@ -1017,7 +1014,7 @@ paths:
   /forgot:
     post:
       consumes:
-      - '*/*'
+      - application/json
       description: Generates Password Reset Token & Sends Email to User with Password
         Reset Link
       parameters:
@@ -1427,7 +1424,7 @@ paths:
       summary: Delete Industry
       tags:
       - Industry
-  /industry/{industryName}:
+  /industry/{industry}:
     get:
       consumes:
       - '*/*'
@@ -1435,7 +1432,7 @@ paths:
       parameters:
       - description: Industry Name
         in: path
-        name: industryName
+        name: industry
         required: true
         type: string
       produces:
@@ -1772,7 +1769,7 @@ paths:
   /reset/{resetToken}:
     post:
       consumes:
-      - '*/*'
+      - application/json
       description: Handles the password reset process from the link sent to the users
         email
       parameters:

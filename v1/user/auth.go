@@ -1,10 +1,10 @@
 package user
 
 import (
-	"fmt"
 	"github.com/adomate-ads/api/models"
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"github.com/stripe/stripe-go/v74"
 	"github.com/stripe/stripe-go/v74/customer"
 	"net/http"
@@ -254,19 +254,21 @@ func ForgotPassword(c *gin.Context) {
 		return
 	}
 
-	token, err := user.GeneratePasswordResetToken()
-	if err != nil {
+	pr := models.PasswordReset{
+		UserID: user.ID,
+		User:   *user,
+	}
+	pr.UUID = uuid.New().String()
+	if err := pr.CreatePasswordReset(); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	fmt.Println(token)
 	// TODO - Send email to user with password reset link
 	c.JSON(http.StatusOK, gin.H{"message": "Successfully sent password reset email"})
 }
 
 type ResetPasswordRequest struct {
-	Email    string `json:"email" binding:"required"`
 	Password string `json:"password" binding:"required"`
 }
 
@@ -288,20 +290,26 @@ func ResetPassword(c *gin.Context) {
 		return
 	}
 
+	pr, err := models.GetPasswordResetByUUID(Token)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Reset Token."})
+		return
+	}
+
+	if pr.Expired() {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Reset Token has expired, please request a new one."})
+		return
+	}
+
 	var request ResetPasswordRequest
 	if err := c.ShouldBindJSON(&request); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	user, err := models.GetUserByEmail(request.Email)
+	user, err := models.GetUser(pr.UserID)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "No user found with that email"})
-		return
-	}
-
-	if err := user.VerifyPasswordResetToken(Token); err != nil {
-		c.JSON(http.StatusForbidden, gin.H{"error": "An error occurred while trying to reset your password. Please try again later."})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "User no longer exists."})
 		return
 	}
 

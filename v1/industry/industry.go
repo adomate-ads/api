@@ -12,7 +12,7 @@ type CreateRequest struct {
 	Industry string `json:"industry" binding:"required"`
 }
 
-// Create Industry godoc
+// CreateIndustry godoc
 // @Summary Create Industry
 // @Description creates an industry category
 // @Tags Industry
@@ -84,12 +84,12 @@ func GetIndustries(c *gin.Context) {
 // @Tags Industry
 // @Accept */*
 // @Produce json
-// @Param industryName path string true "Industry Name"
+// @Param industry path string true "Industry Name"
 // @Success 200 {object} []models.Industry
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 403 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
-// @Router /industry/{industryName} [get]
+// @Router /industry/{industry} [get]
 func GetIndustry(c *gin.Context) {
 	industry, err := models.GetIndustryByName(c.Param("industry"))
 	if err != nil {

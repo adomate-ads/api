@@ -870,7 +870,7 @@ const docTemplate = `{
             "post": {
                 "description": "Generates Password Reset Token \u0026 Sends Email to User with Password Reset Link",
                 "consumes": [
-                    "*/*"
+                    "application/json"
                 ],
                 "produces": [
                     "application/json"
@@ -1487,7 +1487,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/industry/{industryName}": {
+        "/industry/{industry}": {
             "get": {
                 "description": "Gets all information about specific industry",
                 "consumes": [
@@ -1504,7 +1504,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "Industry Name",
-                        "name": "industryName",
+                        "name": "industry",
                         "in": "path",
                         "required": true
                     }
@@ -2009,7 +2009,7 @@ const docTemplate = `{
             "post": {
                 "description": "Handles the password reset process from the link sent to the users email",
                 "consumes": [
-                    "*/*"
+                    "application/json"
                 ],
                 "produces": [
                     "application/json"
@@ -3034,13 +3034,9 @@ const docTemplate = `{
         "user.ResetPasswordRequest": {
             "type": "object",
             "required": [
-                "email",
                 "password"
             ],
             "properties": {
-                "email": {
-                    "type": "string"
-                },
                 "password": {
                     "type": "string"
                 }
