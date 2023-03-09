@@ -2,6 +2,7 @@ package user
 
 import (
 	"github.com/adomate-ads/api/models"
+	"github.com/adomate-ads/api/pkg/email"
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -264,7 +265,7 @@ func ForgotPassword(c *gin.Context) {
 		return
 	}
 
-	// TODO - Send email to user with password reset link
+	email.SendEmail(user.Email, email.Templates["reset-password"].Subject, email.Templates["reset-password"].Body)
 	c.JSON(http.StatusOK, gin.H{"message": "Successfully sent password reset email"})
 }
 

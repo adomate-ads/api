@@ -56,4 +56,8 @@ var Templates = map[string]Template{
 		Subject: "Adomate - Campaign Deleted",
 		Body:    "If you believe this was an error contact your system admin... something like that",
 	},
+	"forgot-password": {
+		Subject: "Adomate - Password Reset",
+		Body:    "",
+	},
 }
