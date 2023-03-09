@@ -392,6 +392,13 @@ definitions:
     - password
     - role
     type: object
+  user.ForgotPasswordRequest:
+    properties:
+      email:
+        type: string
+    required:
+    - email
+    type: object
   user.LoginRequest:
     properties:
       email:
@@ -425,6 +432,16 @@ definitions:
     - first_name
     - industry
     - last_name
+    - password
+    type: object
+  user.ResetPasswordRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
     - password
     type: object
 host: localhost:3000
@@ -997,6 +1014,33 @@ paths:
       summary: Get Company
       tags:
       - Company
+  /forgot:
+    post:
+      consumes:
+      - '*/*'
+      description: Generates Password Reset Token & Sends Email to User with Password
+        Reset Link
+      parameters:
+      - description: Forgot Password Request
+        in: body
+        name: forgot
+        required: true
+        schema:
+          $ref: '#/definitions/user.ForgotPasswordRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.MessageResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Sends email to user with password reset link
+      tags:
+      - Auth
   /gads/adgroup/{clientId}/{campaignId}:
     get:
       consumes:
@@ -1487,6 +1531,21 @@ paths:
       summary: Logout User
       tags:
       - Auth
+  /me:
+    get:
+      consumes:
+      - '*/*'
+      description: Gets the DB Struct that belongs to the user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+      summary: Gets self user struct
+      tags:
+      - Auth
   /order:
     get:
       consumes:
@@ -1708,6 +1767,53 @@ paths:
           schema:
             $ref: '#/definitions/dto.ErrorResponse'
       summary: Register New User
+      tags:
+      - Auth
+  /reset/{resetToken}:
+    post:
+      consumes:
+      - '*/*'
+      description: Handles the password reset process from the link sent to the users
+        email
+      parameters:
+      - description: Reset Password Request
+        in: body
+        name: reset
+        required: true
+        schema:
+          $ref: '#/definitions/user.ResetPasswordRequest'
+      - description: Reset Token
+        in: path
+        name: resetToken
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.MessageResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Handle password reset
+      tags:
+      - Auth
+  /status:
+    get:
+      consumes:
+      - '*/*'
+      description: Gets whether the user is logged in
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.MessageResponse'
+      summary: Determines if user is logged in
       tags:
       - Auth
   /user:

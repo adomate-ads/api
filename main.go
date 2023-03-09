@@ -57,8 +57,8 @@ func main() {
 
 	google_ads.Setup()
 	stripe.Setup()
-  stripe.SetupProducts()
-  //stripe.GetSubscriptions()
+	stripe.SetupProducts()
+	//stripe.GetSubscriptions()
 
 	models.ConnectDatabase(models.Config(), false)
 	email.Setup()
@@ -77,6 +77,8 @@ func main() {
 	v1.POST("/login", user.Login)
 	v1.POST("/register", user.Register)
 	v1.GET("/logout", auth.NotGuest, user.Logout)
+	v1.POST("/forgot", user.ForgotPassword)
+	v1.POST("/reset/:resetToken", user.ResetPassword)
 
 	// Protected routes, requires authentication
 	v1.GET("/me", auth.NotGuest, user.Me)
