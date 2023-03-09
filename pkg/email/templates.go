@@ -10,7 +10,7 @@ var Templates = map[string]Template{
 	// Brand-new client, new account, new company
 	"registration": {
 		Subject: "Welcome to Adomate! Important Next Steps",
-		Body:    "",
+		Body:    "kehvfeuyasikhfvbeakub",
 	},
 	"new-user": {
 		Subject: "Welcome to Adomate! Important Next Steps",
