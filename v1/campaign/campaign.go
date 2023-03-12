@@ -80,7 +80,7 @@ func CreateCampaign(c *gin.Context) {
 		return
 	}
 
-	email.SendEmail(company.Email, email.Templates["new-campaign"].Subject, email.Templates["new-campaign"].Body)
+	email.SendEmail(company.Email, email.Templates["new-campaign"])
 
 	c.JSON(http.StatusCreated, gin.H{"message": "Successfully registered campaign"})
 }
@@ -215,7 +215,7 @@ func DeleteCampaign(c *gin.Context) {
 		return
 	}
 
-	email.SendEmail(campaign.Company.Email, email.Templates["delete-campaign"].Subject, email.Templates["delete-campaign"].Body)
+	email.SendEmail(campaign.Company.Email, email.Templates["delete-campaign"])
 
 	c.JSON(http.StatusOK, gin.H{"message": "Campaign deleted successfully"})
 }

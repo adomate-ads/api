@@ -83,8 +83,8 @@ func CreateUser(c *gin.Context) {
 		return
 	}
 
-	email.SendEmail(company.Email, email.Templates["new-user-notification"].Subject, email.Templates["new-user-notification"].Body)
-	email.SendEmail(u.Email, email.Templates["new-user"].Subject, email.Templates["new-user"].Body)
+	email.SendEmail(company.Email, email.Templates["new-user-notification"])
+	email.SendEmail(u.Email, email.Templates["new-user"])
 
 	c.JSON(http.StatusCreated, gin.H{"message": "Successfully created user"})
 }
@@ -266,8 +266,8 @@ func DeleteUser(c *gin.Context) {
 		return
 	}
 
-	email.SendEmail(user.Company.Email, email.Templates["delete-user-notification"].Subject, email.Templates["delete-user-notification"].Body)
-	email.SendEmail(user.Email, email.Templates["delete-user"].Subject, email.Templates["delete-user"].Body)
+	email.SendEmail(user.Company.Email, email.Templates["delete-user-notification"])
+	email.SendEmail(user.Email, email.Templates["delete-user"])
 
 	c.JSON(http.StatusOK, gin.H{"message": "User deleted successfully"})
 }

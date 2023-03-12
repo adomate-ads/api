@@ -70,7 +70,7 @@ func CreateCompany(c *gin.Context) {
 		return
 	}
 
-	email.SendEmail(company.Email, email.Templates["registration"].Subject, email.Templates["registration"].Body)
+	email.SendEmail(company.Email, email.Templates["registration"])
 
 	c.JSON(http.StatusCreated, gin.H{"message": "Successfully registered company"})
 }
@@ -171,7 +171,7 @@ func DeleteCompany(c *gin.Context) {
 		return
 	}
 
-	email.SendEmail(company.Email, email.Templates["delete-company"].Subject, email.Templates["delete-company"].Body)
+	email.SendEmail(company.Email, email.Templates["delete-company"])
 
 	c.JSON(http.StatusOK, gin.H{"message": "Company deleted successfully"})
 }

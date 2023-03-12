@@ -2,62 +2,61 @@ package email
 
 type Template struct {
 	Subject string `json:"subject" example:"Account Registered"`
-	Body    string `json:"body" example:"<h1>Welcome to Adomate</h1>"`
-	CC      string `json:"cc" example:"no-reply@adomate.com"`
+	HTML    string `json:"html" example:"registration.html"`
 }
 
 var Templates = map[string]Template{
 	// Brand-new client, new account, new company
 	"registration": {
 		Subject: "Welcome to Adomate! Important Next Steps",
-		Body:    "",
+		HTML:    "welcome.html",
 	},
 	"new-user": {
 		Subject: "Welcome to Adomate! Important Next Steps",
-		Body:    "",
+		HTML:    "",
 	},
 	"delete-user": {
 		Subject: "Adomate - Account Deleted",
-		Body:    "If you believe this was an error contact your system admin... something like that",
+		HTML:    "If you believe this was an error contact your system admin... something like that",
 	},
 	"new-user-notification": {
 		Subject: "Adomate - A new account has been added",
-		Body:    "",
+		HTML:    "",
 	},
 	"delete-user-notification": {
 		Subject: "Adomate - {{.Company.Name}} User Deleted",
-		Body:    "User {{.User.Name}} has been deleted.",
+		HTML:    "User {{.User.Name}} has been deleted.",
 	},
 	"delete-company": {
 		Subject: "Adomate - Company Account Deleted",
-		Body:    "If you believe this was an error contact Adomate Support @ ... something like that",
+		HTML:    "If you believe this was an error contact Adomate Support @ ... something like that",
 	},
 	"new-invoice": {
 		Subject: "Adomate - Invoice {{.ID}}",
-		Body:    "",
+		HTML:    "",
 	},
 	"unpaid-invoice-reminder": {
 		Subject: "Adomate - Invoice {{.ID}} Reminder",
-		Body:    "",
+		HTML:    "",
 	},
 	"paid-invoice": {
 		Subject: "Adomate - Invoice {{.ID}} Paid!",
-		Body:    "",
+		HTML:    "",
 	},
 	"delete-invoice": {
 		Subject: "Adomate - Invoice {{.ID}} Deleted",
-		Body:    "",
+		HTML:    "",
 	},
 	"new-campaign": {
 		Subject: "Congrats! You have successful created an Adomate Campaign",
-		Body:    "",
+		HTML:    "",
 	},
 	"delete-campaign": {
 		Subject: "Adomate - Campaign Deleted",
-		Body:    "If you believe this was an error contact your system admin... something like that",
+		HTML:    "If you believe this was an error contact your system admin... something like that",
 	},
 	"forgot-password": {
 		Subject: "Adomate - Password Reset",
-		Body:    "",
+		HTML:    "",
 	},
 }

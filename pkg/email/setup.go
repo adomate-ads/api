@@ -11,6 +11,7 @@ import (
 )
 
 func failOnError(err error, msg string) {
+	// TODO - @James - We should log this to discord.
 	if err != nil {
 		log.Panicf("%s: %s", msg, err)
 	}
@@ -42,7 +43,7 @@ func Setup() {
 	}
 }
 
-func SendEmail(to string, subject string, body string) {
+func SendEmail(to, subject, body string) {
 	conn, err := amqp.Dial(fmt.Sprintf("amqp://%s:%s@%s:%s/", RMQConfig.User, RMQConfig.Password, RMQConfig.Host, RMQConfig.Port))
 	failOnError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()
@@ -64,7 +65,7 @@ func SendEmail(to string, subject string, body string) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	email := &Email{
+	email := Email{
 		To:      to,
 		Subject: subject,
 		Body:    body,
@@ -73,20 +74,17 @@ func SendEmail(to string, subject string, body string) {
 	message, err := json.Marshal(email)
 	failOnError(err, "Failed to marshal email")
 
-	log.Printf("So far so good...")
-
 	err = ch.PublishWithContext(ctx,
 		"",     // exchange
 		q.Name, // routing key
 		false,  // mandatory
 		false,
+		// TODO - Do we need to require a confirmation return?
+		// TODO - Do we need to log this?
 		amqp.Publishing{
 			DeliveryMode: amqp.Persistent,
-			// TODO: Is this the right content type? Maybe application/json or text/html not sure...?
-			ContentType: "text/plain",
-			Body:        []byte(message),
+			ContentType:  "text/plain",
+			Body:         []byte(message),
 		})
 	failOnError(err, "Failed to publish a message")
-
-	log.Printf("Email sent!")
 }

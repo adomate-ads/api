@@ -1,6 +1,8 @@
 package user
 
 import (
+	"bytes"
+	"fmt"
 	"github.com/adomate-ads/api/models"
 	"github.com/adomate-ads/api/pkg/email"
 	"github.com/gin-gonic/contrib/sessions"
@@ -8,6 +10,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/stripe/stripe-go/v74"
 	"github.com/stripe/stripe-go/v74/customer"
+	"html/template"
 	"net/http"
 	"strconv"
 	"strings"
@@ -196,6 +199,24 @@ func Register(c *gin.Context) {
 		return
 	}
 
+	// Send welcome Email
+	data := email.WelcomeData{
+		FirstName: u.FirstName,
+		Company:   u.Company.Name,
+		Domain:    u.Company.Domain,
+	}
+	body := new(bytes.Buffer)
+	tmpl, err := template.ParseFiles(email.Templates["register"].HTML)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	if err := tmpl.Execute(body, data); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	email.SendEmail(u.Email, email.Templates["register"].Subject, body.String())
+
 	c.JSON(http.StatusCreated, gin.H{"message": "Successfully created user and company"})
 	// TODO - In the future, we should send an email to the user with a link to verify their email address
 	// TODO - In the future, we should possibly send a session token back to the user
@@ -265,7 +286,22 @@ func ForgotPassword(c *gin.Context) {
 		return
 	}
 
-	email.SendEmail(user.Email, email.Templates["reset-password"].Subject, email.Templates["reset-password"].Body)
+	// Send welcome Email
+	data := email.PasswordResetData{
+		FirstName:         user.FirstName,
+		PasswordResetLink: fmt.Sprintf("https://adomate.com/reset/%s", pr.UUID),
+	}
+	body := new(bytes.Buffer)
+	tmpl, err := template.ParseFiles(email.Templates["reset-password"].HTML)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	if err := tmpl.Execute(body, data); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	email.SendEmail(user.Email, email.Templates["reset-password"].Subject, body.String())
 	c.JSON(http.StatusOK, gin.H{"message": "Successfully sent password reset email"})
 }
 

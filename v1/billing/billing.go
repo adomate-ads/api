@@ -86,7 +86,7 @@ func CreateBilling(c *gin.Context) {
 	//	Description: "10/12-12/10 something like that..",
 	//}
 
-	email.SendEmail(company.Email, email.Templates["new-invoice"].Subject, email.Templates["new-invoice"].Body)
+	email.SendEmail(company.Email, email.Templates["new-invoice"])
 
 	c.JSON(http.StatusCreated, gin.H{"message": "Successfully created bill"})
 }
@@ -307,7 +307,7 @@ func DeleteBilling(c *gin.Context) {
 		return
 	}
 
-	email.SendEmail(billing.Company.Email, email.Templates["delete-invoice"].Subject, email.Templates["delete-invoice"].Body)
+	email.SendEmail(billing.Company.Email, email.Templates["delete-invoice"])
 
 	c.JSON(http.StatusOK, gin.H{"message": "Bill deleted successfully"})
 }
