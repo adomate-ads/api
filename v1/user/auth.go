@@ -10,7 +10,6 @@ import (
 	"github.com/google/uuid"
 	"github.com/stripe/stripe-go/v74"
 	"github.com/stripe/stripe-go/v74/customer"
-	"html/template"
 	"net/http"
 	"strconv"
 	"strings"
@@ -206,12 +205,7 @@ func Register(c *gin.Context) {
 		Domain:    u.Company.Domain,
 	}
 	body := new(bytes.Buffer)
-	tmpl, err := template.ParseFiles(email.Templates["register"].HTML)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-	if err := tmpl.Execute(body, data); err != nil {
+	if err := email.Templates["register"].Tmpl.Execute(body, data); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -292,12 +286,7 @@ func ForgotPassword(c *gin.Context) {
 		PasswordResetLink: fmt.Sprintf("https://adomate.com/reset/%s", pr.UUID),
 	}
 	body := new(bytes.Buffer)
-	tmpl, err := template.ParseFiles(email.Templates["reset-password"].HTML)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-	if err := tmpl.Execute(body, data); err != nil {
+	if err := email.Templates["reset-password"].Tmpl.Execute(body, data); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
