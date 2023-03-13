@@ -1,62 +1,64 @@
 package email
 
+import "html/template"
+
 type Template struct {
-	Subject string `json:"subject" example:"Account Registered"`
-	HTML    string `json:"html" example:"registration.html"`
+	Subject string             `json:"subject" example:"Account Registered"`
+	Tmpl    *template.Template `json:"-"`
 }
 
 var Templates = map[string]Template{
 	// Brand-new client, new account, new company
 	"registration": {
 		Subject: "Welcome to Adomate! Important Next Steps",
-		HTML:    "welcome.html",
+		Tmpl:    template.Must(template.ParseFiles("registration.html")),
 	},
 	"new-user": {
 		Subject: "Welcome to Adomate! Important Next Steps",
-		HTML:    "",
+		Tmpl:    template.Must(template.ParseFiles("registration.html")),
 	},
 	"delete-user": {
 		Subject: "Adomate - Account Deleted",
-		HTML:    "If you believe this was an error contact your system admin... something like that",
+		Tmpl:    template.Must(template.ParseFiles("registration.html")),
 	},
 	"new-user-notification": {
 		Subject: "Adomate - A new account has been added",
-		HTML:    "",
+		Tmpl:    template.Must(template.ParseFiles("registration.html")),
 	},
 	"delete-user-notification": {
 		Subject: "Adomate - {{.Company.Name}} User Deleted",
-		HTML:    "User {{.User.Name}} has been deleted.",
+		Tmpl:    template.Must(template.ParseFiles("registration.html")),
 	},
 	"delete-company": {
 		Subject: "Adomate - Company Account Deleted",
-		HTML:    "If you believe this was an error contact Adomate Support @ ... something like that",
+		Tmpl:    template.Must(template.ParseFiles("registration.html")),
 	},
 	"new-invoice": {
 		Subject: "Adomate - Invoice {{.ID}}",
-		HTML:    "",
+		Tmpl:    template.Must(template.ParseFiles("registration.html")),
 	},
 	"unpaid-invoice-reminder": {
 		Subject: "Adomate - Invoice {{.ID}} Reminder",
-		HTML:    "",
+		Tmpl:    template.Must(template.ParseFiles("registration.html")),
 	},
 	"paid-invoice": {
 		Subject: "Adomate - Invoice {{.ID}} Paid!",
-		HTML:    "",
+		Tmpl:    template.Must(template.ParseFiles("registration.html")),
 	},
 	"delete-invoice": {
 		Subject: "Adomate - Invoice {{.ID}} Deleted",
-		HTML:    "",
+		Tmpl:    template.Must(template.ParseFiles("registration.html")),
 	},
 	"new-campaign": {
 		Subject: "Congrats! You have successful created an Adomate Campaign",
-		HTML:    "",
+		Tmpl:    template.Must(template.ParseFiles("registration.html")),
 	},
 	"delete-campaign": {
 		Subject: "Adomate - Campaign Deleted",
-		HTML:    "If you believe this was an error contact your system admin... something like that",
+		Tmpl:    template.Must(template.ParseFiles("registration.html")),
 	},
 	"forgot-password": {
 		Subject: "Adomate - Password Reset",
-		HTML:    "",
+		Tmpl:    template.Must(template.ParseFiles("registration.html")),
 	},
 }
