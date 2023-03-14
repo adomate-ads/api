@@ -5,6 +5,7 @@ import (
 	"github.com/adomate-ads/api/pkg/auth"
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
+	"math"
 	"net/http"
 	"strconv"
 )
@@ -59,6 +60,10 @@ func SameCompany(c *gin.Context) {
 	companyID, err := strconv.ParseUint(id, 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	if companyID > math.MaxUint32 { // Add an upper bound check to ensure companyID can fit into a uint type.
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid company ID"})
 		return
 	}
 	user := c.MustGet("x-user").(*models.User)
