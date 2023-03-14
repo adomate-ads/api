@@ -38,6 +38,14 @@ func GetCampaignsByCompanyID(id uint) ([]Campaign, error) {
 	return campaigns, nil
 }
 
+func GetCampaignByGoogleID(id uint) (*Campaign, error) {
+	var campaign Campaign
+	if err := DB.Where("google_id = ?", id).Preload("Company").First(&campaign).Error; err != nil {
+		return nil, err
+	}
+	return &campaign, nil
+}
+
 func (c *Campaign) CreateCampaign() error {
 	err := DB.Create(&c).Error
 	if err != nil {

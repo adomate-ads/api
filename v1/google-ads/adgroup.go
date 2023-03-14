@@ -1,11 +1,8 @@
 package gads
 
 import (
-	"errors"
-	google_ads "github.com/adomate-ads/api/pkg/google-ads"
-	"github.com/adomate-ads/api/pkg/google-ads/pb/v12/services"
+	"github.com/adomate-ads/api/pkg/google-ads/helpers"
 	"github.com/gin-gonic/gin"
-	"google.golang.org/api/iterator"
 	"net/http"
 )
 
@@ -40,34 +37,7 @@ func GetAdGroupsInCampaign(c *gin.Context) {
 
 	//TODO - Only allow the user to get the campaigns attached to their company
 
-	request := services.SearchGoogleAdsRequest{
-		CustomerId: clientId,
-		Query:      `SELECT campaign.id, ad_group.id, ad_group.name, ad_group.resource_name FROM ad_group WHERE campaign.id = ` + campaignId + ` ORDER BY campaign.id`,
-	}
-
-	resp := google_ads.GADSClient.Search(google_ads.Ctx, &request)
-
-	var adGroups []AdGroup
-
-	for {
-		row, err := resp.Next()
-		if errors.Is(err, iterator.Done) {
-			break
-		} else if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
-		}
-
-		adGroupResp := row.GetAdGroup()
-		adGroup := AdGroup{}
-		adGroup.Id = *adGroupResp.Id
-		if adGroupResp.Name != nil {
-			adGroup.Name = *adGroupResp.Name
-		}
-		adGroup.ResourceName = adGroupResp.ResourceName
-
-		adGroups = append(adGroups, adGroup)
-	}
+	adGroups := helpers.GetAdGroups(clientId, campaignId)
 
 	c.JSON(http.StatusOK, gin.H{"adgroups": adGroups})
 }
@@ -104,37 +74,7 @@ func GetAdGroup(c *gin.Context) {
 
 	//TODO - Only allow the user to get the campaigns attached to their company
 
-	request := services.SearchGoogleAdsRequest{
-		CustomerId: clientId,
-		Query: `	SELECT 
-    					ad_group.id, 
-						ad_group.name,
-						ad_group.resource_name
-					FROM 
-						ad_group
-					WHERE
-					    ad_group.id = ` + adGroupId + `
-					LIMIT 1`,
-	}
-
-	resp := google_ads.GADSClient.Search(google_ads.Ctx, &request)
-
-	row, err := resp.Next()
-	if errors.Is(err, iterator.Done) {
-		c.JSON(http.StatusBadRequest, gin.H{"err": "AdGroup not found."})
-		return
-	} else if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	adGroupResp := row.GetAdGroup()
-	adGroup := AdGroup{}
-	adGroup.Id = *adGroupResp.Id
-	if adGroupResp.Name != nil {
-		adGroup.Name = *adGroupResp.Name
-	}
-	adGroup.ResourceName = adGroupResp.ResourceName
+	adGroup := helpers.GetAdGroup(clientId, adGroupId)
 
 	c.JSON(http.StatusOK, gin.H{"adgroup": adGroup})
 }

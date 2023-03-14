@@ -11,6 +11,7 @@ type Company struct {
 	IndustryID uint      `json:"industry_id" gorm:"type:integer" example:"1"`
 	Industry   Industry  `json:"industry" gorm:"foreignKey:IndustryID"`
 	Domain     string    `json:"domain" gorm:"type:varchar(128)" example:"raajpatel.dev"`
+	ClientID   int64     `json:"client_id" gorm:"type:integer" example:"1"`
 	CreatedAt  time.Time `json:"created_at" example:"2020-01-01T00:00:00Z"`
 	UpdatedAt  time.Time `json:"updated_at" example:"2020-01-01T00:00:00Z"`
 }
@@ -42,6 +43,14 @@ func GetCompanyByName(name string) (*Company, error) {
 func GetCompanyByEmail(email string) (*Company, error) {
 	var company Company
 	if err := DB.Where("email = ?", email).Preload("Industry").First(&company).Error; err != nil {
+		return nil, err
+	}
+	return &company, nil
+}
+
+func GetCompanyByClientID(clientID int64) (*Company, error) {
+	var company Company
+	if err := DB.Where("client_id = ?", clientID).Preload("Industry").First(&company).Error; err != nil {
 		return nil, err
 	}
 	return &company, nil
