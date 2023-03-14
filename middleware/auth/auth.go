@@ -67,7 +67,6 @@ func SameCompany(c *gin.Context) {
 		return
 	}
 	c.Next()
-	return
 }
 
 func InGroup(group ...string) gin.HandlerFunc {
