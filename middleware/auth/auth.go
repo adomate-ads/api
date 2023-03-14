@@ -59,16 +59,16 @@ func SameCompany(c *gin.Context) {
 	id := c.Param("id")
 	companyID, err := strconv.ParseUint(id, 10, 64)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 	if companyID > math.MaxUint32 { // Add an upper bound check to ensure companyID can fit into a uint type.
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid company ID"})
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Invalid company ID"})
 		return
 	}
 	user := c.MustGet("x-user").(*models.User)
 	if user.CompanyID != uint(companyID) && !auth.InGroup(user, "super-admin") {
-		//c.JSON(http.StatusForbidden, gin.H{"error": "You can only get information about your company"})
+		c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "You can only get information about your company"})
 		return
 	}
 	c.Next()
