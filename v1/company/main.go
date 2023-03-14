@@ -8,6 +8,6 @@ import (
 func Routes(r *gin.RouterGroup) {
 	r.POST("/company", auth.NotGuest, auth.InGroup("super-admin"), CreateCompany)
 	r.GET("/company", auth.NotGuest, auth.InGroup("super-admin"), GetCompanies)
-	r.GET("/company/:id", auth.NotGuest, GetCompany)
-	r.DELETE("/company/:id", auth.NotGuest, auth.InGroup("super-admin"), DeleteCompany)
+	r.GET("/company/:id", auth.NotGuest, auth.SameCompany, GetCompany)
+	r.DELETE("/company/:id", auth.NotGuest, auth.SameCompany, auth.InGroup("super-admin"), DeleteCompany)
 }
