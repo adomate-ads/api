@@ -11,10 +11,8 @@ import (
 )
 
 type CreateRequest struct {
-	Name            string `json:"name" binding:"required"`
-	Company         string `json:"company" binding:"required"`
-	BiddingStrategy string `json:"bidding_strategy" binding:"required"`
-	Budget          uint   `json:"budget" binding:"required"`
+	ResourceName string `json:"resource_name" binding:"required"`
+	Company      string `json:"company" binding:"required"`
 }
 
 // CreateCampaign godoc
@@ -44,7 +42,7 @@ func CreateCampaign(c *gin.Context) {
 	}
 
 	// Validate form input
-	if strings.Trim(request.Name, " ") == "" || strings.Trim(request.Company, " ") == "" || strings.Trim(request.BiddingStrategy, " ") == "" {
+	if strings.Trim(request.ResourceName, " ") == "" || strings.Trim(request.Company, " ") == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Parameters can't be empty"})
 		return
 	}
@@ -56,21 +54,10 @@ func CreateCampaign(c *gin.Context) {
 		return
 	}
 
-	// Get bidding strategy ID
-	biddingStrategy, err := models.GetBiddingStrategyByName(request.BiddingStrategy)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "That bidding strategy does not exist"})
-		return
-	}
-
 	campaign := models.Campaign{
-		Name:              request.Name,
-		CompanyID:         company.ID,
-		Company:           *company,
-		Budget:            request.Budget,
-		BiddingStrategyID: biddingStrategy.ID,
-		BiddingStrategy:   *biddingStrategy,
-		Keywords:          []models.Keyword{},
+		ResourceName: request.ResourceName,
+		CompanyID:    company.ID,
+		Company:      *company,
 	}
 
 	// TODO - Fetch and fill keywords
