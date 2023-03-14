@@ -2,8 +2,6 @@ package models
 
 import "time"
 
-// TODO - Linking to AdWords, we probably need to build an google-ads package and link a UUID to here.
-
 type Campaign struct {
 	ID           uint      `json:"id" gorm:"primaryKey;autoIncrement" example:"1"`
 	ResourceName string    `json:"resource_name" gorm:"type:varchar(128)" example:"Primary Monthly"`
