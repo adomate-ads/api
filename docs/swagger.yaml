@@ -305,6 +305,26 @@ definitions:
         example: "2020-01-01T00:00:00Z"
         type: string
     type: object
+  models.Service:
+    properties:
+      company:
+        $ref: '#/definitions/models.Company'
+      company_id:
+        example: 1
+        type: integer
+      created_at:
+        example: "2020-01-01T00:00:00Z"
+        type: string
+      id:
+        example: 1
+        type: integer
+      name:
+        example: Digital Marketing
+        type: string
+      updated_at:
+        example: "2020-01-01T00:00:00Z"
+        type: string
+    type: object
   models.UpdateOrder:
     properties:
       amount:
@@ -369,6 +389,16 @@ definitions:
     - start_at
     - status
     - type
+    type: object
+  services.CreateRequest:
+    properties:
+      company:
+        type: string
+      name:
+        type: string
+    required:
+    - company
+    - name
     type: object
   user.CreateRequest:
     properties:
@@ -661,7 +691,7 @@ paths:
       - '*/*'
       description: Gets a slice of all the bills for a specific company.
       parameters:
-      - description: Billing ID
+      - description: Company ID
         in: path
         name: id
         required: true
@@ -1798,6 +1828,234 @@ paths:
       summary: Handle password reset
       tags:
       - Auth
+  /service:
+    get:
+      consumes:
+      - '*/*'
+      description: Gets a slice of all service.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Service'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Get all service
+      tags:
+      - Service
+    post:
+      consumes:
+      - application/json
+      description: Create a new service.
+      parameters:
+      - description: Create Request
+        in: body
+        name: create
+        required: true
+        schema:
+          $ref: '#/definitions/services.CreateRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.MessageResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Create Service
+      tags:
+      - Service
+  /service/{id}:
+    delete:
+      consumes:
+      - '*/*'
+      description: Delete a service.
+      parameters:
+      - description: Service ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.MessageResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Delete Service
+      tags:
+      - Service
+    get:
+      consumes:
+      - '*/*'
+      description: Gets all information about a single Service.
+      parameters:
+      - description: Service ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Service'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Gets a Service
+      tags:
+      - Service
+    patch:
+      consumes:
+      - application/json
+      description: Update information about a Service.
+      parameters:
+      - description: Create Request
+        in: body
+        name: update
+        required: true
+        schema:
+          $ref: '#/definitions/services.CreateRequest'
+      - description: Service ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: Accepted
+          schema:
+            $ref: '#/definitions/models.Service'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Update Service
+      tags:
+      - Service
+  /service/company/{id}:
+    get:
+      consumes:
+      - '*/*'
+      description: Gets a slice of all the Services for a specific company.
+      parameters:
+      - description: Company ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Service'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Get all Services for a Company
+      tags:
+      - Service
   /status:
     get:
       consumes:
