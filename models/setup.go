@@ -49,7 +49,6 @@ func ConnectDatabase(dbConfig *DBConfig, clearDB bool) {
 		DB.DropTableIfExists(&Campaign{})
 		DB.DropTableIfExists(&Order{})
 		DB.DropTableIfExists(&Billing{})
-		DB.DropTableIfExists(&BiddingStrategy{})
 		DB.DropTableIfExists(&PasswordReset{})
 		DB.DropTableIfExists(&Service{})
 	}
