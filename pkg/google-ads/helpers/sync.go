@@ -16,7 +16,7 @@ func SyncCampaign(clientId, campaignId string) {
 		ag, err := models.GetAdGroupByGoogleID(uint(adGroup.Id))
 		if err != nil {
 			// if adgroup is not in database, create it
-			campaignIdInt, err := strconv.ParseInt(campaignId, 10, 64)
+			campaignIdInt, err := strconv.ParseInt(campaignId, 10, 32)
 			if err != nil {
 				// TODO - Internal Server Error Panic to discord
 				return
