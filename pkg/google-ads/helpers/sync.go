@@ -6,6 +6,42 @@ import (
 )
 
 func SyncClient(clientId string) {
+	// Get all campaigns inside client
+	campaigns := GetCampaigns(clientId)
+	// Compare campaigns to database
+	for _, campaign := range campaigns {
+		c, err := models.GetCampaignByGoogleID(uint(campaign.Id))
+		if err != nil {
+			// if campaign is not in database, create it
+			companyIdInt, err := strconv.ParseInt(clientId, 10, 64)
+			if err != nil {
+				// TODO - Internal Server Error Panic to discord
+				return
+			}
+			company, err := models.GetCompanyByClientID(companyIdInt)
+			if err != nil {
+				// TODO - Internal Server Error Panic to discord
+				return
+			}
+
+			c := models.Campaign{
+				ResourceName: campaign.ResourceName,
+				GoogleID:     uint(campaign.Id),
+				CompanyID:    company.ID,
+				Company:      *company,
+			}
+
+			err = c.CreateCampaign()
+			if err != nil {
+				// TODO - Internal Server Error Panic to discord
+				return
+			}
+		} else {
+			// if campaign is in database, update it
+			SyncCampaign(clientId, strconv.Itoa(int(c.GoogleID)))
+		}
+	}
+	// TODO - This doesnt check for rogue campaigns in the database
 }
 
 func SyncCampaign(clientId, campaignId string) {
