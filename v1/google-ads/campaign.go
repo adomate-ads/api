@@ -5,6 +5,7 @@ import (
 	"github.com/adomate-ads/api/models"
 	"github.com/adomate-ads/api/pkg/auth"
 	google_ads "github.com/adomate-ads/api/pkg/google-ads"
+	"github.com/adomate-ads/api/pkg/google-ads/helpers"
 	"github.com/adomate-ads/api/pkg/google-ads/pb/v12/services"
 	"github.com/gin-gonic/gin"
 	"google.golang.org/api/iterator"
@@ -28,6 +29,7 @@ type Campaign struct {
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /gads/campaigns/ [get]
 func GetCampaigns(c *gin.Context) {
+	// TODO - Refactor into helpers
 	user := c.MustGet("x-user").(*models.User)
 	if !auth.InGroup(user, "super-admin") {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Client ID is required."})
@@ -109,33 +111,7 @@ func GetCampaignsInClient(c *gin.Context) {
 
 	//TODO - Only allow the user to get the campaigns attached to their company
 
-	request := services.SearchGoogleAdsRequest{
-		CustomerId: clientId,
-		Query:      "SELECT campaign.id, campaign.name FROM campaign ORDER BY campaign.id",
-	}
-
-	resp := google_ads.GADSClient.Search(google_ads.Ctx, &request)
-
-	var campaigns []Campaign
-
-	for {
-		row, err := resp.Next()
-		if errors.Is(err, iterator.Done) {
-			break
-		} else if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
-		}
-
-		campaignResp := row.GetCampaign()
-		campaign := Campaign{}
-		campaign.Id = *campaignResp.Id
-		if campaignResp.Name != nil {
-			campaign.Name = *campaignResp.Name
-		}
-
-		campaigns = append(campaigns, campaign)
-	}
+	campaigns := helpers.GetCampaigns(clientId)
 
 	c.JSON(http.StatusOK, gin.H{"campaigns": campaigns})
 }
@@ -166,36 +142,7 @@ func GetCampaign(c *gin.Context) {
 
 	//TODO - Only allow the user to get the campaigns attached to their company
 
-	request := services.SearchGoogleAdsRequest{
-		CustomerId: clientId,
-		Query: `	SELECT 
-    					campaign.id, 
-						campaign.name 
-					FROM 
-						campaign
-					WHERE
-					    campaign.id = ` + campaignId + `
-					LIMIT 1`,
-	}
-
-	resp := google_ads.GADSClient.Search(google_ads.Ctx, &request)
-
-	row, err := resp.Next()
-	if errors.Is(err, iterator.Done) {
-		c.JSON(http.StatusBadRequest, gin.H{"err": "Campaign not found."})
-		return
-	} else if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	campaignResp := row.GetCampaign()
-	campaign := Campaign{}
-	campaign.Id = *campaignResp.Id
-	if campaignResp.Name != nil {
-		campaign.Name = *campaignResp.Name
-	}
-	campaign.ResourceName = campaignResp.ResourceName
+	campaign := helpers.GetCampaign(clientId, campaignId)
 
 	c.JSON(http.StatusOK, gin.H{"campaign": campaign})
 }

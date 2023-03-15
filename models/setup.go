@@ -48,7 +48,7 @@ func ConnectDatabase(dbConfig *DBConfig, clearDB bool) {
 		DB.DropTableIfExists(&Email{})
 		DB.DropTableIfExists(&Campaign{})
 		DB.DropTableIfExists(&Billing{})
-		DB.DropTableIfExists(&BiddingStrategy{})
+		DB.AutoMigrate(&PasswordReset{})
 	}
 
 	DB.AutoMigrate(&User{})
@@ -59,6 +59,5 @@ func ConnectDatabase(dbConfig *DBConfig, clearDB bool) {
 	DB.AutoMigrate(&Campaign{})
 	DB.AutoMigrate(&Order{})
 	DB.AutoMigrate(&Billing{})
-	DB.AutoMigrate(&BiddingStrategy{})
 	DB.AutoMigrate(&PasswordReset{})
 }
