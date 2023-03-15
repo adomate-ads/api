@@ -96,7 +96,7 @@ func GetServices(c *gin.Context) {
 // @Router /service/company/{id} [get]
 func GetServicesForCompany(c *gin.Context) {
 	id := c.Param("id")
-	companyID, err := strconv.ParseUint(id, 10, 64)
+	companyID, err := strconv.ParseUint(id, 10, 32)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
@@ -132,7 +132,7 @@ func GetServicesForCompany(c *gin.Context) {
 // @Router /service/{id} [get]
 func GetService(c *gin.Context) {
 	id := c.Param("id")
-	serviceID, err := strconv.ParseUint(id, 10, 64)
+	serviceID, err := strconv.ParseUint(id, 10, 32)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
@@ -174,7 +174,7 @@ type UpdateRequest struct {
 // @Router /service/{id} [patch]
 func UpdateService(c *gin.Context) {
 	id := c.Param("id")
-	serviceID, err := strconv.ParseUint(id, 10, 64)
+	serviceID, err := strconv.ParseUint(id, 10, 32)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
@@ -231,7 +231,7 @@ func UpdateService(c *gin.Context) {
 // @Router /service/{id} [delete]
 func DeleteService(c *gin.Context) {
 	id := c.Param("id")
-	serviceID, err := strconv.ParseUint(id, 10, 64)
+	serviceID, err := strconv.ParseUint(id, 10, 32)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
