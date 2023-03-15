@@ -1,5 +1,5 @@
 # Use the official golang image as the base image
-FROM golang:1.19.6 as builder
+FROM golang:1.20.2 as builder
 
 # Set the working directory in the container
 WORKDIR /app
@@ -14,7 +14,7 @@ RUN go mod download
 RUN go build -o main .
 
 # Use the light weight alpine image as the base image
-FROM alpine:3.14.2
+FROM alpine:3.17.2
 
 # Set the working directory in the container
 WORKDIR /app

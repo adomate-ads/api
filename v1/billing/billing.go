@@ -227,13 +227,6 @@ func UpdateBilling(c *gin.Context) {
 		return
 	}
 
-	// Validate form input
-	// TODO - This needs to be verified, we might need to add another flag for if it is not passed there for not changed.
-	if request.Status != "paid" && request.Status != "unpaid" && request.Status != "pending" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Status input"})
-		return
-	}
-
 	// Get company ID
 	if request.Company != "" {
 		company, err := models.GetCompanyByName(request.Company)
@@ -250,6 +243,10 @@ func UpdateBilling(c *gin.Context) {
 	}
 
 	if request.Status != "" {
+		if request.Status != "paid" && request.Status != "unpaid" && request.Status != "pending" {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Status input"})
+			return
+		}
 		billing.Status = request.Status
 	}
 

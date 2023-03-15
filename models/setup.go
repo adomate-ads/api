@@ -62,7 +62,6 @@ func ConnectDatabase(dbConfig *DBConfig, clearDB bool) {
 	DB.AutoMigrate(&Campaign{})
 	DB.AutoMigrate(&Order{})
 	DB.AutoMigrate(&Billing{})
-	DB.AutoMigrate(&BiddingStrategy{})
 	DB.AutoMigrate(&PasswordReset{})
 	DB.DropTableIfExists(&Service{})
 }
