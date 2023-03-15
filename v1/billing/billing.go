@@ -117,7 +117,7 @@ func GetBillings(c *gin.Context) {
 // @Tags Billing
 // @Accept */*
 // @Produce json
-// @Param id path integer true "Billing ID"
+// @Param id path integer true "Company ID"
 // @Success 200 {object} []models.Billing
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 401 {object} dto.ErrorResponse
@@ -184,7 +184,6 @@ func GetBilling(c *gin.Context) {
 	c.JSON(http.StatusOK, billing)
 }
 
-// This will need to be tested with unit tests or something cause honestly i've never handled a patch request before
 type UpdateRequest struct {
 	Company  string    `json:"company"`
 	Amount   float64   `json:"amount"`
