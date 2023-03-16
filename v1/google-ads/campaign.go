@@ -5,6 +5,7 @@ import (
 	"github.com/adomate-ads/api/models"
 	"github.com/adomate-ads/api/pkg/auth"
 	google_ads "github.com/adomate-ads/api/pkg/google-ads"
+	"github.com/adomate-ads/api/pkg/google-ads/helpers"
 	"github.com/adomate-ads/api/pkg/google-ads/pb/v12/services"
 	"github.com/gin-gonic/gin"
 	"google.golang.org/api/iterator"
@@ -28,6 +29,7 @@ type Campaign struct {
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /gads/campaigns/ [get]
 func GetCampaigns(c *gin.Context) {
+	// TODO - Refactor into helpers
 	user := c.MustGet("x-user").(*models.User)
 	if !auth.InGroup(user, "super-admin") {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Client ID is required."})
@@ -147,6 +149,9 @@ func GetCampaignsInClient(c *gin.Context) {
 		campaigns = append(campaigns, campaign)
 	}
 
+
+	campaigns := helpers.GetCampaigns(clientId)
+
 	c.JSON(http.StatusOK, gin.H{"campaigns": campaigns})
 }
 
@@ -217,6 +222,8 @@ func GetCampaign(c *gin.Context) {
 		campaign.Name = *campaignResp.Name
 	}
 	campaign.ResourceName = campaignResp.ResourceName
+
+	campaign := helpers.GetCampaign(clientId, campaignId)
 
 	c.JSON(http.StatusOK, gin.H{"campaign": campaign})
 }

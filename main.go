@@ -14,6 +14,7 @@ import (
 	gads "github.com/adomate-ads/api/v1/google-ads"
 	"github.com/adomate-ads/api/v1/industry"
 	"github.com/adomate-ads/api/v1/order"
+	"github.com/adomate-ads/api/v1/service"
 	"github.com/adomate-ads/api/v1/user"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/contrib/sessions"
@@ -90,6 +91,7 @@ func main() {
 	billing.Routes(v1)
 	campaign.Routes(v1)
 	order.Routes(v1)
+	service.Routes(v1)
 	gads.Routes(v1)
 
 	if err := r.Run(fmt.Sprintf(":%s", os.Getenv("PORT"))); err != nil {

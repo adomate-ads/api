@@ -6,8 +6,8 @@ import (
 	"github.com/adomate-ads/api/pkg/auth"
 	google_ads "github.com/adomate-ads/api/pkg/google-ads"
 	"github.com/adomate-ads/api/pkg/google-ads/pb/v12/services"
+	"github.com/adomate-ads/api/pkg/google-ads/helpers"
 	"github.com/gin-gonic/gin"
-	"google.golang.org/api/iterator"
 	"net/http"
 	"strconv"
 )
@@ -82,6 +82,9 @@ func GetAdGroupsInCampaign(c *gin.Context) {
 
 		adGroups = append(adGroups, adGroup)
 	}
+
+
+	adGroups := helpers.GetAdGroups(clientId, campaignId)
 
 	c.JSON(http.StatusOK, gin.H{"adgroups": adGroups})
 }
@@ -160,6 +163,9 @@ func GetAdGroup(c *gin.Context) {
 		adGroup.Name = *adGroupResp.Name
 	}
 	adGroup.ResourceName = adGroupResp.ResourceName
+
+
+	adGroup := helpers.GetAdGroup(clientId, adGroupId)
 
 	c.JSON(http.StatusOK, gin.H{"adgroup": adGroup})
 }
