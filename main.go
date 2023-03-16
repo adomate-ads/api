@@ -7,6 +7,7 @@ import (
 	"github.com/adomate-ads/api/models"
 	"github.com/adomate-ads/api/pkg/email"
 	google_ads "github.com/adomate-ads/api/pkg/google-ads"
+	google_ads_controller "github.com/adomate-ads/api/pkg/google-ads-controller"
 	"github.com/adomate-ads/api/pkg/stripe"
 	"github.com/adomate-ads/api/v1/billing"
 	"github.com/adomate-ads/api/v1/campaign"
@@ -57,6 +58,10 @@ func main() {
 	}
 
 	google_ads.Setup()
+
+	google_ads_controller.Setup()
+	google_ads_controller.GetCustomers()
+
 	stripe.Setup()
 	stripe.SetupProducts()
 	//stripe.GetSubscriptions()

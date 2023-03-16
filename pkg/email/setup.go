@@ -82,9 +82,8 @@ func SendEmail(to string, subject string, body string) {
 		false,
 		amqp.Publishing{
 			DeliveryMode: amqp.Persistent,
-			// TODO: Is this the right content type? Maybe application/json or text/html not sure...?
-			ContentType: "text/plain",
-			Body:        []byte(message),
+			ContentType:  "text/plain",
+			Body:         []byte(message),
 		})
 	failOnError(err, "Failed to publish a message")
 
