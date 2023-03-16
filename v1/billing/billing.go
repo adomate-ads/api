@@ -56,7 +56,11 @@ func CreateBilling(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "That company does not exist"})
 		return
 	}
-
+	user := c.MustGet("x-user").(*models.User)
+	if user.CompanyID != company.ID && !auth.InGroup(user, "super-admin") {
+		c.JSON(http.StatusForbidden, gin.H{"error": "You can only get bills from your company"})
+		return
+	}
 	b := models.Billing{
 		CompanyID: company.ID,
 		Company:   *company,
@@ -265,6 +269,11 @@ func UpdateBilling(c *gin.Context) {
 	if !request.IssuedAt.IsZero() {
 		billing.IssuedAt = request.IssuedAt
 	}
+	user := c.MustGet("x-user").(*models.User)
+	if user.CompanyID != billing.CompanyID && !auth.InGroup(user, "super-admin") {
+		c.JSON(http.StatusForbidden, gin.H{"error": "You can only get bills from your company"})
+		return
+	}
 
 	updatedBilling, err := billing.UpdateBilling()
 	if err != nil {
@@ -301,7 +310,11 @@ func DeleteBilling(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
+	user := c.MustGet("x-user").(*models.User)
+	if user.CompanyID != billing.CompanyID && !auth.InGroup(user, "super-admin") {
+		c.JSON(http.StatusForbidden, gin.H{"error": "You can only get bills from your company"})
+		return
+	}
 	if err := billing.DeleteBilling(); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

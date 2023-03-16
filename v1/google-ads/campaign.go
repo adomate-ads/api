@@ -108,7 +108,17 @@ func GetCampaignsInClient(c *gin.Context) {
 	}
 
 	//TODO - Only allow the user to get the campaigns attached to their company
-
+	id := c.Param("id")
+	companyID, err := strconv.ParseUint(id, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	user := c.MustGet("x-user").(*models.User)
+	if user.CompanyID != uint(companyID) && !auth.InGroup(user, "super-admin") {
+		c.JSON(http.StatusForbidden, gin.H{"error": "You can only get information about your company"})
+		return
+	}
 	request := services.SearchGoogleAdsRequest{
 		CustomerId: clientId,
 		Query:      "SELECT campaign.id, campaign.name FROM campaign ORDER BY campaign.id",
@@ -165,7 +175,18 @@ func GetCampaign(c *gin.Context) {
 	}
 
 	//TODO - Only allow the user to get the campaigns attached to their company
-
+	campaignNumber, err := strconv.ParseUint(campaignId, 10, 64)
+	campaignfromID, _ := models.GetCampaign(uint(campaignNumber))
+	companyId := campaignfromID.CompanyID
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	user := c.MustGet("x-user").(*models.User)
+	if user.CompanyID != companyId && !auth.InGroup(user, "super-admin") {
+		c.JSON(http.StatusForbidden, gin.H{"error": "You can only get information about your company"})
+		return
+	}
 	request := services.SearchGoogleAdsRequest{
 		CustomerId: clientId,
 		Query: `	SELECT 

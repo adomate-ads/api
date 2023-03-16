@@ -165,7 +165,11 @@ func DeleteCompany(c *gin.Context) {
 		}
 		return
 	}
-
+	user := c.MustGet("x-user").(*models.User)
+	if user.CompanyID != uint(companyID) && !auth.InGroup(user, "super-admin") {
+		c.JSON(http.StatusForbidden, gin.H{"error": "You can only get information about your company"})
+		return
+	}
 	if err := company.DeleteCompany(); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

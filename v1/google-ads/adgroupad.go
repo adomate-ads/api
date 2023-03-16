@@ -2,11 +2,14 @@ package gads
 
 import (
 	"errors"
+	"github.com/adomate-ads/api/models"
+	"github.com/adomate-ads/api/pkg/auth"
 	google_ads "github.com/adomate-ads/api/pkg/google-ads"
 	"github.com/adomate-ads/api/pkg/google-ads/pb/v12/services"
 	"github.com/gin-gonic/gin"
 	"google.golang.org/api/iterator"
 	"net/http"
+	"strconv"
 )
 
 type AdGroupAd struct {
@@ -47,7 +50,19 @@ func GetAdGroupAds(c *gin.Context) {
 	}
 
 	//TODO - Only allow the user to get the campaigns attached to their company
+	campaignNumber, err := strconv.ParseUint(campaignId, 10, 64)
+	campaign, _ := models.GetCampaign(uint(campaignNumber))
+	companyId := campaign.CompanyID
 
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	user := c.MustGet("x-user").(*models.User)
+	if user.CompanyID != companyId && !auth.InGroup(user, "super-admin") {
+		c.JSON(http.StatusForbidden, gin.H{"error": "You can only get information about your company"})
+		return
+	}
 	request := services.SearchGoogleAdsRequest{
 		CustomerId: clientId,
 		Query: `	SELECT 

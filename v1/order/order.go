@@ -1,6 +1,7 @@
 package order
 
 import (
+	"fmt"
 	"github.com/adomate-ads/api/models"
 	"github.com/adomate-ads/api/pkg/auth"
 	"github.com/gin-gonic/gin"
@@ -32,6 +33,7 @@ type CreateRequest struct {
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /order [post]
 func CreateOrder(c *gin.Context) {
+	fmt.Println("function create order called")
 	var request CreateRequest
 	if err := c.ShouldBindJSON(&request); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -51,7 +53,11 @@ func CreateOrder(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "That company does not exist"})
 		return
 	}
-
+	user := c.MustGet("x-user").(*models.User)
+	if user.CompanyID != company.ID && !auth.InGroup(user, "super-admin") {
+		c.JSON(http.StatusForbidden, gin.H{"error": "You can only get information about your company"})
+		return
+	}
 	// Create industry
 	order := models.Order{
 		Company:   *company,
@@ -170,7 +176,6 @@ func UpdateOrder(c *gin.Context) {
 
 	// Validate form input
 	// TODO - Check the all fields are valid
-
 	order, err = order.UpdateOrder(request)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -205,6 +210,13 @@ func DeleteOrder(c *gin.Context) {
 	order, err := models.GetOrder(uint(orderID))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	//
+	user := c.MustGet("x-user").(*models.User)
+	if user.CompanyID != order.CompanyID && !auth.InGroup(user, "super-admin") {
+		c.JSON(http.StatusForbidden, gin.H{"error": "You can only update orders from your company"})
 		return
 	}
 
