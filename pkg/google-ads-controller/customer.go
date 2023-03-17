@@ -1,6 +1,16 @@
 package google_ads_controller
 
-import "fmt"
+import (
+	"encoding/json"
+	"fmt"
+)
+
+type Customer struct {
+	Id           uint   `json:"id,omitempty"`
+	Name         string `json:"name,omitempty"`
+	Status       uint   `json:"status,omitempty"`
+	ResourceName string `json:"resource_name,omitempty"`
+}
 
 func CreateCustomer(customerName string) {
 	msg := Message{
@@ -19,5 +29,10 @@ func GetCustomers() {
 	}
 
 	resp := SendToQueue(msg)
-	fmt.Println(resp)
+	var customers []Customer
+	err := json.Unmarshal([]byte(resp), &customers)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 }

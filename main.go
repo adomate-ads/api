@@ -60,7 +60,11 @@ func main() {
 	google_ads.Setup()
 
 	google_ads_controller.Setup()
-	google_ads_controller.GetCustomers()
+	//google_ads_controller.GetCustomers()
+	camp := google_ads_controller.Campaign{
+		CustomerId: 6693810337,
+	}
+	google_ads_controller.GetCampaigns(camp)
 
 	stripe.Setup()
 	stripe.SetupProducts()

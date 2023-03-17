@@ -107,7 +107,6 @@ func SendToQueue(message Message) string {
 	for d := range msgs {
 		if corrId == d.CorrelationId {
 			res := string(d.Body)
-			fmt.Println(" [.] Got %s", res)
 			return res
 			break
 		}

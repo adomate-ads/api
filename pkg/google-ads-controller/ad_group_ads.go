@@ -6,8 +6,8 @@ import (
 )
 
 type AdGroupAds struct {
-	CustomerId   string   `json:"customer_id,omitempty"`
-	AdGroupId    string   `json:"ad_group_id,omitempty"`
+	CustomerId   uint     `json:"customer_id,omitempty"`
+	AdGroupId    uint     `json:"ad_group_id,omitempty"`
 	Headlines    []string `json:"headlines,omitempty"`
 	Descriptions []string `json:"descriptions,omitempty"`
 	FinalURL     []string `json:"final_url,omitempty"`

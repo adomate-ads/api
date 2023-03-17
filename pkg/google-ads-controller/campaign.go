@@ -6,7 +6,7 @@ import (
 )
 
 type Campaign struct {
-	CustomerId     string `json:"customer_id,omitempty"`
+	CustomerId     uint   `json:"customer_id,omitempty"`
 	CampaignName   string `json:"campaign_name,omitempty"`
 	CampaignBudget string `json:"campaign_budget,omitempty"`
 }
