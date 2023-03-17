@@ -196,7 +196,7 @@ func Register(c *gin.Context) {
 
 	if _, err := customer.New(params); err != nil {
 		msg := fmt.Sprintf("Failed to create a stripe customer for company %s", newCompany.Name)
-		suggestion := fmt.Sprintf("Create Stripe Customer, Name:%s, Email:%s, CompanyID:%s", request.CompanyName, request.Email, newCompany.ID)
+		suggestion := fmt.Sprintf("Create Stripe Customer, Name:%s, Email:%s, CompanyID:%d", request.CompanyName, request.Email, newCompany.ID)
 		discord.SendMessage("error", msg, suggestion)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
