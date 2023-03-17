@@ -2,6 +2,7 @@ package helpers
 
 import (
 	"github.com/adomate-ads/api/models"
+	"github.com/adomate-ads/api/pkg/discord"
 	"strconv"
 )
 
@@ -15,12 +16,12 @@ func SyncClient(clientId string) {
 			// if campaign is not in database, create it
 			companyIdInt, err := strconv.ParseInt(clientId, 10, 64)
 			if err != nil {
-				// TODO - Internal Server Error Panic to discord
+				discord.SendMessage("error", "Error running sync.", "NA")
 				return
 			}
 			company, err := models.GetCompanyByClientID(companyIdInt)
 			if err != nil {
-				// TODO - Internal Server Error Panic to discord
+				discord.SendMessage("error", "Error running sync.", "NA")
 				return
 			}
 
@@ -33,7 +34,7 @@ func SyncClient(clientId string) {
 
 			err = c.CreateCampaign()
 			if err != nil {
-				// TODO - Internal Server Error Panic to discord
+				discord.SendMessage("error", "Error running sync.", "NA")
 				return
 			}
 		} else {
@@ -54,23 +55,23 @@ func SyncCampaign(clientId, campaignId string) {
 			// if adgroup is not in database, create it
 			campaignIdInt, err := strconv.ParseInt(campaignId, 10, 32)
 			if err != nil {
-				// TODO - Internal Server Error Panic to discord
+				discord.SendMessage("error", "Error running sync.", "NA")
 				return
 			}
 			campaign, err := models.GetCampaignByGoogleID(uint(campaignIdInt))
 			if err != nil {
-				// TODO - Internal Server Error Panic to discord
+				discord.SendMessage("error", "Error running sync.", "NA")
 				return
 			}
 
 			companyIdInt, err := strconv.ParseInt(clientId, 10, 64)
 			if err != nil {
-				// TODO - Internal Server Error Panic to discord
+				discord.SendMessage("error", "Error running sync.", "NA")
 				return
 			}
 			company, err := models.GetCompanyByClientID(companyIdInt)
 			if err != nil {
-				// TODO - Internal Server Error Panic to discord
+				discord.SendMessage("error", "Error running sync.", "NA")
 				return
 			}
 
@@ -86,7 +87,7 @@ func SyncCampaign(clientId, campaignId string) {
 
 			err = ag.CreateAdGroup()
 			if err != nil {
-				// TODO - Internal Server Error Panic to discord
+				discord.SendMessage("error", "Error running sync.", "NA")
 				return
 			}
 		} else {

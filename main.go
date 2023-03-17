@@ -5,6 +5,7 @@ import (
 	"github.com/adomate-ads/api/docs"
 	"github.com/adomate-ads/api/middleware/auth"
 	"github.com/adomate-ads/api/models"
+	"github.com/adomate-ads/api/pkg/discord"
 	"github.com/adomate-ads/api/pkg/email"
 	google_ads "github.com/adomate-ads/api/pkg/google-ads"
 	"github.com/adomate-ads/api/pkg/stripe"
@@ -60,6 +61,8 @@ func main() {
 	stripe.Setup()
 	stripe.SetupProducts()
 	//stripe.GetSubscriptions()
+
+	discord.Setup()
 
 	models.ConnectDatabase(models.Config(), false)
 	email.Setup()

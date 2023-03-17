@@ -1,7 +1,9 @@
 package user
 
 import (
+	"fmt"
 	"github.com/adomate-ads/api/models"
+	"github.com/adomate-ads/api/pkg/discord"
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -168,7 +170,10 @@ func Register(c *gin.Context) {
 	if err := u.CreateUser(); err != nil {
 		err := newCompany.DeleteCompany()
 		if err != nil {
-			// TODO - We need to log this error in the future. Maybe a discord bot.
+			msg := fmt.Sprintf("Failed to delete company %s after failed user creation", newCompany.Name)
+			suggestion := fmt.Sprintf("Delete company %s manually and email %s.", newCompany.Name, u.Email)
+			discord.SendMessage("error", msg, suggestion)
+
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
@@ -189,8 +194,10 @@ func Register(c *gin.Context) {
 	}
 	params.AddMetadata("company_id", strconv.Itoa(int(newCompany.ID)))
 
-	//TODO - If we run into this error, that means that we created the user and company, but not the stripe customer... We need to think about how to best handle this as we don't want to lose the customer.
 	if _, err := customer.New(params); err != nil {
+		msg := fmt.Sprintf("Failed to create a stripe customer for company %s", newCompany.Name)
+		suggestion := fmt.Sprintf("Create Stripe Customer, Name:%s, Email:%s, CompanyID:%d", request.CompanyName, request.Email, newCompany.ID)
+		discord.SendMessage("error", msg, suggestion)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -264,6 +271,8 @@ func ForgotPassword(c *gin.Context) {
 		return
 	}
 
+	discord.SendMessage("logging", fmt.Sprintf("User %s has requested a password reset.", user.Email), "NA")
+
 	// TODO - Send email to user with password reset link
 	c.JSON(http.StatusOK, gin.H{"message": "Successfully sent password reset email"})
 }
@@ -324,6 +333,8 @@ func ResetPassword(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+
+	discord.SendMessage("logging", fmt.Sprintf("User %s has reset their password", user.Email), "NA")
 
 	c.JSON(http.StatusOK, gin.H{"message": "Successfully reset password"})
 }
