@@ -1,4 +1,4 @@
-package email
+package discord
 
 import (
 	"context"
@@ -10,12 +10,6 @@ import (
 	"time"
 )
 
-func failOnError(err error, msg string) {
-	if err != nil {
-		log.Panicf("%s: %s", msg, err)
-	}
-}
-
 type RabbitMQConfig struct {
 	Host     string
 	Port     string
@@ -24,10 +18,11 @@ type RabbitMQConfig struct {
 	Queue    string
 }
 
-type Email struct {
-	To      string
-	Subject string
-	Body    string
+type Message struct {
+	Type       string    `json:"type" example:"error/warning/log"`
+	Message    string    `json:"message"`
+	Suggestion string    `json:"suggestion,omitempty"`
+	Time       time.Time `json:"time,omitempty"`
 }
 
 var RMQConfig RabbitMQConfig
@@ -38,17 +33,21 @@ func Setup() {
 		Port:     os.Getenv("RABBIT_PORT"),
 		User:     os.Getenv("RABBIT_USER"),
 		Password: os.Getenv("RABBIT_PASS"),
-		Queue:    os.Getenv("RABBIT_MAIL_QUEUE"),
+		Queue:    os.Getenv("RABBIT_DISCORD_QUEUE"),
 	}
 }
 
-func SendEmail(to string, subject string, body string) {
+func SendMessage(level string, message string, suggestion string) {
 	conn, err := amqp.Dial(fmt.Sprintf("amqp://%s:%s@%s:%s/", RMQConfig.User, RMQConfig.Password, RMQConfig.Host, RMQConfig.Port))
-	failOnError(err, "Failed to connect to RabbitMQ")
+	if err != nil {
+		log.Panicf("Failed to connect to RabbitMQ: %s", err)
+	}
 	defer conn.Close()
 
 	ch, err := conn.Channel()
-	failOnError(err, "Failed to open a channel")
+	if err != nil {
+		log.Panicf("Failed to open a channel: %s", err)
+	}
 	defer ch.Close()
 
 	q, err := ch.QueueDeclare(
@@ -59,19 +58,24 @@ func SendEmail(to string, subject string, body string) {
 		false,           // no-wait
 		nil,             // arguments
 	)
-	failOnError(err, "Failed to declare a queue")
+	if err != nil {
+		log.Panicf("Failed to declare a queue: %s", err)
+	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	email := &Email{
-		To:      to,
-		Subject: subject,
-		Body:    body,
+	msg := &Message{
+		Type:       level,
+		Message:    message,
+		Suggestion: suggestion,
+		Time:       time.Now(),
 	}
 
-	message, err := json.Marshal(email)
-	failOnError(err, "Failed to marshal email")
+	msgString, err := json.Marshal(msg)
+	if err != nil {
+		log.Panicf("Failed to marshal message: %s", err)
+	}
 
 	err = ch.PublishWithContext(ctx,
 		"",     // exchange
@@ -80,10 +84,10 @@ func SendEmail(to string, subject string, body string) {
 		false,
 		amqp.Publishing{
 			DeliveryMode: amqp.Persistent,
-			// TODO: Is this the right content type? Maybe application/json or text/html not sure...?
-			ContentType: "text/plain",
-			Body:        []byte(message),
+			ContentType:  "text/plain",
+			Body:         []byte(msgString),
 		})
-	failOnError(err, "Failed to publish a message")
-
+	if err != nil {
+		log.Panicf("Failed to publish message: %s", err)
+	}
 }
