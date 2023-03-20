@@ -2,7 +2,6 @@ package google_ads_controller
 
 import (
 	"encoding/json"
-	"fmt"
 )
 
 type AdGroupAds struct {
@@ -10,53 +9,51 @@ type AdGroupAds struct {
 	AdGroupId    uint     `json:"ad_group_id,omitempty"`
 	Headlines    []string `json:"headlines,omitempty"`
 	Descriptions []string `json:"descriptions,omitempty"`
-	FinalURL     []string `json:"final_url,omitempty"`
+	FinalURL     string   `json:"final_url,omitempty"`
+	ResourceName string   `json:"resource_name,omitempty"`
 }
 
-func CreateAdGroupAds(adGroupAds AdGroupAds) {
-	adGrpAds, err := json.Marshal(adGroupAds)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-
+func CreateAdGroupAds(adGroupAds Body) (*AdGroupAds, error) {
 	msg := Message{
 		Route: "/create_ad",
-		Body:  string(adGrpAds),
+		Body:  adGroupAds,
 	}
 
 	resp := SendToQueue(msg)
-	fmt.Println(resp)
+	var adGrpAd AdGroupAds
+	err := json.Unmarshal([]byte(resp), &adGrpAd)
+	if err != nil {
+		return nil, err
+	}
+	return &adGrpAd, nil
 }
 
-func GetAdGroupAds(adGroupAds AdGroupAds) {
-	adGrpAds, err := json.Marshal(adGroupAds)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-
+func GetAdGroupAds(adGroupAds Body) ([]AdGroupAds, error) {
 	msg := Message{
 		Route: "/get_ads",
-		Body:  string(adGrpAds),
+		Body:  adGroupAds,
 	}
 
 	resp := SendToQueue(msg)
-	fmt.Println(resp)
+	var adGrpAds []AdGroupAds
+	err := json.Unmarshal([]byte(resp), &adGrpAds)
+	if err != nil {
+		return nil, err
+	}
+	return adGrpAds, nil
 }
 
-func RemoveAdGroupAd(adGroupAds AdGroupAds) {
-	adGrpAds, err := json.Marshal(adGroupAds)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-
+func RemoveAdGroupAd(adGroupAds Body) (*AdGroupAds, error) {
 	msg := Message{
 		Route: "/remove_ad",
-		Body:  string(adGrpAds),
+		Body:  adGroupAds,
 	}
 
 	resp := SendToQueue(msg)
-	fmt.Println(resp)
+	var adGrpAd AdGroupAds
+	err := json.Unmarshal([]byte(resp), &adGrpAd)
+	if err != nil {
+		return nil, err
+	}
+	return &adGrpAd, nil
 }

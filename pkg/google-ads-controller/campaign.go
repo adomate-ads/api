@@ -2,91 +2,86 @@ package google_ads_controller
 
 import (
 	"encoding/json"
-	"fmt"
 )
 
 type Campaign struct {
 	CustomerId     uint   `json:"customer_id,omitempty"`
 	CampaignName   string `json:"campaign_name,omitempty"`
-	CampaignBudget string `json:"campaign_budget,omitempty"`
+	CampaignBudget uint   `json:"campaign_budget,omitempty"`
+	ResourceName   string `json:"resource_name,omitempty"`
 }
 
-func CreateCampaign(campaign Campaign) {
-	camp, err := json.Marshal(campaign)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-
+func CreateCampaign(campaign Body) (*Campaign, error) {
 	msg := Message{
 		Route: "/create_campaign",
-		Body:  string(camp),
+		Body:  campaign,
 	}
 
 	resp := SendToQueue(msg)
-	fmt.Println(resp)
+	var camp Campaign
+	err := json.Unmarshal([]byte(resp), &camp)
+	if err != nil {
+		return nil, err
+	}
+	return &camp, nil
 }
 
-func GetCampaigns(campaign Campaign) {
-	camp, err := json.Marshal(campaign)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-
+func GetCampaigns(campaign Body) ([]Campaign, error) {
 	msg := Message{
 		Route: "/get_campaigns",
-		Body:  string(camp),
+		Body:  campaign,
 	}
 
 	resp := SendToQueue(msg)
-	fmt.Println(resp)
+	var campaigns []Campaign
+	err := json.Unmarshal([]byte(resp), &campaigns)
+	if err != nil {
+		return nil, err
+	}
+	return campaigns, nil
 }
 
-func EnableCampaign(campaign Campaign) {
-	camp, err := json.Marshal(campaign)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-
+func EnableCampaign(campaign Body) (*Campaign, error) {
 	msg := Message{
 		Route: "/enable_campaign",
-		Body:  string(camp),
+		Body:  campaign,
 	}
 
 	resp := SendToQueue(msg)
-	fmt.Println(resp)
+	var camp Campaign
+	err := json.Unmarshal([]byte(resp), &camp)
+	if err != nil {
+		return nil, err
+	}
+	return &camp, nil
 }
 
-func PauseCampaign(campaign Campaign) {
-	camp, err := json.Marshal(campaign)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-
+func PauseCampaign(campaign Body) (*Campaign, error) {
 	msg := Message{
 		Route: "/pause_campaign",
-		Body:  string(camp),
+		Body:  campaign,
 	}
 
 	resp := SendToQueue(msg)
-	fmt.Println(resp)
+	var camp Campaign
+	err := json.Unmarshal([]byte(resp), &camp)
+	if err != nil {
+		return nil, err
+	}
+	return &camp, nil
 }
 
-func RemoveCampaign(campaign Campaign) {
-	camp, err := json.Marshal(campaign)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-
+func RemoveCampaign(campaign Body) (*Campaign, error) {
 	msg := Message{
 		Route: "/remove_campaign",
-		Body:  string(camp),
+		Body:  campaign,
 	}
 
 	resp := SendToQueue(msg)
-	fmt.Println(resp)
+	var camp Campaign
+	err := json.Unmarshal([]byte(resp), &camp)
+	if err != nil {
+		return nil, err
+	}
+	return &camp, nil
 }

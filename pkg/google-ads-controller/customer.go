@@ -2,37 +2,46 @@ package google_ads_controller
 
 import (
 	"encoding/json"
-	"fmt"
 )
 
 type Customer struct {
-	Id           uint   `json:"id,omitempty"`
-	Name         string `json:"name,omitempty"`
-	Status       uint   `json:"status,omitempty"`
-	ResourceName string `json:"resource_name,omitempty"`
+	Id            uint   `json:"id,omitempty"`
+	Name          string `json:"name,omitempty"`
+	Budget        string `json:"budget,omitempty"`
+	Status        uint   `json:"status,omitempty"`
+	ServingStatus uint   `json:"serving_status,omitempty"`
+	ResourceName  string `json:"resource_name,omitempty"`
+	Enabled       bool   `json:"enabled,omitempty"`
 }
 
-func CreateCustomer(customerName string) {
+func CreateCustomer(customerName string) (*Customer, error) {
 	msg := Message{
 		Route: "/create_customer",
-		Body:  fmt.Sprintf("{'customer_name': '%s'}", customerName),
+		Body: Body{
+			CustomerName: customerName,
+		},
 	}
 
 	resp := SendToQueue(msg)
-	fmt.Println(resp)
+	var customer Customer
+	err := json.Unmarshal([]byte(resp), &customer)
+	if err != nil {
+		return nil, err
+	}
+	return &customer, nil
 }
 
-func GetCustomers() {
+func GetCustomers() ([]Customer, error) {
 	msg := Message{
 		Route: "/get_customers",
-		Body:  "",
 	}
 
 	resp := SendToQueue(msg)
 	var customers []Customer
 	err := json.Unmarshal([]byte(resp), &customers)
 	if err != nil {
-		fmt.Println(err)
-		return
+		return nil, err
 	}
+
+	return customers, nil
 }

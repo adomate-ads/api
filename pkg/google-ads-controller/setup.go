@@ -20,7 +20,25 @@ type RabbitMQConfig struct {
 
 type Message struct {
 	Route string `json:"route" example:"/get_customers"`
-	Body  string `json:"body" example:"{'customer_id': '1234567890'}"`
+	Body  Body   `json:"body,omitempty" example:"{'customer_name': 'Test Customer'}"`
+}
+
+type Body struct {
+	Id           uint   `json:"id,omitempty"`
+	CustomerName string `json:"customer_name,omitempty"`
+	//Campaign
+	CustomerId     uint   `json:"customer_id,omitempty"`
+	CampaignName   string `json:"campaign_name,omitempty"`
+	CampaignBudget uint   `json:"campaign_budget,omitempty"`
+	//Ad Group Ads
+	AdGroupId    uint     `json:"ad_group_id,omitempty"`
+	Headlines    []string `json:"headlines,omitempty"`
+	Descriptions []string `json:"descriptions,omitempty"`
+	FinalURL     string   `json:"final_url,omitempty"`
+	//Ad Group
+	CampaignId  uint   `json:"campaign_id,omitempty"`
+	AdGroupName string `json:"ad_group_name,omitempty"`
+	MinCPCBid   uint   `json:"min_cpc_bid,omitempty"`
 }
 
 var RMQConfig RabbitMQConfig
@@ -54,7 +72,7 @@ func SendToQueue(message Message) string {
 		RMQConfig.Queue, // name
 		false,           // durable
 		false,           // delete when unused
-		true,            // exclusive
+		false,           // exclusive
 		false,           // noWait
 		nil,             // arguments
 	)
@@ -90,7 +108,7 @@ func SendToQueue(message Message) string {
 
 	err = ch.PublishWithContext(ctx,
 		"",          // exchange
-		"rpc_queue", // routing key
+		"gac_queue", // routing key
 		false,       // mandatory
 		false,       // immediate
 		amqp.Publishing{
