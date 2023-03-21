@@ -23,6 +23,7 @@ type Message struct {
 	Message    string    `json:"message"`
 	Suggestion string    `json:"suggestion,omitempty"`
 	Time       time.Time `json:"time,omitempty"`
+	Origin     string    `json:"origin,omitempty"`
 }
 
 var RMQConfig RabbitMQConfig
@@ -70,6 +71,7 @@ func SendMessage(level string, message string, suggestion string) {
 		Message:    message,
 		Suggestion: suggestion,
 		Time:       time.Now(),
+		Origin:     "api",
 	}
 
 	msgString, err := json.Marshal(msg)
