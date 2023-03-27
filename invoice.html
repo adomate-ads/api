@@ -4,7 +4,7 @@
 <head lang="en">
     <link rel="icon" href="https://raw.githubusercontent.com/adomate-ads/frontend/master/src/assets/logo.png" />
     <link href='https://fonts.googleapis.com/css?family=Noto Sans' rel='stylesheet'>
-    <title>Adomate | Invoice # {{ .invoiceNumber }}</title>
+    <title>Adomate | Invoice # {{.InvoiceData.InvoiceNumber}}</title>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width,initial-scale=1 user-scalable=yes" />
@@ -169,26 +169,27 @@
     <br />
     <br />
     <div class="invoice-header">
-        <h2 style="text-align: center;">Adomate Invoice #{{ .invoiceNumber }}</h2>
-        <h3>Dear {{ .companyName }} Team!</h3>
-        <p>Thank you for subscribing to the following plan(s) for {{ .companyName}}. We are looking forward to see your
+        <h2 style="text-align: center;">Adomate Invoice #{{ .InvoiceData.InvoiceNumber }}</h2>
+        <h3>Dear {{ .InvoiceData.CompanyName }} Team!</h3>
+        <p>Thank you for subscribing to the following plan(s) for {{ .InvoiceData.CompanyName}}. We are looking forward
+            to see your
             business grow!</p>
         <h3>Payment Details</h3>
         <div class="payment-details">
             <img class src=" https://cdn-icons-png.flaticon.com/512/10075/10075270.png" alt="cc" />
-            {{ .ccNumber }}
+            {{ .PaymentDetails.CCNumber }}
         </div>
         <div class="payment-details-2">
             <img class src=" https://cdn-icons-png.flaticon.com/512/10075/10075308.png" alt="cc" />
-            {{ .billingDetailsname }}
+            {{ .PaymentDetails.BillingDetailsName }}
             <br />
-            {{ .billingDetailsaddressLine1 }}
+            {{ .PaymentDetails.BillingDetailsAddressLine1 }}
             <br />
-            {{ .billingDetailsaddressLine2 }}
+            {{ .PaymentDetails.BillingDetailsAddressLine2 }}
             <br />
-            {{ .billingDetailsaddressState }}
+            {{ .PaymentDetails.BillingDetailsAddressState }}
             <br />
-            {{ .billingDetailsaddressZipcode }}
+            {{ .PaymentDetails.BillingDetailsAddressZip }}
         </div>
         <br />
         <div class="table-container">
@@ -201,20 +202,20 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td>{{ .product }}</td>
-                        <td>{{ .productPrice }}</td>
+                        <td>{{ .InvoiceCosting.Product }}</td>
+                        <td>$ {{ .InvoiceCosting.ProductPrice }}</td>
                     </tr>
                     <tr>
                         <td>Sub Total</td>
-                        <td>{{ .invoiceSubtotal }}</td>
+                        <td>$ {{ .InvoiceCosting.InvoiceSubtotal }}</td>
                     </tr>
                     <tr>
                         <td>Sales Tax (8.25%)</td>
-                        <td>{{ .invoiceTax }}</td>
+                        <td>$ {{ .InvoiceCosting.InvoiceTax }}</td>
                     </tr>
                     <tr>
                         <td>Total</td>
-                        <td>{{ .invoiceTotal }}</td>
+                        <td>$ {{ .InvoiceCosting.InvoiceTotal }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -235,8 +236,8 @@
             (124) 456-7890
             <br />
             Questions? Email us at
-            <a href="mailto:support@adomate.ai?subject=Query%20for%20Invoice#{{ .invoiceNumber }}" class="adomate-email"
-                rel="noopener noreferrer">support@adomate.ai</a><br />
+            <a href="mailto:support@adomate.ai?subject=Query%20for%20Invoice#{{ .InvoiceData.InvoiceNumber }}"
+                class="adomate-email" rel="noopener noreferrer">support@adomate.ai</a><br />
             <a href="https://adomate.ai/" target="_blank" rel="noopener noreferrer">
                 <img class="banner" style="height: auto; width: 10%;"
                     src="https://raw.githubusercontent.com/adomate-ads/frontend/master/src/assets/logo.png"
