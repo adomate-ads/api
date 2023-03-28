@@ -5,6 +5,7 @@ import (
 	"github.com/adomate-ads/api/docs"
 	"github.com/adomate-ads/api/middleware/auth"
 	"github.com/adomate-ads/api/models"
+	"github.com/adomate-ads/api/pkg/discord"
 	"github.com/adomate-ads/api/pkg/email"
 	google_ads "github.com/adomate-ads/api/pkg/google-ads"
 	"github.com/adomate-ads/api/pkg/stripe"
@@ -14,6 +15,7 @@ import (
 	gads "github.com/adomate-ads/api/v1/google-ads"
 	"github.com/adomate-ads/api/v1/industry"
 	"github.com/adomate-ads/api/v1/order"
+	"github.com/adomate-ads/api/v1/service"
 	"github.com/adomate-ads/api/v1/user"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/contrib/sessions"
@@ -60,6 +62,8 @@ func main() {
 	stripe.SetupProducts()
 	//stripe.GetSubscriptions()
 
+	discord.Setup()
+
 	models.ConnectDatabase(models.Config(), false)
 	email.Setup()
 
@@ -90,6 +94,7 @@ func main() {
 	billing.Routes(v1)
 	campaign.Routes(v1)
 	order.Routes(v1)
+	service.Routes(v1)
 	gads.Routes(v1)
 
 	// Static files, such as images, css, and js

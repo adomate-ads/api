@@ -130,7 +130,7 @@ func GetBillings(c *gin.Context) {
 // @Tags Billing
 // @Accept */*
 // @Produce json
-// @Param id path integer true "Billing ID"
+// @Param id path integer true "Company ID"
 // @Success 200 {object} []models.Billing
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 401 {object} dto.ErrorResponse
@@ -197,7 +197,6 @@ func GetBilling(c *gin.Context) {
 	c.JSON(http.StatusOK, billing)
 }
 
-// This will need to be tested with unit tests or something cause honestly i've never handled a patch request before
 type UpdateRequest struct {
 	Company  string    `json:"company"`
 	Amount   float64   `json:"amount"`
@@ -241,13 +240,6 @@ func UpdateBilling(c *gin.Context) {
 		return
 	}
 
-	// Validate form input
-	// TODO - This needs to be verified, we might need to add another flag for if it is not passed there for not changed.
-	if request.Status != "paid" && request.Status != "unpaid" && request.Status != "pending" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Status input"})
-		return
-	}
-
 	// Get company ID
 	if request.Company != "" {
 		company, err := models.GetCompanyByName(request.Company)
@@ -264,6 +256,10 @@ func UpdateBilling(c *gin.Context) {
 	}
 
 	if request.Status != "" {
+		if request.Status != "paid" && request.Status != "unpaid" && request.Status != "pending" {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Status input"})
+			return
+		}
 		billing.Status = request.Status
 	}
 

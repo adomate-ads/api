@@ -39,9 +39,13 @@ func CreateOrder(c *gin.Context) {
 	}
 
 	// Validate form input
-	// TODO - Check the Status fields are valid
 	if strings.Trim(request.Company, " ") == "" || strings.Trim(request.Status, " ") == "" || strings.Trim(request.Type, " ") == "" || request.Amount < 0 || (request.Type != "base" && request.Type != "premium" && request.Type != "enterprise" && request.Type != "ads") {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Parameters can't be empty"})
+		return
+	}
+
+	if request.Status != "pending" && request.Status != "active" && request.Status != "cancelled" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Status input"})
 		return
 	}
 
