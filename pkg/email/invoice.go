@@ -1,13 +1,8 @@
-package main
+package email
 
 import (
-	"fmt"
 	"html/template"
-	"log"
 	"net/http"
-	"os"
-	"os/signal"
-	"syscall"
 )
 
 type invoiceData struct {
@@ -16,16 +11,16 @@ type invoiceData struct {
 }
 
 type invoiceCosting struct {
-	Product        string
-	ProductPrice   float32
+	Product         string
+	ProductPrice    float32
 	InvoiceSubtotal float32
 	InvoiceTax      float32
 	InvoiceTotal    float32
 }
 
 type paymentDetails struct {
-	CCNumber                  int
-	BillingDetailsName        string
+	CCNumber                   int
+	BillingDetailsName         string
 	BillingDetailsAddressLine1 string
 	BillingDetailsAddressLine2 string
 	BillingDetailsAddressState string
@@ -39,7 +34,7 @@ type emailData struct {
 }
 
 func invoiceEmailPageHandler(w http.ResponseWriter, r *http.Request) {
-	t, err := template.ParseFiles("invoice.html")
+	t, err := template.ParseFiles("new-invoice.html")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -49,8 +44,8 @@ func invoiceEmailPageHandler(w http.ResponseWriter, r *http.Request) {
 		InvoiceNumber: 1934,
 		CompanyName:   "Adomate LLC",
 	}
-    //TODO add support for multiple items
-    //use {{.range}} in HTML to loop
+	//TODO add support for multiple items
+	//use {{.range}} in HTML to loop
 	costing := invoiceCosting{
 		Product:      "Starter",
 		ProductPrice: 20.00,
@@ -61,12 +56,12 @@ func invoiceEmailPageHandler(w http.ResponseWriter, r *http.Request) {
 	costing.InvoiceTotal = costing.InvoiceSubtotal + costing.InvoiceTax
 
 	payment := paymentDetails{
-		CCNumber:                  5634,
-		BillingDetailsName:        "Adomate LLC",
+		CCNumber:                   5634,
+		BillingDetailsName:         "Adomate LLC",
 		BillingDetailsAddressLine1: "17350 State Highway 249 STE 220",
 		BillingDetailsAddressLine2: "Houston",
 		BillingDetailsAddressState: "TX",
-		BillingDetailsAddressZip:    77064,
+		BillingDetailsAddressZip:   77064,
 	}
 
 	data := emailData{
@@ -80,18 +75,4 @@ func invoiceEmailPageHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-}
-
-func main() {
-	http.HandleFunc("/AdomateInvoice", invoiceEmailPageHandler)
-
-	log.Printf("Updating Invoice...")
-	fmt.Println("Server is now running. Press CTRL-C to exit.")
-	//http.ListenAndServe(":8080", nil)
-	err := http.ListenAndServe(":8080", nil)
-    if err != nil {
-        log.Fatal("HTTP Error: ", err)
-    }
-	sc := make(chan os.Signal, 1)
-	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
 }

@@ -280,10 +280,9 @@ func ForgotPassword(c *gin.Context) {
 		return
 	}
 
-	// Send welcome Email
 	data := email.PasswordResetData{
-		FirstName:         user.FirstName,
-		PasswordResetLink: fmt.Sprintf("https://adomate.com/reset/%s", pr.UUID),
+		FirstName:        user.FirstName,
+		PasswordResetURL: fmt.Sprintf("https://adomate.com/reset/%s", pr.UUID),
 	}
 	body := new(bytes.Buffer)
 	if err := email.Templates["reset-password"].Tmpl.Execute(body, data); err != nil {
