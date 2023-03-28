@@ -50,6 +50,7 @@ func invoiceEmailPageHandler(w http.ResponseWriter, r *http.Request) {
 		CompanyName:   "Adomate LLC",
 	}
     //TODO add support for multiple items
+    //use {{.range}} in HTML to loop
 	costing := invoiceCosting{
 		Product:      "Starter",
 		ProductPrice: 20.00,
@@ -86,8 +87,11 @@ func main() {
 
 	log.Printf("Updating Invoice...")
 	fmt.Println("Server is now running. Press CTRL-C to exit.")
-	http.ListenAndServe(":8080", nil)
-
+	//http.ListenAndServe(":8080", nil)
+	err := http.ListenAndServe(":8080", nil)
+    if err != nil {
+        log.Fatal("HTTP Error: ", err)
+    }
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
 }
