@@ -4,7 +4,7 @@
 <head lang="en">
     <link rel="icon" href="https://raw.githubusercontent.com/adomate-ads/frontend/master/src/assets/logo.png" />
     <link href='https://fonts.googleapis.com/css?family=Noto Sans' rel='stylesheet'>
-    <title>Adomate | Invoice # {{.InvoiceData.InvoiceNumber}}</title>
+    <title>Adomate | Invoice # {{ .InvoiceID }}</title>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width,initial-scale=1 user-scalable=yes" />
@@ -169,27 +169,30 @@
     <br />
     <br />
     <div class="invoice-header">
-        <h2 style="text-align: center;">Adomate Invoice #{{ .InvoiceData.InvoiceNumber }}</h2>
-        <h3>Dear {{ .InvoiceData.CompanyName }} Team!</h3>
-        <p>Thank you for subscribing to the following plan(s) for {{ .InvoiceData.CompanyName}}. We are looking forward
+        <h2 style="text-align: center;">Adomate Invoice #{{ .InvoiceID }}</h2>
+        <h3>Dear {{ .Company }} Team!</h3>
+        <p>Thank you for subscribing to the following plan(s) for {{ .Company }}. We are looking forward
             to see your
             business grow!</p>
         <h3>Payment Details</h3>
         <div class="payment-details">
             <img class src=" https://cdn-icons-png.flaticon.com/512/10075/10075270.png" alt="cc" />
-            Ending with {{ .PaymentDetails.CCNumber }}
+            {{ .Status }}
+            <br />
+            Ending with {{ .PaymentMethod }}
         </div>
+        <br />
         <div class="payment-details-2">
             <img class src=" https://cdn-icons-png.flaticon.com/512/10075/10075308.png" alt="cc" />
-            {{ .PaymentDetails.BillingDetailsName }}
+            {{ .Company }}
             <br />
-            {{ .PaymentDetails.BillingDetailsAddressLine1 }}
+            {{ .CompanyAddressLine1 }}
             <br />
-            {{ .PaymentDetails.BillingDetailsAddressLine2 }}
+            {{ .CompanyAddressLine2 }}
             <br />
-            {{ .PaymentDetails.BillingDetailsAddressState }}
+            {{ .CompanyAddressState }}
             <br />
-            {{ .PaymentDetails.BillingDetailsAddressZip }}
+            {{ .CompanyAddressZip }}
         </div>
         <br />
         <div class="table-container">
@@ -202,20 +205,20 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td>{{ .InvoiceCosting.Product }}</td>
-                        <td>$ {{ .InvoiceCosting.ProductPrice }}</td>
+                        <td>{{ .Product }}</td>
+                        <td>$ {{ .ProductPrice }}</td>
                     </tr>
                     <tr>
                         <td>Sub Total</td>
-                        <td>$ {{ .InvoiceCosting.InvoiceSubtotal }}</td>
+                        <td>$ {{ .PreTaxAmount }}</td>
                     </tr>
                     <tr>
                         <td>Sales Tax (8.25%)</td>
-                        <td>$ {{ .InvoiceCosting.InvoiceTax }}</td>
+                        <td>$ {{ .TaxAmount }}</td>
                     </tr>
                     <tr>
                         <td>Total</td>
-                        <td>$ {{ .InvoiceCosting.InvoiceTotal }}</td>
+                        <td>$ {{ .InvoiceAmount }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -231,13 +234,17 @@
     <!--Footer Section-->
     <div class="invoice-footer">
         <p class="address">
-            17350 State Highway 249 STE 220. Houston, Texas 77064
+            <a href="https://goo.gl/maps/pYFsDxSGkawdB5A18" style="border-bottom: 1px dotted"> 17350 State Highway 249
+                STE 220. Houston, Texas 77064
+            </a>
             <br />
-            (124) 456-7890
+            <a href="tel:1244567890" style="border-bottom: 1px dotted"> (124) 456-7890
+            </a>
             <br />
             Questions? Email us at
-            <a href="mailto:support@adomate.ai?subject=Query%20for%20Invoice#{{ .InvoiceData.InvoiceNumber }}"
-                class="adomate-email" rel="noopener noreferrer">support@adomate.ai</a><br />
+            <a href="mailto:support@adomate.ai?subject=Query%20for%20Invoice#{{ .InvoiceID }} from {{ .Company }}"
+                class="adomate-email" rel="noopener noreferrer"
+                style="border-bottom: 1px dotted #637efe">support@adomate.ai</a><br />
             <a href="https://adomate.ai/" target="_blank" rel="noopener noreferrer">
                 <img class="banner" style="height: auto; width: 10%;"
                     src="https://raw.githubusercontent.com/adomate-ads/frontend/master/src/assets/logo.png"
