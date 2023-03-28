@@ -45,7 +45,7 @@
         color: #637efe;
     }
 
-    .invoice-header {
+    .remainder-header {
         width: 85%;
         max-width: 780px;
         height: auto;
@@ -57,7 +57,7 @@
     }
 
 
-    .invoice-footer {
+    .remainder-footer {
         width: 85%;
         max-width: 780px;
         height: auto;
@@ -98,11 +98,11 @@
         alt="Adomate Banner" />
     <br />
     <br />
-    <div class="invoice-header">
+    <div class="remainder-header">
         <h2 style="text-align: center;">Adomate Payment Remainder</h2>
         <h3>Dear {{ .Company }} Team!</h3>
         <p>This is an automated email to remind you that your account with us currently has an outstanding balance of
-            {{ .InvoiceAmount }}. We kindly request that you settle this balance as soon as {{ .DueAt }}.
+            <b>{{ .InvoiceAmount }}</b>. We kindly request that you settle this balance as soon as <b>{{ .DueAt }}</b>.
             <br /><br />
             If this balance remains unpaid, your services with us will expire. We encourage you to take the
             necessary steps to ensure that your account is brought up to date before this
@@ -115,7 +115,7 @@
         </p>
         <p>
             To manage your subscriptions, login to your <a href="https://adomate.ai/" class="adomate-email"
-                rel="noopener noreferrer">Adomate Dashboard</a>.<br /><br />
+                rel="noopener noreferrer">Adomate Dashboard</a>.<br />
             Thank you for choosing Adomate.<br />
             Best Regards,
             <br />
@@ -124,7 +124,7 @@
     </div>
     <br />
     <!--Footer Section-->
-    <div class="invoice-footer">
+    <div class="remainder-footer">
         <p class="address">
             <a href="https://goo.gl/maps/pYFsDxSGkawdB5A18" style="border-bottom: 1px dotted"> 17350 State Highway 249
                 STE 220. Houston, Texas 77064
