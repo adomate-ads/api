@@ -71,7 +71,7 @@ func CreateCampaign(c *gin.Context) {
 
 	data := email.NewCampaign{
 		Company:   company.Name,
-		Campaign:  campaign.Name,
+		Campaign:  campaign.ResourceName,
 		StartDate: time.Now().Format("2006-01-02"),
 	}
 	body := new(bytes.Buffer)
@@ -216,7 +216,7 @@ func DeleteCampaign(c *gin.Context) {
 
 	data := email.DeleteCampaign{
 		Company:  campaign.Company.Name,
-		Campaign: campaign.Name,
+		Campaign: campaign.ResourceName,
 		Time:     time.Now().Format("2006-01-02 15:04:05"),
 	}
 	body := new(bytes.Buffer)
