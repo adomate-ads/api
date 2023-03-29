@@ -115,6 +115,7 @@ type MonthlyPerformanceReport struct {
 type SupportAutoResponse struct {
 	SupportID   string `json:"support_id" example:"1234"`
 	SupportName string `json:"support_name" example:"John"`
+	Company     string `json:"company" example:"Adomate"`
 }
 
 type SupportManualResponse struct {
