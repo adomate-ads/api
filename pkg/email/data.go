@@ -10,6 +10,7 @@ type WelcomeData struct {
 
 type PasswordResetData struct {
 	FirstName        string `json:"first_name" example:"John"`
+	Company          string `json:"company" example:"Adomate"`
 	PasswordResetURL string `json:"password_reset_URL" example:"https://adomate.com/reset-password/1234"`
 }
 
@@ -119,6 +120,7 @@ type SupportAutoResponse struct {
 }
 
 type SupportManualResponse struct {
-	SupportID   string `json:"support_id" example:"1234"`
-	SupportName string `json:"support_name" example:"John"`
+	SupportID        string `json:"support_id" example:"1234"`
+	SupportName      string `json:"support_name" example:"John"`
+	SupportEmailBody string `json:"support_email_body" example:"John should restart his router"`
 }

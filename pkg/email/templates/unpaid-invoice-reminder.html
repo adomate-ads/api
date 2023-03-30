@@ -3,7 +3,7 @@
     <head lang="en">
         <link rel="icon" href="https://raw.githubusercontent.com/adomate-ads/frontend/master/src/assets/logo.png" />
         <link href="https://fonts.googleapis.com/css?family=Noto Sans" rel="stylesheet" />
-        <title>Adomate | Payment Remainder {{ .Company }}</title>
+        <title>Adomate | Payment Reminder {{ .Company }}</title>
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width,initial-scale=1 user-scalable=yes" />
@@ -44,7 +44,7 @@
             color: #637efe;
         }
 
-        .remainder-header {
+        .reminder-header {
             width: 85%;
             max-width: 780px;
             height: auto;
@@ -55,7 +55,7 @@
             margin: auto;
         }
 
-        .remainder-footer {
+        .reminder-footer {
             width: 85%;
             max-width: 780px;
             height: auto;
@@ -89,14 +89,14 @@
     <body>
         <a href="" target="_blank" rel="noopener noreferrer">View email in browser</a>
         <a href="javascript:window.print()" class="right-link">Print Email</a>
-        <!--If vue has a function, use that-->
+        
         <br />
         <br />
         <img class="banner" src="https://raw.githubusercontent.com/adomate-ads/frontend/master/src/assets/adomate.svg" alt="Adomate Banner" />
         <br />
         <br />
-        <div class="remainder-header">
-            <h2 style="text-align: center;">Adomate Payment Remainder</h2>
+        <div class="reminder-header">
+            <h2 style="text-align: center;">Adomate Payment Reminder</h2>
             <h3>Dear {{ .Company }} Team!</h3>
             <p style="line-height: 1.75;">
                 This is an automated email to remind you that your account with us currently has an outstanding balance of <b>{{ .InvoiceAmount }}</b>. We kindly request that you settle this balance as soon as <b>{{ .DueAt }}</b>.
@@ -114,7 +114,7 @@
         </div>
         <br />
         <!--Footer Section-->
-        <div class="remainder-footer">
+        <div class="reminder-footer">
             <p class="address">
                 <a href="https://goo.gl/maps/pYFsDxSGkawdB5A18" style="border-bottom: 1px dotted;"> 17350 State Highway 249 STE 220. Houston, Texas 77064 </a>
                 <br />
