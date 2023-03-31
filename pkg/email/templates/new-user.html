@@ -3,7 +3,7 @@
     <head lang="en">
         <link rel="icon" href="https://raw.githubusercontent.com/adomate-ads/frontend/master/src/assets/logo.png" />
         <link href="https://fonts.googleapis.com/css?family=Noto Sans" rel="stylesheet" />
-        <title>Adomate | new-user to Adomate</title>
+        <title>Adomate | {{ .FirstName }}  Access Granted</title>
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width,initial-scale=1 user-scalable=yes" />
@@ -89,26 +89,18 @@
     <body>
         <a href="" target="_blank" rel="noopener noreferrer">View email in browser</a>
         <a href="javascript:window.print()" class="right-link">Print Email</a>
-        
+
         <br />
         <br />
         <img class="banner" src="https://raw.githubusercontent.com/adomate-ads/frontend/master/src/assets/adomate.svg" alt="Adomate Banner" />
         <br />
         <br />
         <div class="new-user-header">
-            <h2 style="text-align: center;">Welcome to Adomate!</h2>
+            <h2 style="text-align: center;">Adomate Dashboard {{ .FirstName }} Added</h2>
             <h3>Dear {{ .FirstName }},</h3>
             <p style="line-height: 1.75;">
-                Thank you for choosing Adomate!
-                <br />
-                We are excited to have you on board and are looking forward to working with you.
-                <br />
-                Please do not hesitate to reach out to us at
-                <a href="mailto:support@adomate.ai?subject=Query%20from%20{{ .FirstName }}%20from%20{{ .Company }}" class="adomate-email" rel="noopener noreferrer" style="border-bottom: 1px dotted #637efe;">support@adomate.ai</a>
-                if you have any questions or concerns. We are always available to assist you in any way we can.
+               We have granted {{ .FirstName }} access to {{ .CompanyName }}'s Adomate Dashboard on {{ .Time }}.
             </p>
-            To manage {{ .Company }} subscriptions and more, login to your <a href="https://adomate.ai/" class="adomate-email" rel="noopener noreferrer">Adomate Dashboard</a>.<br />
-               
             <p>
                 Best Regards,
                 <br />
