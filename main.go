@@ -52,8 +52,12 @@ func OnlineCheck(c *gin.Context) {
 // @BasePath /
 // @schemes http https
 func main() {
+	if os.Getenv("GIN_MODE") == "release" {
+		gin.SetMode(gin.ReleaseMode)
+	}
+
 	err := godotenv.Load(".env")
-	if err != nil {
+	if err != nil && os.Getenv("GIN_MODE") != "release" {
 		log.Fatalf("Error loading .env file.")
 	}
 
