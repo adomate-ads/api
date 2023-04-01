@@ -1,6 +1,7 @@
 package campaign
 
 import (
+	"bytes"
 	"github.com/adomate-ads/api/models"
 	"github.com/adomate-ads/api/pkg/auth"
 	"github.com/adomate-ads/api/pkg/email"
@@ -8,6 +9,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type CreateRequest struct {
@@ -67,7 +69,17 @@ func CreateCampaign(c *gin.Context) {
 		return
 	}
 
-	email.SendEmail(company.Email, email.Templates["new-campaign"].Subject, email.Templates["new-campaign"].Body)
+	data := email.NewCampaign{
+		Company:   company.Name,
+		Campaign:  campaign.ResourceName,
+		StartDate: time.Now().Format("2006-01-02"),
+	}
+	body := new(bytes.Buffer)
+	if err := email.Templates["new-campaign"].Tmpl.Execute(body, data); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	email.SendEmail(company.Email, email.Templates["new-campaign"].Subject, body.String())
 
 	c.JSON(http.StatusCreated, gin.H{"message": "Successfully registered campaign"})
 }
@@ -202,7 +214,17 @@ func DeleteCampaign(c *gin.Context) {
 		return
 	}
 
-	email.SendEmail(campaign.Company.Email, email.Templates["delete-campaign"].Subject, email.Templates["delete-campaign"].Body)
+	data := email.DeleteCampaign{
+		Company:  campaign.Company.Name,
+		Campaign: campaign.ResourceName,
+		Time:     time.Now().Format("2006-01-02 15:04:05"),
+	}
+	body := new(bytes.Buffer)
+	if err := email.Templates["delete-campaign"].Tmpl.Execute(body, data); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	email.SendEmail(campaign.Company.Email, email.Templates["delete-campaign"].Subject, body.String())
 
 	c.JSON(http.StatusOK, gin.H{"message": "Campaign deleted successfully"})
 }

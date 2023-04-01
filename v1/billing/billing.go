@@ -1,6 +1,7 @@
 package billing
 
 import (
+	"bytes"
 	"github.com/adomate-ads/api/models"
 	"github.com/adomate-ads/api/pkg/auth"
 	"github.com/adomate-ads/api/pkg/email"
@@ -86,7 +87,19 @@ func CreateBilling(c *gin.Context) {
 	//	Description: "10/12-12/10 something like that..",
 	//}
 
-	email.SendEmail(company.Email, email.Templates["new-invoice"].Subject, email.Templates["new-invoice"].Body)
+	data := email.NewInvoice{
+		InvoiceID: b.ID,
+		Company:   company.Name,
+		Amount:    b.Amount,
+		Status:    b.Status,
+		DueAt:     b.DueAt.Format("2006-01-02"),
+	}
+	body := new(bytes.Buffer)
+	if err := email.Templates["new-invoice"].Tmpl.Execute(body, data); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	email.SendEmail(company.Email, email.Templates["new-invoice"].Subject, body.String())
 
 	c.JSON(http.StatusCreated, gin.H{"message": "Successfully created bill"})
 }
@@ -302,8 +315,6 @@ func DeleteBilling(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-
-	email.SendEmail(billing.Company.Email, email.Templates["delete-invoice"].Subject, email.Templates["delete-invoice"].Body)
 
 	c.JSON(http.StatusOK, gin.H{"message": "Bill deleted successfully"})
 }

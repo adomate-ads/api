@@ -101,6 +101,9 @@ func main() {
 	service.Routes(v1)
 	gads.Routes(v1)
 
+	// Static files, such as images, css, and js
+	v1.StaticFS("/storage", gin.Dir("./storage", false))
+
 	if err := r.Run(fmt.Sprintf(":%s", os.Getenv("PORT"))); err != nil {
 		log.Fatal("Unable to start server:", err)
 	}

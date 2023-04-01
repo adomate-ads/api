@@ -1,6 +1,7 @@
 package user
 
 import (
+	"bytes"
 	"github.com/adomate-ads/api/models"
 	"github.com/adomate-ads/api/pkg/auth"
 	"github.com/adomate-ads/api/pkg/email"
@@ -8,6 +9,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type CreateRequest struct {
@@ -83,8 +85,28 @@ func CreateUser(c *gin.Context) {
 		return
 	}
 
-	email.SendEmail(company.Email, email.Templates["new-user-notification"].Subject, email.Templates["new-user-notification"].Body)
-	email.SendEmail(u.Email, email.Templates["new-user"].Subject, email.Templates["new-user"].Body)
+	data := email.NewUser{
+		FirstName: u.FirstName,
+		Company:   u.Company.Name,
+	}
+	body := new(bytes.Buffer)
+	if err := email.Templates["new-user"].Tmpl.Execute(body, data); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	email.SendEmail(u.Email, email.Templates["new-user"].Subject, body.String())
+
+	dataNotification := email.NewUserNotification{
+		FirstName: u.FirstName,
+		Company:   u.Company.Name,
+		Time:      time.Now().Format("2006-01-02 15:04:05"),
+	}
+	bodyNotification := new(bytes.Buffer)
+	if err := email.Templates["new-user-notification"].Tmpl.Execute(bodyNotification, dataNotification); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	email.SendEmail(company.Email, email.Templates["new-user-notification"].Subject, bodyNotification.String())
 
 	c.JSON(http.StatusCreated, gin.H{"message": "Successfully created user"})
 }
@@ -266,8 +288,29 @@ func DeleteUser(c *gin.Context) {
 		return
 	}
 
-	email.SendEmail(user.Company.Email, email.Templates["delete-user-notification"].Subject, email.Templates["delete-user-notification"].Body)
-	email.SendEmail(user.Email, email.Templates["delete-user"].Subject, email.Templates["delete-user"].Body)
+	data := email.DeleteUser{
+		FirstName: user.FirstName,
+		Company:   user.Company.Name,
+		Time:      time.Now().Format("2006-01-02 15:04:05"),
+	}
+	body := new(bytes.Buffer)
+	if err := email.Templates["delete-user"].Tmpl.Execute(body, data); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	email.SendEmail(user.Email, email.Templates["delete-user"].Subject, body.String())
+
+	dataNotification := email.DeleteUserNotification{
+		FirstName: user.FirstName,
+		Company:   user.Company.Name,
+		Time:      time.Now().Format("2006-01-02 15:04:05"),
+	}
+	bodyNotification := new(bytes.Buffer)
+	if err := email.Templates["delete-user-notification"].Tmpl.Execute(bodyNotification, dataNotification); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	email.SendEmail(user.Company.Email, email.Templates["delete-user-notification"].Subject, bodyNotification.String())
 
 	c.JSON(http.StatusOK, gin.H{"message": "User deleted successfully"})
 }

@@ -1,9 +1,11 @@
 package user
 
 import (
+  "bytes"
 	"fmt"
 	"github.com/adomate-ads/api/models"
 	"github.com/adomate-ads/api/pkg/discord"
+  "github.com/adomate-ads/api/pkg/email"
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -202,6 +204,19 @@ func Register(c *gin.Context) {
 		return
 	}
 
+	// Send welcome Email
+	data := email.WelcomeData{
+		FirstName: u.FirstName,
+		Company:   u.Company.Name,
+		Domain:    u.Company.Domain,
+	}
+	body := new(bytes.Buffer)
+	if err := email.Templates["register"].Tmpl.Execute(body, data); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	email.SendEmail(u.Email, email.Templates["register"].Subject, body.String())
+
 	c.JSON(http.StatusCreated, gin.H{"message": "Successfully created user and company"})
 	// TODO - In the future, we should send an email to the user with a link to verify their email address
 	// TODO - In the future, we should possibly send a session token back to the user
@@ -271,9 +286,19 @@ func ForgotPassword(c *gin.Context) {
 		return
 	}
 
+	data := email.PasswordResetData{
+		FirstName:        user.FirstName,
+		PasswordResetURL: fmt.Sprintf("https://adomate.com/reset/%s", pr.UUID),
+	}
+	body := new(bytes.Buffer)
+	if err := email.Templates["reset-password"].Tmpl.Execute(body, data); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	email.SendEmail(user.Email, email.Templates["reset-password"].Subject, body.String())
+  
 	discord.SendMessage("logging", fmt.Sprintf("User %s has requested a password reset.", user.Email), "NA")
 
-	// TODO - Send email to user with password reset link
 	c.JSON(http.StatusOK, gin.H{"message": "Successfully sent password reset email"})
 }
 
