@@ -2,14 +2,15 @@ package billing
 
 import (
 	"bytes"
-	"github.com/adomate-ads/api/models"
-	"github.com/adomate-ads/api/pkg/auth"
-	"github.com/adomate-ads/api/pkg/email"
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/adomate-ads/api/models"
+	"github.com/adomate-ads/api/pkg/auth"
+	"github.com/adomate-ads/api/pkg/email"
+	"github.com/gin-gonic/gin"
 )
 
 type CreateRequest struct {
@@ -90,9 +91,10 @@ func CreateBilling(c *gin.Context) {
 	data := email.NewInvoice{
 		InvoiceID: b.ID,
 		Company:   company.Name,
-		Amount:    b.Amount,
-		Status:    b.Status,
-		DueAt:     b.DueAt.Format("2006-01-02"),
+		// FIXME
+		// Amount:    b.Amount,
+		Status: b.Status,
+		DueAt:  b.DueAt.Format("2006-01-02"),
 	}
 	body := new(bytes.Buffer)
 	if err := email.Templates["new-invoice"].Tmpl.Execute(body, data); err != nil {
