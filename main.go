@@ -48,9 +48,9 @@ func OnlineCheck(c *gin.Context) {
 // @contact.url https://adomate.com/support
 // @contact.email support@adomate.com
 
-// @host localhost:3000
+// @host api.adomate.ai
 // @BasePath /
-// @schemes http https
+// @schemes https
 func main() {
 	if os.Getenv("GIN_MODE") == "release" {
 		gin.SetMode(gin.ReleaseMode)

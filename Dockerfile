@@ -14,13 +14,14 @@ RUN go mod download
 RUN CGO_ENABLED=0 go build -o main .
 
 # Use the light weight alpine image as the base image
-FROM alpine:3.17.2
+FROM alpine:3.17.3
 
 # Set the working directory in the container
 WORKDIR /app
 
 # Copy the built application from the builder image
 COPY --from=builder /app/main .
+COPY --from=builder /app/pkg/email/templates ./pkg/email/templates
 
 # Expose port 3000 to the host
 EXPOSE 3000

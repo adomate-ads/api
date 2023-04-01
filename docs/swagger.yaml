@@ -24,19 +24,13 @@ definitions:
     type: object
   campaign.CreateRequest:
     properties:
-      bidding_strategy:
-        type: string
-      budget:
-        type: integer
       company:
         type: string
-      name:
+      resource_name:
         type: string
     required:
-    - bidding_strategy
-    - budget
     - company
-    - name
+    - resource_name
     type: object
   company.CreateRequest:
     properties:
@@ -90,7 +84,14 @@ definitions:
       resource_name:
         type: string
     type: object
-  gads.Campaign:
+  gads.Keyword:
+    properties:
+      id:
+        type: integer
+      keyword:
+        type: string
+    type: object
+  helpers.Campaign:
     properties:
       id:
         type: integer
@@ -99,7 +100,7 @@ definitions:
       resource_name:
         type: string
     type: object
-  gads.Client:
+  helpers.Client:
     properties:
       current_code:
         type: string
@@ -110,34 +111,12 @@ definitions:
       timezone:
         type: string
     type: object
-  gads.Keyword:
-    properties:
-      id:
-        type: integer
-      keyword:
-        type: string
-    type: object
   industry.CreateRequest:
     properties:
       industry:
         type: string
     required:
     - industry
-    type: object
-  models.BiddingStrategy:
-    properties:
-      created_at:
-        example: "2020-01-01T00:00:00Z"
-        type: string
-      id:
-        example: 1
-        type: integer
-      strategy:
-        example: Cost Optimize
-        type: string
-      updated_at:
-        example: "2020-01-01T00:00:00Z"
-        type: string
     type: object
   models.Billing:
     properties:
@@ -179,14 +158,6 @@ definitions:
     type: object
   models.Campaign:
     properties:
-      bidding_strategy:
-        $ref: '#/definitions/models.BiddingStrategy'
-      bidding_strategy_id:
-        example: 1
-        type: integer
-      budget:
-        example: 1000
-        type: integer
       company:
         $ref: '#/definitions/models.Company'
       company_id:
@@ -195,14 +166,13 @@ definitions:
       created_at:
         example: "2020-01-01T00:00:00Z"
         type: string
+      google_id:
+        example: 1
+        type: integer
       id:
         example: 1
         type: integer
-      keywords:
-        items:
-          $ref: '#/definitions/models.Keyword'
-        type: array
-      name:
+      resource_name:
         example: Primary Monthly
         type: string
       updated_at:
@@ -211,6 +181,9 @@ definitions:
     type: object
   models.Company:
     properties:
+      client_id:
+        example: 1
+        type: integer
       created_at:
         example: "2020-01-01T00:00:00Z"
         type: string
@@ -246,25 +219,6 @@ definitions:
       id:
         example: 1
         type: integer
-      updated_at:
-        example: "2020-01-01T00:00:00Z"
-        type: string
-    type: object
-  models.Keyword:
-    properties:
-      cpc:
-        description: TODO - Add Location
-        example: 9.25
-        type: number
-      created_at:
-        example: "2020-01-01T00:00:00Z"
-        type: string
-      id:
-        example: 1
-        type: integer
-      keyword:
-        example: Dentistry
-        type: string
       updated_at:
         example: "2020-01-01T00:00:00Z"
         type: string
@@ -390,7 +344,7 @@ definitions:
     - status
     - type
     type: object
-  services.CreateRequest:
+  service.CreateRequest:
     properties:
       company:
         type: string
@@ -471,7 +425,7 @@ definitions:
     required:
     - password
     type: object
-host: localhost:3000
+host: api.adomate.ai
 info:
   contact:
     email: support@adomate.com
@@ -1200,7 +1154,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/gads.Campaign'
+            $ref: '#/definitions/helpers.Campaign'
         "400":
           description: Bad Request
           schema:
@@ -1224,7 +1178,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/gads.Campaign'
+              $ref: '#/definitions/helpers.Campaign'
             type: array
         "500":
           description: Internal Server Error
@@ -1251,7 +1205,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/gads.Campaign'
+              $ref: '#/definitions/helpers.Campaign'
             type: array
         "500":
           description: Internal Server Error
@@ -1272,7 +1226,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/gads.Client'
+              $ref: '#/definitions/helpers.Client'
             type: array
         "500":
           description: Internal Server Error
@@ -1298,7 +1252,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/gads.Client'
+            $ref: '#/definitions/helpers.Client'
         "400":
           description: Bad Request
           schema:
@@ -1867,7 +1821,7 @@ paths:
         name: create
         required: true
         schema:
-          $ref: '#/definitions/services.CreateRequest'
+          $ref: '#/definitions/service.CreateRequest'
       produces:
       - application/json
       responses:
@@ -1981,7 +1935,7 @@ paths:
         name: update
         required: true
         schema:
-          $ref: '#/definitions/services.CreateRequest'
+          $ref: '#/definitions/service.CreateRequest'
       - description: Service ID
         in: path
         name: id
@@ -2296,6 +2250,5 @@ paths:
       tags:
       - User
 schemes:
-- http
 - https
 swagger: "2.0"

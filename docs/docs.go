@@ -1103,7 +1103,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/gads.Campaign"
+                            "$ref": "#/definitions/helpers.Campaign"
                         }
                     },
                     "400": {
@@ -1140,7 +1140,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/gads.Campaign"
+                                "$ref": "#/definitions/helpers.Campaign"
                             }
                         }
                     },
@@ -1181,7 +1181,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/gads.Campaign"
+                                "$ref": "#/definitions/helpers.Campaign"
                             }
                         }
                     },
@@ -1213,7 +1213,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/gads.Client"
+                                "$ref": "#/definitions/helpers.Client"
                             }
                         }
                     },
@@ -1252,7 +1252,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/gads.Client"
+                            "$ref": "#/definitions/helpers.Client"
                         }
                     },
                     "400": {
@@ -2793,22 +2793,14 @@ const docTemplate = `{
         "campaign.CreateRequest": {
             "type": "object",
             "required": [
-                "bidding_strategy",
-                "budget",
                 "company",
-                "name"
+                "resource_name"
             ],
             "properties": {
-                "bidding_strategy": {
-                    "type": "string"
-                },
-                "budget": {
-                    "type": "integer"
-                },
                 "company": {
                     "type": "string"
                 },
-                "name": {
+                "resource_name": {
                     "type": "string"
                 }
             }
@@ -2892,7 +2884,18 @@ const docTemplate = `{
                 }
             }
         },
-        "gads.Campaign": {
+        "gads.Keyword": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "keyword": {
+                    "type": "string"
+                }
+            }
+        },
+        "helpers.Campaign": {
             "type": "object",
             "properties": {
                 "id": {
@@ -2906,7 +2909,7 @@ const docTemplate = `{
                 }
             }
         },
-        "gads.Client": {
+        "helpers.Client": {
             "type": "object",
             "properties": {
                 "current_code": {
@@ -2923,17 +2926,6 @@ const docTemplate = `{
                 }
             }
         },
-        "gads.Keyword": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer"
-                },
-                "keyword": {
-                    "type": "string"
-                }
-            }
-        },
         "industry.CreateRequest": {
             "type": "object",
             "required": [
@@ -2942,27 +2934,6 @@ const docTemplate = `{
             "properties": {
                 "industry": {
                     "type": "string"
-                }
-            }
-        },
-        "models.BiddingStrategy": {
-            "type": "object",
-            "properties": {
-                "created_at": {
-                    "type": "string",
-                    "example": "2020-01-01T00:00:00Z"
-                },
-                "id": {
-                    "type": "integer",
-                    "example": 1
-                },
-                "strategy": {
-                    "type": "string",
-                    "example": "Cost Optimize"
-                },
-                "updated_at": {
-                    "type": "string",
-                    "example": "2020-01-01T00:00:00Z"
                 }
             }
         },
@@ -3019,17 +2990,6 @@ const docTemplate = `{
         "models.Campaign": {
             "type": "object",
             "properties": {
-                "bidding_strategy": {
-                    "$ref": "#/definitions/models.BiddingStrategy"
-                },
-                "bidding_strategy_id": {
-                    "type": "integer",
-                    "example": 1
-                },
-                "budget": {
-                    "type": "integer",
-                    "example": 1000
-                },
                 "company": {
                     "$ref": "#/definitions/models.Company"
                 },
@@ -3041,17 +3001,15 @@ const docTemplate = `{
                     "type": "string",
                     "example": "2020-01-01T00:00:00Z"
                 },
+                "google_id": {
+                    "type": "integer",
+                    "example": 1
+                },
                 "id": {
                     "type": "integer",
                     "example": 1
                 },
-                "keywords": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.Keyword"
-                    }
-                },
-                "name": {
+                "resource_name": {
                     "type": "string",
                     "example": "Primary Monthly"
                 },
@@ -3064,6 +3022,10 @@ const docTemplate = `{
         "models.Company": {
             "type": "object",
             "properties": {
+                "client_id": {
+                    "type": "integer",
+                    "example": 1
+                },
                 "created_at": {
                     "type": "string",
                     "example": "2020-01-01T00:00:00Z"
@@ -3111,32 +3073,6 @@ const docTemplate = `{
                 "id": {
                     "type": "integer",
                     "example": 1
-                },
-                "updated_at": {
-                    "type": "string",
-                    "example": "2020-01-01T00:00:00Z"
-                }
-            }
-        },
-        "models.Keyword": {
-            "type": "object",
-            "properties": {
-                "cpc": {
-                    "description": "TODO - Add Location",
-                    "type": "number",
-                    "example": 9.25
-                },
-                "created_at": {
-                    "type": "string",
-                    "example": "2020-01-01T00:00:00Z"
-                },
-                "id": {
-                    "type": "integer",
-                    "example": 1
-                },
-                "keyword": {
-                    "type": "string",
-                    "example": "Dentistry"
                 },
                 "updated_at": {
                     "type": "string",
@@ -3435,9 +3371,9 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "localhost:3000",
+	Host:             "api.adomate.ai",
 	BasePath:         "/",
-	Schemes:          []string{"http", "https"},
+	Schemes:          []string{"https"},
 	Title:            "Adomate API",
 	Description:      "Adomate Monolithic API",
 	InfoInstanceName: "swagger",

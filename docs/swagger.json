@@ -1,6 +1,5 @@
 {
     "schemes": [
-        "http",
         "https"
     ],
     "swagger": "2.0",
@@ -14,7 +13,7 @@
         },
         "version": "1.0"
     },
-    "host": "localhost:3000",
+    "host": "api.adomate.ai",
     "basePath": "/",
     "paths": {
         "/": {
@@ -1100,7 +1099,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/gads.Campaign"
+                            "$ref": "#/definitions/helpers.Campaign"
                         }
                     },
                     "400": {
@@ -1137,7 +1136,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/gads.Campaign"
+                                "$ref": "#/definitions/helpers.Campaign"
                             }
                         }
                     },
@@ -1178,7 +1177,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/gads.Campaign"
+                                "$ref": "#/definitions/helpers.Campaign"
                             }
                         }
                     },
@@ -1210,7 +1209,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/gads.Client"
+                                "$ref": "#/definitions/helpers.Client"
                             }
                         }
                     },
@@ -1249,7 +1248,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/gads.Client"
+                            "$ref": "#/definitions/helpers.Client"
                         }
                     },
                     "400": {
@@ -2051,7 +2050,7 @@
         },
         "/service": {
             "get": {
-                "description": "Gets a slice of all services.",
+                "description": "Gets a slice of all service.",
                 "consumes": [
                     "*/*"
                 ],
@@ -2061,7 +2060,7 @@
                 "tags": [
                     "Service"
                 ],
-                "summary": "Get all services",
+                "summary": "Get all service",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -2111,7 +2110,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/services.CreateRequest"
+                            "$ref": "#/definitions/service.CreateRequest"
                         }
                     }
                 ],
@@ -2342,7 +2341,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/services.CreateRequest"
+                            "$ref": "#/definitions/service.CreateRequest"
                         }
                     },
                     {
@@ -2790,22 +2789,14 @@
         "campaign.CreateRequest": {
             "type": "object",
             "required": [
-                "bidding_strategy",
-                "budget",
                 "company",
-                "name"
+                "resource_name"
             ],
             "properties": {
-                "bidding_strategy": {
-                    "type": "string"
-                },
-                "budget": {
-                    "type": "integer"
-                },
                 "company": {
                     "type": "string"
                 },
-                "name": {
+                "resource_name": {
                     "type": "string"
                 }
             }
@@ -2889,7 +2880,18 @@
                 }
             }
         },
-        "gads.Campaign": {
+        "gads.Keyword": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "keyword": {
+                    "type": "string"
+                }
+            }
+        },
+        "helpers.Campaign": {
             "type": "object",
             "properties": {
                 "id": {
@@ -2903,7 +2905,7 @@
                 }
             }
         },
-        "gads.Client": {
+        "helpers.Client": {
             "type": "object",
             "properties": {
                 "current_code": {
@@ -2920,17 +2922,6 @@
                 }
             }
         },
-        "gads.Keyword": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer"
-                },
-                "keyword": {
-                    "type": "string"
-                }
-            }
-        },
         "industry.CreateRequest": {
             "type": "object",
             "required": [
@@ -2939,27 +2930,6 @@
             "properties": {
                 "industry": {
                     "type": "string"
-                }
-            }
-        },
-        "models.BiddingStrategy": {
-            "type": "object",
-            "properties": {
-                "created_at": {
-                    "type": "string",
-                    "example": "2020-01-01T00:00:00Z"
-                },
-                "id": {
-                    "type": "integer",
-                    "example": 1
-                },
-                "strategy": {
-                    "type": "string",
-                    "example": "Cost Optimize"
-                },
-                "updated_at": {
-                    "type": "string",
-                    "example": "2020-01-01T00:00:00Z"
                 }
             }
         },
@@ -3016,17 +2986,6 @@
         "models.Campaign": {
             "type": "object",
             "properties": {
-                "bidding_strategy": {
-                    "$ref": "#/definitions/models.BiddingStrategy"
-                },
-                "bidding_strategy_id": {
-                    "type": "integer",
-                    "example": 1
-                },
-                "budget": {
-                    "type": "integer",
-                    "example": 1000
-                },
                 "company": {
                     "$ref": "#/definitions/models.Company"
                 },
@@ -3038,17 +2997,15 @@
                     "type": "string",
                     "example": "2020-01-01T00:00:00Z"
                 },
+                "google_id": {
+                    "type": "integer",
+                    "example": 1
+                },
                 "id": {
                     "type": "integer",
                     "example": 1
                 },
-                "keywords": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.Keyword"
-                    }
-                },
-                "name": {
+                "resource_name": {
                     "type": "string",
                     "example": "Primary Monthly"
                 },
@@ -3061,6 +3018,10 @@
         "models.Company": {
             "type": "object",
             "properties": {
+                "client_id": {
+                    "type": "integer",
+                    "example": 1
+                },
                 "created_at": {
                     "type": "string",
                     "example": "2020-01-01T00:00:00Z"
@@ -3108,32 +3069,6 @@
                 "id": {
                     "type": "integer",
                     "example": 1
-                },
-                "updated_at": {
-                    "type": "string",
-                    "example": "2020-01-01T00:00:00Z"
-                }
-            }
-        },
-        "models.Keyword": {
-            "type": "object",
-            "properties": {
-                "cpc": {
-                    "description": "TODO - Add Location",
-                    "type": "number",
-                    "example": 9.25
-                },
-                "created_at": {
-                    "type": "string",
-                    "example": "2020-01-01T00:00:00Z"
-                },
-                "id": {
-                    "type": "integer",
-                    "example": 1
-                },
-                "keyword": {
-                    "type": "string",
-                    "example": "Dentistry"
                 },
                 "updated_at": {
                     "type": "string",
@@ -3308,7 +3243,7 @@
                 }
             }
         },
-        "services.CreateRequest": {
+        "service.CreateRequest": {
             "type": "object",
             "required": [
                 "company",
