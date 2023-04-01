@@ -111,6 +111,7 @@ type MonthlyPerformanceReport struct {
 	Metric1  float64 `json:"metric_1" example:"1234.56"` // Make specific
 	Metric2  float64 `json:"metric_2" example:"1234.56"` // Make specific
 	Metric3  float64 `json:"metric_3" example:"1234.56"` // Make specific
+	Month    string  `json:"report_month" example:""`
 }
 
 type SupportAutoResponse struct {
