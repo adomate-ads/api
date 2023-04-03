@@ -77,7 +77,7 @@ func getSitemap(rootURL, rootPath string, fetchLimit int) ([]byte, error) {
 }
 func main() {
 	// Get HTML
-	url := ""
+	url := "" // update with url
 	htmlContent, err := getHTML(url)
 	if err != nil {
 		log.Fatal(err)
@@ -91,7 +91,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	if err := os.WriteFile(url, screenshot, 0o644); err != nil {
+	if err := os.WriteFile("screenshot.png", screenshot, 0o644); err != nil {
 		log.Fatal(err)
 	}
 
