@@ -62,11 +62,11 @@ func CreateBilling(c *gin.Context) {
 	b := models.Billing{
 		CompanyID: company.ID,
 		Company:   *company,
-		// TODO Request Company Address for email
-		// CompanyAddressLine1: ,
-		// CompanyAddressLine2: ,
-		// CompanyAddressState: ,
-		// CompanyAddressZip:   ,
+		// TODO - Request Company Address for email for billing
+		//  CompanyAddressLine1: ,
+		//  CompanyAddressLine2: ,
+		//  CompanyAddressState: ,
+		//  CompanyAddressZip:   ,
 		Amount:   request.Amount,
 		Status:   request.Status,
 		Comments: request.Comments,
