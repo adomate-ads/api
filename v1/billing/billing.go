@@ -62,11 +62,16 @@ func CreateBilling(c *gin.Context) {
 	b := models.Billing{
 		CompanyID: company.ID,
 		Company:   *company,
-		Amount:    request.Amount,
-		Status:    request.Status,
-		Comments:  request.Comments,
-		DueAt:     request.DueAt,
-		IssuedAt:  request.IssuedAt,
+		// TODO Request Company Address for email
+		// CompanyAddressLine1: ,
+		// CompanyAddressLine2: ,
+		// CompanyAddressState: ,
+		// CompanyAddressZip:   ,
+		Amount:   request.Amount,
+		Status:   request.Status,
+		Comments: request.Comments,
+		DueAt:    request.DueAt,
+		IssuedAt: request.IssuedAt,
 	}
 
 	if err := b.CreateBilling(); err != nil {
@@ -89,12 +94,11 @@ func CreateBilling(c *gin.Context) {
 	//}
 
 	data := email.NewInvoice{
-		InvoiceID: b.ID,
-		Company:   company.Name,
-		// FIXME
-		// Amount:    b.Amount,
-		Status: b.Status,
-		DueAt:  b.DueAt.Format("2006-01-02"),
+		InvoiceID:     b.ID,
+		Company:       company.Name,
+		InvoiceAmount: b.Amount,
+		Status:        b.Status,
+		DueAt:         b.DueAt.Format("2006-01-02"),
 	}
 	body := new(bytes.Buffer)
 	if err := email.Templates["new-invoice"].Tmpl.Execute(body, data); err != nil {

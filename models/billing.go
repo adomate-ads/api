@@ -7,6 +7,7 @@ type Billing struct {
 	CompanyID uint    `json:"company_id" gorm:"type:integer" example:"1"`
 	Company   Company `json:"company" gorm:"foreignKey:CompanyID"`
 	Amount    float64 `json:"amount" gorm:"type:float" example:"900.25"`
+	//TODO add Company Address
 	// Available options: paid, unpaid, pending
 	Status   string `json:"status" gorm:"type:varchar(10)" example:"paid"`
 	Comments string `json:"comments" gorm:"type:varchar(1000)" example:"Something about the invoice..."`

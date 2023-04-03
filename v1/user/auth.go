@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
-
 	"github.com/adomate-ads/api/models"
 	"github.com/adomate-ads/api/pkg/discord"
 	"github.com/adomate-ads/api/pkg/email"

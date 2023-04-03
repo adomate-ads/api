@@ -45,10 +45,10 @@ type DeleteCompany struct {
 type NewInvoice struct {
 	InvoiceID           uint    `json:"invoice_id" example:"1234"` // Check data type
 	Company             string  `json:"company" example:"Adomate"`
-	CompanyAddressLine1 string  `json:"company_address_line1" example:"Adomate"`
-	CompanyAddressLine2 string  `json:"company_address_line2" example:"Adomate"`
-	CompanyAddressState string  `json:"company_address_state" example:"Adomate"`
-	CompanyAddressZip   int     `json:"company_address_zip" example:"Adomate"`
+	CompanyAddressLine1 string  `json:"company_address_line1" example:"17350 State Highway 249 STE 220"`
+	CompanyAddressLine2 string  `json:"company_address_line2" example:"Houston"`
+	CompanyAddressState string  `json:"company_address_state" example:"TX"`
+	CompanyAddressZip   int     `json:"company_address_zip" example:"77064"`
 	PaymentMethod       string  `json:"payment_method" example:"3456"`
 	PreTaxAmount        float32 `json:"pre_tax_amount" example:"1230.00"`
 	TaxAmount           float32 `json:"tax_amount" example:"4.56"`
@@ -111,7 +111,7 @@ type MonthlyPerformanceReport struct {
 	Metric1  float64 `json:"metric_1" example:"1234.56"` // Make specific
 	Metric2  float64 `json:"metric_2" example:"1234.56"` // Make specific
 	Metric3  float64 `json:"metric_3" example:"1234.56"` // Make specific
-	Month    string  `json:"report_month" example:""`
+	Month    string  `json:"report_month" example:"January"`
 }
 
 type SupportAutoResponse struct {
