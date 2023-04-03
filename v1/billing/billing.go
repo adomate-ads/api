@@ -2,15 +2,15 @@ package billing
 
 import (
 	"bytes"
+	"github.com/adomate-ads/api/models"
+	"github.com/adomate-ads/api/pkg/auth"
+	"github.com/adomate-ads/api/pkg/email"
+	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
 	"strings"
 	"time"
 
-	"github.com/adomate-ads/api/models"
-	"github.com/adomate-ads/api/pkg/auth"
-	"github.com/adomate-ads/api/pkg/email"
-	"github.com/gin-gonic/gin"
 )
 
 type CreateRequest struct {
@@ -62,11 +62,6 @@ func CreateBilling(c *gin.Context) {
 	b := models.Billing{
 		CompanyID: company.ID,
 		Company:   *company,
-		// TODO - Request Company Address for email for billing
-		//  CompanyAddressLine1: ,
-		//  CompanyAddressLine2: ,
-		//  CompanyAddressState: ,
-		//  CompanyAddressZip:   ,
 		Amount:   request.Amount,
 		Status:   request.Status,
 		Comments: request.Comments,

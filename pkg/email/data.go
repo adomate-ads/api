@@ -45,10 +45,6 @@ type DeleteCompany struct {
 type NewInvoice struct {
 	InvoiceID           uint    `json:"invoice_id" example:"1234"` // Check data type
 	Company             string  `json:"company" example:"Adomate"`
-	CompanyAddressLine1 string  `json:"company_address_line1" example:"17350 State Highway 249 STE 220"`
-	CompanyAddressLine2 string  `json:"company_address_line2" example:"Houston"`
-	CompanyAddressState string  `json:"company_address_state" example:"TX"`
-	CompanyAddressZip   int     `json:"company_address_zip" example:"77064"`
 	PaymentMethod       string  `json:"payment_method" example:"3456"`
 	PreTaxAmount        float32 `json:"pre_tax_amount" example:"1230.00"`
 	TaxAmount           float32 `json:"tax_amount" example:"4.56"`
@@ -68,10 +64,6 @@ type UnpaidInvoiceReminder struct {
 type PaidInvoice struct {
 	InvoiceID           string  `json:"invoice_id" example:"1234"`
 	Company             string  `json:"company" example:"Adomate"`
-	CompanyAddressLine1 string  `json:"company_address_line1" example:"Adomate"`
-	CompanyAddressLine2 string  `json:"company_address_line2" example:"Adomate"`
-	CompanyAddressState string  `json:"company_address_state" example:"Adomate"`
-	CompanyAddressZip   int     `json:"company_address_zip" example:"Adomate"`
 	Product             string  `json:"product" example:"Starter"`
 	ProductPrice        float32 `json:"product_price" example:"20.00"`
 	PaymentMethod       string  `json:"payment_method" example:"3456"`

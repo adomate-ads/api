@@ -3,9 +3,6 @@ package user
 import (
 	"bytes"
 	"fmt"
-	"net/http"
-	"strconv"
-	"strings"
 	"github.com/adomate-ads/api/models"
 	"github.com/adomate-ads/api/pkg/discord"
 	"github.com/adomate-ads/api/pkg/email"
@@ -14,6 +11,9 @@ import (
 	"github.com/google/uuid"
 	"github.com/stripe/stripe-go/v74"
 	"github.com/stripe/stripe-go/v74/customer"
+	"net/http"
+	"strconv"
+	"strings"
 )
 
 type LoginRequest struct {
