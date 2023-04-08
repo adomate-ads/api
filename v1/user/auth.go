@@ -286,18 +286,18 @@ func ForgotPassword(c *gin.Context) {
 		return
 	}
 
-	data := email.PasswordResetData{
-		FirstName:        user.FirstName,
-		Company:          user.Company.Name,
-		PasswordResetURL: fmt.Sprintf("https://adomate.com/reset/%s", pr.UUID),
-	}
-	body := new(bytes.Buffer)
-	if err := email.Templates["reset-password"].Tmpl.Execute(body, data); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-	email.SendEmail(user.Email, email.Templates["reset-password"].Subject, body.String())
-
+	//data := email.PasswordResetData{
+	//	FirstName:        user.FirstName,
+  //  Company:          user.Company.Name,
+	//	PasswordResetURL: fmt.Sprintf("https://adomate.com/reset/%s", pr.UUID),
+	//}
+	//body := new(bytes.Buffer)
+	//if err := email.Templates["reset-password"].Tmpl.Execute(body, data); err != nil {
+	//	c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	//	return
+	//}
+	//email.SendEmail(user.Email, email.Templates["reset-password"].Subject, body.String())
+  
 	discord.SendMessage("logging", fmt.Sprintf("User %s has requested a password reset.", user.Email), "NA")
 
 	c.JSON(http.StatusOK, gin.H{"message": "Successfully sent password reset email"})
