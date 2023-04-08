@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/adomate-ads/api/models"
 	"github.com/adomate-ads/api/pkg/discord"
-        "github.com/adomate-ads/api/pkg/email"
+	"github.com/adomate-ads/api/pkg/email"
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
