@@ -2,11 +2,10 @@ package main
 
 import (
 	"context"
-	"log"
-	"os"
-
 	"github.com/cgenuity/gowebcrawler"
 	"github.com/chromedp/chromedp"
+	"log"
+	"os"
 )
 
 func getHTML(url string) (string, error) {
