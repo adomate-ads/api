@@ -174,7 +174,7 @@ func Register(c *gin.Context) {
 		if err != nil {
 			msg := fmt.Sprintf("Failed to delete company %s after failed user creation", newCompany.Name)
 			suggestion := fmt.Sprintf("Delete company %s manually and email %s.", newCompany.Name, u.Email)
-			discord.SendMessage("error", msg, suggestion)
+			discord.SendMessage(discord.Error, msg, suggestion)
 
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
@@ -199,7 +199,7 @@ func Register(c *gin.Context) {
 	if _, err := customer.New(params); err != nil {
 		msg := fmt.Sprintf("Failed to create a stripe customer for company %s", newCompany.Name)
 		suggestion := fmt.Sprintf("Create Stripe Customer, Name:%s, Email:%s, CompanyID:%d", request.CompanyName, request.Email, newCompany.ID)
-		discord.SendMessage("error", msg, suggestion)
+		discord.SendMessage(discord.Error, msg, suggestion)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -286,19 +286,18 @@ func ForgotPassword(c *gin.Context) {
 		return
 	}
 
-	//data := email.PasswordResetData{
-	//	FirstName:        user.FirstName,
-  //  Company:          user.Company.Name,
-	//	PasswordResetURL: fmt.Sprintf("https://adomate.com/reset/%s", pr.UUID),
-	//}
-	//body := new(bytes.Buffer)
-	//if err := email.Templates["reset-password"].Tmpl.Execute(body, data); err != nil {
-	//	c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-	//	return
-	//}
-	//email.SendEmail(user.Email, email.Templates["reset-password"].Subject, body.String())
-  
-	discord.SendMessage("logging", fmt.Sprintf("User %s has requested a password reset.", user.Email), "NA")
+	data := email.PasswordResetData{
+		FirstName:        user.FirstName,
+		PasswordResetURL: fmt.Sprintf("https://adomate.com/reset/%s", pr.UUID),
+	}
+	body := new(bytes.Buffer)
+	if err := email.Templates["reset-password"].Tmpl.Execute(body, data); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	email.SendEmail(user.Email, email.Templates["reset-password"].Subject, body.String())
+
+	discord.SendMessage(discord.Log, fmt.Sprintf("User %s has requested a password reset.", user.Email), "NA")
 
 	c.JSON(http.StatusOK, gin.H{"message": "Successfully sent password reset email"})
 }
@@ -360,7 +359,7 @@ func ResetPassword(c *gin.Context) {
 		return
 	}
 
-	discord.SendMessage("logging", fmt.Sprintf("User %s has reset their password", user.Email), "NA")
+	discord.SendMessage(discord.Log, fmt.Sprintf("User %s has reset their password", user.Email), "NA")
 
 	c.JSON(http.StatusOK, gin.H{"message": "Successfully reset password"})
 }

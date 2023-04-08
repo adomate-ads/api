@@ -38,6 +38,11 @@ func Setup() {
 	}
 }
 
+const Error string = "Error"
+const Warn string = "Warn"
+const Log string = "Log"
+const General string = "General"
+
 func SendMessage(level string, message string, suggestion string) {
 	conn, err := amqp.Dial(fmt.Sprintf("amqp://%s:%s@%s:%s/", RMQConfig.User, RMQConfig.Password, RMQConfig.Host, RMQConfig.Port))
 	if err != nil {
