@@ -1,11 +1,11 @@
 package user
 
 import (
-  "bytes"
+	"bytes"
 	"fmt"
 	"github.com/adomate-ads/api/models"
 	"github.com/adomate-ads/api/pkg/discord"
-  "github.com/adomate-ads/api/pkg/email"
+	"github.com/adomate-ads/api/pkg/email"
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -174,7 +174,7 @@ func Register(c *gin.Context) {
 		if err != nil {
 			msg := fmt.Sprintf("Failed to delete company %s after failed user creation", newCompany.Name)
 			suggestion := fmt.Sprintf("Delete company %s manually and email %s.", newCompany.Name, u.Email)
-			discord.SendMessage("error", msg, suggestion)
+			discord.SendMessage(discord.Error, msg, suggestion)
 
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
@@ -199,7 +199,7 @@ func Register(c *gin.Context) {
 	if _, err := customer.New(params); err != nil {
 		msg := fmt.Sprintf("Failed to create a stripe customer for company %s", newCompany.Name)
 		suggestion := fmt.Sprintf("Create Stripe Customer, Name:%s, Email:%s, CompanyID:%d", request.CompanyName, request.Email, newCompany.ID)
-		discord.SendMessage("error", msg, suggestion)
+		discord.SendMessage(discord.Error, msg, suggestion)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -296,8 +296,8 @@ func ForgotPassword(c *gin.Context) {
 		return
 	}
 	email.SendEmail(user.Email, email.Templates["reset-password"].Subject, body.String())
-  
-	discord.SendMessage("logging", fmt.Sprintf("User %s has requested a password reset.", user.Email), "NA")
+
+	discord.SendMessage(discord.Log, fmt.Sprintf("User %s has requested a password reset.", user.Email), "NA")
 
 	c.JSON(http.StatusOK, gin.H{"message": "Successfully sent password reset email"})
 }
@@ -359,7 +359,7 @@ func ResetPassword(c *gin.Context) {
 		return
 	}
 
-	discord.SendMessage("logging", fmt.Sprintf("User %s has reset their password", user.Email), "NA")
+	discord.SendMessage(discord.Log, fmt.Sprintf("User %s has reset their password", user.Email), "NA")
 
 	c.JSON(http.StatusOK, gin.H{"message": "Successfully reset password"})
 }

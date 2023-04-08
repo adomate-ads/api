@@ -9,6 +9,7 @@ import (
 	"github.com/adomate-ads/api/pkg/email"
 	google_ads "github.com/adomate-ads/api/pkg/google-ads"
 	"github.com/adomate-ads/api/pkg/stripe"
+	"github.com/adomate-ads/api/pkg/ws"
 	"github.com/adomate-ads/api/v1/billing"
 	"github.com/adomate-ads/api/v1/campaign"
 	"github.com/adomate-ads/api/v1/company"
@@ -26,6 +27,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"sync"
 )
 
 // OnlineCheck godoc
@@ -75,6 +77,17 @@ func main() {
 	r.Use(gin.Logger())
 
 	r.Use(auth.Auth)
+
+	// Add Websocket Connection
+	const numWorkers = 15
+	var wg sync.WaitGroup
+	jobs := make(chan ws.Job, numWorkers)
+	for i := 0; i < numWorkers; i++ {
+		go ws.Worker(&wg, jobs)
+	}
+	r.GET("/ws", func(c *gin.Context) {
+		ws.Wshandler(c.Writer, c.Request, jobs, &wg)
+	})
 
 	// Add router group for v1
 	v1 := r.Group("/v1")
