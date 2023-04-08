@@ -10,6 +10,7 @@ type WelcomeData struct {
 
 type PasswordResetData struct {
 	FirstName        string `json:"first_name" example:"John"`
+	Company          string `json:"company" example:"Adomate"`
 	PasswordResetURL string `json:"password_reset_URL" example:"https://adomate.com/reset-password/1234"`
 }
 
@@ -42,23 +43,33 @@ type DeleteCompany struct {
 }
 
 type NewInvoice struct {
-	InvoiceID uint    `json:"invoice_id" example:"1234"` // Check data type
-	Company   string  `json:"company" example:"Adomate"`
-	Amount    float64 `json:"amount" example:"1234.56"` // Check data type
-	Status    string  `json:"status" example:"unpaid"`
-	DueAt     string  `json:"due_at" example:"2020-01-01"` // Check time format
+	InvoiceID           uint    `json:"invoice_id" example:"1234"` // Check data type
+	Company             string  `json:"company" example:"Adomate"`
+	PaymentMethod       string  `json:"payment_method" example:"3456"`
+	PreTaxAmount        float32 `json:"pre_tax_amount" example:"1230.00"`
+	TaxAmount           float32 `json:"tax_amount" example:"4.56"`
+	InvoiceAmount       float64 `json:"amount" example:"1234.56"` // Check data type
+	Status              string  `json:"status" example:"unpaid"`
+	DueAt               string  `json:"due_at" example:"2020-01-01"` // Check time format
 }
 
 type UnpaidInvoiceReminder struct {
 	InvoiceID     string  `json:"invoice_id" example:"1234"`
 	Company       string  `json:"company" example:"Adomate"`
 	InvoiceAmount float64 `json:"invoice_amount" example:"1234.56"`
+	Domain        string  `json:"domain" example:"adomate.com"`
+	DueAt         string  `json:"due_at" example:"2020-01-01"` // Check time format
 }
 
 type PaidInvoice struct {
-	InvoiceID     string  `json:"invoice_id" example:"1234"`
-	Company       string  `json:"company" example:"Adomate"`
-	InvoiceAmount float64 `json:"invoice_amount" example:"1234.56"`
+	InvoiceID           string  `json:"invoice_id" example:"1234"`
+	Company             string  `json:"company" example:"Adomate"`
+	Product             string  `json:"product" example:"Starter"`
+	ProductPrice        float32 `json:"product_price" example:"20.00"`
+	PaymentMethod       string  `json:"payment_method" example:"3456"`
+	TaxAmount           float32 `json:"tax_amount" example:"1234.56"`
+	InvoiceAmount       float64 `json:"invoice_amount" example:"1234.56"`
+	PaidAt              string  `json:"paid_at" example:"2020-01-01"` // Check time format
 }
 
 type NewCampaign struct {
@@ -92,14 +103,17 @@ type MonthlyPerformanceReport struct {
 	Metric1  float64 `json:"metric_1" example:"1234.56"` // Make specific
 	Metric2  float64 `json:"metric_2" example:"1234.56"` // Make specific
 	Metric3  float64 `json:"metric_3" example:"1234.56"` // Make specific
+	Month    string  `json:"report_month" example:"January"`
 }
 
 type SupportAutoResponse struct {
 	SupportID   string `json:"support_id" example:"1234"`
 	SupportName string `json:"support_name" example:"John"`
+	Company     string `json:"company" example:"Adomate"`
 }
 
 type SupportManualResponse struct {
-	SupportID   string `json:"support_id" example:"1234"`
-	SupportName string `json:"support_name" example:"John"`
+	SupportID        string `json:"support_id" example:"1234"`
+	SupportName      string `json:"support_name" example:"John"`
+	SupportEmailBody string `json:"support_email_body" example:"John should restart his router"`
 }
