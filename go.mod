@@ -4,6 +4,8 @@ go 1.19
 
 require (
 	cloud.google.com/go/longrunning v0.3.0
+	github.com/cgenuity/gowebcrawler v0.0.0-20150601035759-77334f843214
+	github.com/chromedp/chromedp v0.9.1
 	github.com/gin-contrib/cors v1.4.0
 	github.com/gin-gonic/contrib v0.0.0-20221130124618-7e01895a63f2
 	github.com/gin-gonic/gin v1.8.2
@@ -32,7 +34,11 @@ require (
 	cloud.google.com/go/compute v1.13.0 // indirect
 	cloud.google.com/go/compute/metadata v0.2.1 // indirect
 	github.com/KyleBanks/depth v1.2.1 // indirect
+	github.com/PuerkitoBio/goquery v1.5.1 // indirect
+	github.com/andybalholm/cascadia v1.1.0 // indirect
 	github.com/boj/redistore v0.0.0-20180917114910-cd5dcc76aeff // indirect
+	github.com/chromedp/cdproto v0.0.0-20230220211738-2b1ec77315c9 // indirect
+	github.com/chromedp/sysutil v1.0.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/go-openapi/jsonpointer v0.19.6 // indirect
@@ -43,6 +49,9 @@ require (
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/go-playground/validator/v10 v10.11.2 // indirect
 	github.com/go-sql-driver/mysql v1.7.0 // indirect
+	github.com/gobwas/httphead v0.1.0 // indirect
+	github.com/gobwas/pool v0.2.1 // indirect
+	github.com/gobwas/ws v1.1.0 // indirect
 	github.com/goccy/go-json v0.10.0 // indirect
 	github.com/golang/groupcache v0.0.0-20200121045136-8c9f03a8e57e // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
@@ -68,7 +77,7 @@ require (
 	github.com/ysmood/leakless v0.8.0 // indirect
 	go.opencensus.io v0.24.0 // indirect
 	golang.org/x/net v0.7.0 // indirect
-	golang.org/x/sys v0.5.0 // indirect
+	golang.org/x/sys v0.6.0 // indirect
 	golang.org/x/text v0.7.0 // indirect
 	golang.org/x/tools v0.6.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
