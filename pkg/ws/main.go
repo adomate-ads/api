@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/adomate-ads/api/models"
 	"github.com/adomate-ads/api/pkg/discord"
+	website_parse "github.com/adomate-ads/api/pkg/website-parse"
 	"github.com/gorilla/websocket"
 	"log"
 	"net/http"
@@ -50,11 +51,11 @@ func Worker(wg *sync.WaitGroup, jobs <-chan Job) {
 }
 
 type Message struct {
-	Step     uint     `json:"step"`
-	Domain   string   `json:"domain,omitempty"`
-	Location []string `json:"location,omitempty"`
-	Service  []string `json:"service,omitempty"`
-	Budget   uint     `json:"budget,omitempty"`
+	Step      uint     `json:"step"`
+	Domain    string   `json:"domain,omitempty"`
+	Locations []string `json:"locations,omitempty"`
+	Services  []string `json:"services,omitempty"`
+	Budget    uint     `json:"budget,omitempty"`
 }
 
 type Response struct {
@@ -66,7 +67,6 @@ func processMessage(job Job) {
 	var msg Message
 	err := json.Unmarshal(job.msg, &msg)
 	if err != nil {
-		fmt.Println("Error unmarshalling message:", err)
 		resp := Response{
 			Status:  500,
 			Message: "Error unmarshalling message",
@@ -81,15 +81,16 @@ func processMessage(job Job) {
 	if msg.Step == 1 {
 		if msg.Domain != "" {
 			//TODO - Get Domain Screenshot
+			if err := website_parse.Screenshot(msg.Domain); err != nil {
+				discord.SendMessage(discord.Error, "Websocket Error: "+err.Error(), "")
+			}
 			//TODO - Get Domain Locations
-			sampleLocation := []string{"Houston, TX", "Dallas, TX", "Austin, TX"}
+			//sampleLocation := []string{"Houston, TX", "Dallas, TX", "Austin, TX"}
 			//TODO - Get Domain Services
-			sampleService := []string{"Dental Services", "Medical Services", "Eye Care Services"}
+			//sampleService := []string{"Dental Services", "Medical Services", "Eye Care Services"}
 
 			preregistration := models.PreRegistration{
-				Domain:   msg.Domain,
-				Location: sampleLocation,
-				Service:  sampleService,
+				Domain: msg.Domain,
 			}
 			err := preregistration.CreatePreRegistration()
 			if err != nil {
@@ -133,9 +134,58 @@ func processMessage(job Job) {
 			return
 		}
 	} else if msg.Step == 2 {
-		//Response will be a list of locations and services
+		prereg, err := models.GetPreRegistrationByDomain(msg.Domain)
+		if err != nil {
+			discord.SendMessage(discord.Error, "Websocket Error: "+err.Error(), "")
+		}
+		if msg.Locations != nil {
+			for _, location := range msg.Locations {
+				loc := models.PreRegLocation{
+					PreRegistrationID: prereg.ID,
+					Location:          location,
+				}
+				err := loc.CreatePreRegLocation()
+				if err != nil {
+					discord.SendMessage(discord.Error, "Websocket Error: "+err.Error(), "")
+				}
+			}
+		}
+		if msg.Services != nil {
+			for _, service := range msg.Services {
+				serv := models.PreRegService{
+					PreRegistrationID: prereg.ID,
+					Service:           service,
+				}
+				err := serv.CreatePreRegService()
+				if err != nil {
+					discord.SendMessage(discord.Error, "Websocket Error: "+err.Error(), "")
+				}
+			}
+		}
+
+		resp := Response{
+			Status:  200,
+			Message: "",
+		}
+		respString, err := json.Marshal(resp)
+		if err != nil {
+			discord.SendMessage(discord.Error, "Websocket Error: "+err.Error(), "")
+		}
+		job.conn.WriteMessage(websocket.TextMessage, respString)
+		return
 	} else if msg.Step == 3 {
 		//Response will be a desired budget
+		prereg, err := models.GetPreRegistrationByDomain(msg.Domain)
+		if err != nil {
+			discord.SendMessage(discord.Error, "Websocket Error: "+err.Error(), "")
+		}
+		if msg.Budget != 0 {
+			prereg.Budget = msg.Budget
+			err := prereg.UpdatePreRegistration()
+			if err != nil {
+				discord.SendMessage(discord.Error, "Websocket Error: "+err.Error(), "")
+			}
+		}
 	} else {
 		resp := Response{
 			Status:  500,

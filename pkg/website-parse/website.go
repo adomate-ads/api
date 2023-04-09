@@ -1,52 +1,81 @@
 package website_parse
 
 import (
-	"github.com/go-rod/rod/lib/proto"
-	"github.com/ysmood/gson"
+	"context"
+	"github.com/chromedp/chromedp"
+	"log"
 	"os"
-	"time"
 )
 
-func CaptureWebsite(url string) error {
-	page := browser.MustPage(url)
-	page.MustEvalOnNewDocument(`
-		() => {
-			return new Promise(resolve => {
-				window.addEventListener('load', resolve);
-			});
-		}
-	`)
+func Screenshot(url string) error {
+	// create options for custom path to Google Chrome binary
+	opts := chromedp.DefaultExecAllocatorOptions[:]
 
-	err := page.WaitLoad()
-	if err != nil {
+	// create context with custom options
+	ctx, cancel := chromedp.NewExecAllocator(context.Background(), opts...)
+	defer cancel()
+
+	// create context
+	ctx, cancel = chromedp.NewContext(
+		ctx,
+	)
+	defer cancel()
+
+	var buf []byte
+	if err := chromedp.Run(ctx, chromedp.EmulateViewport(1920, 1080), chromedp.Navigate(url), chromedp.WaitReady(`body`), chromedp.CaptureScreenshot(&buf)); err != nil {
 		return err
 	}
 
-	err = page.WaitIdle(2 * time.Second)
-	if err != nil {
-		return err
-	}
-
-	img, err := page.Screenshot(true, &proto.PageCaptureScreenshot{
-		Format:  proto.PageCaptureScreenshotFormatWebp,
-		Quality: gson.Int(90),
-		Clip: &proto.PageViewport{
-			X:      0,
-			Y:      0,
-			Width:  1920,
-			Height: 1080,
-			Scale:  1,
-		},
-		FromSurface: true,
-	})
-	if err != nil {
-		return err
-	}
-
-	err = os.WriteFile("./storage/websites/"+url[8:]+".webp", img, 0644)
-	if err != nil {
+	if err := os.WriteFile("./storage/websites/"+url[8:]+".png", buf, 0644); err != nil {
 		return err
 	}
 
 	return nil
 }
+
+func GetHTML(url string) (string, error) {
+	// create options for custom path to Google Chrome binary
+	opts := chromedp.DefaultExecAllocatorOptions[:]
+
+	// create context with custom options
+	ctx, cancel := chromedp.NewExecAllocator(context.Background(), opts...)
+	defer cancel()
+
+	// create context
+	ctx, cancel = chromedp.NewContext(
+		ctx,
+		chromedp.WithDebugf(log.Printf),
+	)
+	defer cancel()
+
+	// Check if the page is loaded
+	if err := chromedp.Run(ctx, chromedp.Navigate(url), chromedp.WaitReady(`body`)); err != nil {
+		return "", err
+	}
+
+	// Extract HTML
+	var htmlContent string
+	if err := chromedp.Run(ctx, chromedp.InnerHTML(`html`, &htmlContent)); err != nil {
+		return "", err
+	}
+
+	return htmlContent, nil
+}
+
+//
+//func getSitemap(rootURL, rootPath string, fetchLimit int) ([]byte, error) {
+//	parser := gowebcrawler.UrlParser{}
+//
+//	crawler := gowebcrawler.WebCrawler{
+//		Parser:     &parser,
+//		RootUrl:    rootURL,
+//		FetchLimit: fetchLimit,
+//	}
+//
+//	json, err := crawler.Crawl(rootPath)
+//	if err != nil {
+//		return nil, err
+//	}
+//
+//	return json, nil
+//}
