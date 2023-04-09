@@ -75,7 +75,9 @@ func processMessage(job Job) {
 		if err != nil {
 			discord.SendMessage(discord.Error, "Websocket Error: "+err.Error(), "")
 		}
-		job.conn.WriteMessage(websocket.TextMessage, respString)
+		if err := job.conn.WriteMessage(websocket.TextMessage, respString); err != nil {
+			discord.SendMessage(discord.Error, "Websocket Error: "+err.Error(), "")
+		}
 	}
 
 	if msg.Step == 1 {
@@ -102,7 +104,9 @@ func processMessage(job Job) {
 				if err != nil {
 					discord.SendMessage(discord.Error, "Websocket Error: "+err.Error(), "")
 				}
-				job.conn.WriteMessage(websocket.TextMessage, respString)
+				if err := job.conn.WriteMessage(websocket.TextMessage, respString); err != nil {
+					discord.SendMessage(discord.Error, "Websocket Error: "+err.Error(), "")
+				}
 				return
 			} else {
 				preregString, err := json.Marshal(preregistration)
@@ -118,7 +122,9 @@ func processMessage(job Job) {
 				if err != nil {
 					discord.SendMessage(discord.Error, "Websocket Error: "+err.Error(), "")
 				}
-				job.conn.WriteMessage(websocket.TextMessage, respString)
+				if err := job.conn.WriteMessage(websocket.TextMessage, respString); err != nil {
+					discord.SendMessage(discord.Error, "Websocket Error: "+err.Error(), "")
+				}
 				return
 			}
 		} else {
@@ -130,7 +136,9 @@ func processMessage(job Job) {
 			if err != nil {
 				discord.SendMessage(discord.Warn, "Websocket Error: "+err.Error(), "")
 			}
-			job.conn.WriteMessage(websocket.TextMessage, respString)
+			if err := job.conn.WriteMessage(websocket.TextMessage, respString); err != nil {
+				discord.SendMessage(discord.Error, "Websocket Error: "+err.Error(), "")
+			}
 			return
 		}
 	} else if msg.Step == 2 {
@@ -171,7 +179,9 @@ func processMessage(job Job) {
 		if err != nil {
 			discord.SendMessage(discord.Error, "Websocket Error: "+err.Error(), "")
 		}
-		job.conn.WriteMessage(websocket.TextMessage, respString)
+		if err := job.conn.WriteMessage(websocket.TextMessage, respString); err != nil {
+			discord.SendMessage(discord.Error, "Websocket Error: "+err.Error(), "")
+		}
 		return
 	} else if msg.Step == 3 {
 		//Response will be a desired budget
@@ -195,7 +205,9 @@ func processMessage(job Job) {
 		if err != nil {
 			discord.SendMessage(discord.Error, "Websocket Error: "+err.Error(), "")
 		}
-		job.conn.WriteMessage(websocket.TextMessage, respString)
+		if err := job.conn.WriteMessage(websocket.TextMessage, respString); err != nil {
+			discord.SendMessage(discord.Error, "Websocket Error: "+err.Error(), "")
+		}
 		return
 	}
 
