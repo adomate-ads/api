@@ -2,6 +2,7 @@ package website_parse
 
 import (
 	"context"
+	"fmt"
 	"github.com/chromedp/chromedp"
 	"log"
 	"os"
@@ -60,6 +61,15 @@ func GetHTML(url string) (string, error) {
 	}
 
 	return htmlContent, nil
+}
+
+func GetLocations(url string) ([]string, error) {
+	fmt.Println("Getting locations for", url)
+	temp := []string{
+		"Houston, TX",
+		"Austin, TX",
+	}
+	return temp, nil
 }
 
 //
