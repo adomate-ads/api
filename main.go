@@ -8,6 +8,7 @@ import (
 	"github.com/adomate-ads/api/pkg/discord"
 	"github.com/adomate-ads/api/pkg/email"
 	google_ads "github.com/adomate-ads/api/pkg/google-ads"
+	"github.com/adomate-ads/api/pkg/openai"
 	"github.com/adomate-ads/api/pkg/stripe"
 	"github.com/adomate-ads/api/pkg/ws"
 	"github.com/adomate-ads/api/v1/billing"
@@ -63,6 +64,7 @@ func main() {
 		log.Fatalf("Error loading .env file.")
 	}
 
+	openai.Setup()
 	google_ads.Setup()
 	stripe.Setup()
 	stripe.SetupProducts()
