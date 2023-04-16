@@ -17,6 +17,7 @@ import (
 	gads "github.com/adomate-ads/api/v1/google-ads"
 	"github.com/adomate-ads/api/v1/industry"
 	"github.com/adomate-ads/api/v1/order"
+	"github.com/adomate-ads/api/v1/preregistration"
 	"github.com/adomate-ads/api/v1/service"
 	"github.com/adomate-ads/api/v1/user"
 	"github.com/gin-contrib/cors"
@@ -114,6 +115,7 @@ func main() {
 	campaign.Routes(v1)
 	order.Routes(v1)
 	service.Routes(v1)
+	preregistration.Routes(v1)
 	gads.Routes(v1)
 
 	// Static files, such as images, css, and js
