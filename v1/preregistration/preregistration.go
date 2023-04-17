@@ -44,6 +44,28 @@ func CreatePreRegistration(c *gin.Context) {
 	// TODO: - Start fetching the locations & services
 }
 
+func GetPreRegistrations(c *gin.Context) {
+	pr, err := models.GetPreRegistrations()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, pr)
+}
+
+func GetPreRegistration(c *gin.Context) {
+	domain := c.Param("domain")
+
+	pr, err := models.GetPreRegistrationByDomain(domain)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Pre-registration not found"})
+		return
+	}
+
+	c.JSON(http.StatusOK, pr)
+}
+
 type LocationRequest struct {
 	Domain   string   `json:"domain" binding:"required"`
 	Location []string `json:"location" binding:"required"`
@@ -91,6 +113,18 @@ func AddLocations(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, gin.H{"message": "Successfully created pre-registration locations."})
+}
+
+func GetLocations(c *gin.Context) {
+	domain := c.Param("domain")
+
+	pr, err := models.GetPreRegistrationByDomain(domain)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Pre-registration not found"})
+		return
+	}
+
+	c.JSON(http.StatusOK, pr.Locations)
 }
 
 func DeleteLocations(c *gin.Context) {
@@ -175,6 +209,18 @@ func AddServices(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, gin.H{"message": "Successfully created pre-registration services."})
+}
+
+func GetServices(c *gin.Context) {
+	domain := c.Param("domain")
+
+	pr, err := models.GetPreRegistrationByDomain(domain)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Pre-registration not found"})
+		return
+	}
+
+	c.JSON(http.StatusOK, pr.Services)
 }
 
 func DeleteServices(c *gin.Context) {
