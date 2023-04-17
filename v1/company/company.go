@@ -20,12 +20,12 @@ type CreateRequest struct {
 
 // CreateCompany godoc
 // @Summary Create Company
-// @Description creates a company that can start campaigns, etc
+// @Description creates a company that can start campaigns, etc.
 // @Tags Company
 // @Accept json
 // @Produce json
 // @Param create body CreateRequest true "Create Request"
-// @Success 200 {object} []models.Company
+// @Success 201 {object} []models.Company
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 403 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
