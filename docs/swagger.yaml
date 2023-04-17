@@ -259,6 +259,50 @@ definitions:
         example: "2020-01-01T00:00:00Z"
         type: string
     type: object
+  models.PreRegLocation:
+    properties:
+      id:
+        example: 1
+        type: integer
+      location:
+        example: Houston, TX
+        type: string
+      pre_registration_id:
+        example: 1
+        type: integer
+    type: object
+  models.PreRegService:
+    properties:
+      id:
+        example: 1
+        type: integer
+      pre_registration_id:
+        example: 1
+        type: integer
+      service:
+        example: Dental Services
+        type: string
+    type: object
+  models.PreRegistration:
+    properties:
+      budget:
+        example: 100
+        type: integer
+      domain:
+        example: example.com
+        type: string
+      id:
+        example: 1
+        type: integer
+      locations:
+        items:
+          $ref: '#/definitions/models.PreRegLocation'
+        type: array
+      services:
+        items:
+          $ref: '#/definitions/models.PreRegService'
+        type: array
+    type: object
   models.Service:
     properties:
       company:
@@ -875,7 +919,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/models.Company'
+              $ref: '#/definitions/models.PreRegistration'
             type: array
         "401":
           description: Unauthorized
@@ -889,7 +933,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/dto.ErrorResponse'
-      summary: Get all companies
+      summary: Get all preregistration
       tags:
       - Company
     post:
@@ -1739,7 +1783,9 @@ paths:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/dto.MessageResponse'
+            items:
+              $ref: '#/definitions/models.PreRegistration'
+            type: array
         "401":
           description: Unauthorized
           schema:

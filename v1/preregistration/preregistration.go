@@ -62,7 +62,7 @@ func CreatePreRegistration(c *gin.Context) {
 // @Tags Company
 // @Accept */*
 // @Produce json
-// @Success 200 {object} []models.GetPreRegistrations
+// @Success 200 {object} []models.PreRegistration
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 403 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse

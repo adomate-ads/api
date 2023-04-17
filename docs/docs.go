@@ -668,14 +668,14 @@ const docTemplate = `{
                 "tags": [
                     "Company"
                 ],
-                "summary": "Get all companies",
+                "summary": "Get all preregistration",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/models.Company"
+                                "$ref": "#/definitions/models.PreRegistration"
                             }
                         }
                     },
@@ -1978,7 +1978,10 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/dto.MessageResponse"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.PreRegistration"
+                            }
                         }
                     },
                     "401": {
@@ -3179,6 +3182,69 @@ const docTemplate = `{
                 "updated_at": {
                     "type": "string",
                     "example": "2020-01-01T00:00:00Z"
+                }
+            }
+        },
+        "models.PreRegLocation": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "location": {
+                    "type": "string",
+                    "example": "Houston, TX"
+                },
+                "pre_registration_id": {
+                    "type": "integer",
+                    "example": 1
+                }
+            }
+        },
+        "models.PreRegService": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "pre_registration_id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "service": {
+                    "type": "string",
+                    "example": "Dental Services"
+                }
+            }
+        },
+        "models.PreRegistration": {
+            "type": "object",
+            "properties": {
+                "budget": {
+                    "type": "integer",
+                    "example": 100
+                },
+                "domain": {
+                    "type": "string",
+                    "example": "example.com"
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "locations": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.PreRegLocation"
+                    }
+                },
+                "services": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.PreRegService"
+                    }
                 }
             }
         },
