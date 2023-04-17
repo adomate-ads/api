@@ -3,8 +3,8 @@ package models
 type PreRegistration struct {
 	ID        uint             `json:"id" gorm:"primaryKey;autoIncrement" example:"1"`
 	Domain    string           `json:"domain" gorm:"type:varchar(128)" example:"example.com"`
-	Locations []PreRegLocation `json:"locations" gorm:"type:varchar(128)" example:"[]"`
-	Services  []PreRegService  `json:"services" gorm:"type:varchar(128)" example:"[]"`
+	Locations []PreRegLocation `json:"locations" gorm:"type:varchar(128)" example:"[{\"location\":\"Houston, TX\"}]"`
+	Services  []PreRegService  `json:"services" gorm:"type:varchar(128)" example:"[{\"service\":\"Dental Services\"}]"`
 	Budget    uint             `json:"budget" gorm:"type:integer" example:"100"`
 }
 
