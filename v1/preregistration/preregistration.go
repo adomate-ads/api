@@ -11,6 +11,18 @@ type CreateRequest struct {
 	Domain string `json:"domain" binding:"required"`
 }
 
+// CreatePreRegistration Preregistration godoc
+// @Summary Create Preregistration
+// @Description preregisters a company
+// @Tags Preregister
+// @Accept json
+// @Produce json
+// @Param create body CreateRequest true "Create Request"
+// @Success 201 {object} []models.PreRegistration
+// @Failure 401 {object} dto.ErrorResponse
+// @Failure 403 {object} dto.ErrorResponse
+// @Failure 500 {object} dto.ErrorResponse
+// @Router /preregistration [post]
 func CreatePreRegistration(c *gin.Context) {
 	var request CreateRequest
 	if err := c.ShouldBindJSON(&request); err != nil {
@@ -44,6 +56,17 @@ func CreatePreRegistration(c *gin.Context) {
 	// TODO: - Start fetching the locations & services
 }
 
+// GetPreRegistrations godoc
+// @Summary Get all preregistration
+// @Description Get a slice of all companies
+// @Tags Company
+// @Accept */*
+// @Produce json
+// @Success 200 {object} []models.GetPreRegistrations
+// @Failure 401 {object} dto.ErrorResponse
+// @Failure 403 {object} dto.ErrorResponse
+// @Failure 500 {object} dto.ErrorResponse
+// @Router /company [get]
 func GetPreRegistrations(c *gin.Context) {
 	pr, err := models.GetPreRegistrations()
 	if err != nil {

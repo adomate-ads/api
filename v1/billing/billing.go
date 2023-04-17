@@ -10,7 +10,6 @@ import (
 	"strconv"
 	"strings"
 	"time"
-
 )
 
 type CreateRequest struct {
@@ -29,7 +28,7 @@ type CreateRequest struct {
 // @Accept json
 // @Produce json
 // @Param create body CreateRequest true "Create Request"
-// @Success 201 {object} dto.MessageResponse
+// @Success 201 {object} []models.Billing
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 403 {object} dto.ErrorResponse
@@ -62,11 +61,11 @@ func CreateBilling(c *gin.Context) {
 	b := models.Billing{
 		CompanyID: company.ID,
 		Company:   *company,
-		Amount:   request.Amount,
-		Status:   request.Status,
-		Comments: request.Comments,
-		DueAt:    request.DueAt,
-		IssuedAt: request.IssuedAt,
+		Amount:    request.Amount,
+		Status:    request.Status,
+		Comments:  request.Comments,
+		DueAt:     request.DueAt,
+		IssuedAt:  request.IssuedAt,
 	}
 
 	if err := b.CreateBilling(); err != nil {
