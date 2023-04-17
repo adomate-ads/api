@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// TODO Log IPs so we can log which IP created what domain and only allow them to edit it
 func Routes(r *gin.RouterGroup) {
 	r.POST("/preregistration", CreatePreRegistration)
 	r.GET("/preregistration", GetPreRegistrations)
