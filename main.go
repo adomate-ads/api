@@ -10,10 +10,11 @@ import (
 	google_ads "github.com/adomate-ads/api/pkg/google-ads"
 	"github.com/adomate-ads/api/pkg/openai"
 	"github.com/adomate-ads/api/pkg/stripe"
-	"github.com/adomate-ads/api/pkg/ws"
+	website_parse "github.com/adomate-ads/api/pkg/website-parse"
 	"github.com/adomate-ads/api/v1/billing"
 	"github.com/adomate-ads/api/v1/campaign"
 	"github.com/adomate-ads/api/v1/company"
+	get_started "github.com/adomate-ads/api/v1/get-started"
 	gads "github.com/adomate-ads/api/v1/google-ads"
 	"github.com/adomate-ads/api/v1/industry"
 	"github.com/adomate-ads/api/v1/order"
@@ -28,7 +29,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"sync"
 )
 
 // OnlineCheck godoc
@@ -68,6 +68,8 @@ func main() {
 	google_ads.Setup()
 	stripe.Setup()
 	stripe.SetupProducts()
+	website_parse.Setup()
+
 	//stripe.GetSubscriptions()
 
 	discord.Setup()
@@ -79,17 +81,6 @@ func main() {
 	r.Use(gin.Logger())
 
 	r.Use(auth.Auth)
-
-	// Add Websocket Connection
-	const numWorkers = 15
-	var wg sync.WaitGroup
-	jobs := make(chan ws.Job, numWorkers)
-	for i := 0; i < numWorkers; i++ {
-		go ws.Worker(&wg, jobs)
-	}
-	r.GET("/ws", func(c *gin.Context) {
-		ws.Wshandler(c.Writer, c.Request, jobs, &wg)
-	})
 
 	// Add router group for v1
 	v1 := r.Group("/v1")
@@ -115,6 +106,7 @@ func main() {
 	order.Routes(v1)
 	service.Routes(v1)
 	gads.Routes(v1)
+	get_started.Routes(v1)
 
 	// Static files, such as images, css, and js
 	v1.StaticFS("/storage", gin.Dir("./storage", false))

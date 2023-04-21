@@ -12,6 +12,7 @@ type Company struct {
 	Industry   Industry  `json:"industry" gorm:"foreignKey:IndustryID"`
 	Domain     string    `json:"domain" gorm:"type:varchar(128)" example:"raajpatel.dev"`
 	ClientID   int64     `json:"client_id" gorm:"type:integer" example:"1"`
+	StripeID   string    `json:"stripe_id" gorm:"type:varchar(128)" example:"cus_1234567890"`
 	CreatedAt  time.Time `json:"created_at" example:"2020-01-01T00:00:00Z"`
 	UpdatedAt  time.Time `json:"updated_at" example:"2020-01-01T00:00:00Z"`
 }
