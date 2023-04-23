@@ -25,6 +25,17 @@ type CreateAccountRequest struct {
 	Domain      string `json:"domain" binding:"required" example:"adomate.ai"`
 }
 
+// CreateAccount godoc
+// @Summary Create Account
+// @Description Create account for user
+// @Tags Getting Started
+// @Accept json
+// @Produce json
+// @Param create body CreateAccountRequest true "Create Account Request"
+// @Success 201 {object} dto.MessageResponse
+// @Failure 400 {object} dto.ErrorResponse
+// @Failure 500 {object} dto.ErrorResponse
+// @Router /get-started [post]
 func CreateAccount(c *gin.Context) {
 	var request CreateAccountRequest
 	if err := c.ShouldBindJSON(&request); err != nil {
@@ -201,6 +212,15 @@ type LocsAndSers struct {
 	Services  []string `json:"services"`
 }
 
+// GetLocationsAndServices godoc
+// @Summary Get Locations and Services
+// @Description Get Locations and Services for domain
+// @Tags Getting Started
+// @Accept json
+// @Produce json
+// @Param domain path string true "Domain URL"
+// @Success 201 {object} []LocsAndSers
+// @Router /get-started/location-services/{domain} [get]
 func GetLocationsAndServices(c *gin.Context) {
 	// TODO - Uncomment this when microservice is done
 	//domain := c.Param("domain")

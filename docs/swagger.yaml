@@ -91,6 +91,45 @@ definitions:
       keyword:
         type: string
     type: object
+  get_started.CreateAccountRequest:
+    properties:
+      company_name:
+        example: Adomate
+        type: string
+      domain:
+        example: adomate.ai
+        type: string
+      email:
+        example: johndoe@adomate.ai
+        type: string
+      first_name:
+        example: John
+        type: string
+      industry:
+        example: Software
+        type: string
+      last_name:
+        example: Doe
+        type: string
+    required:
+    - company_name
+    - domain
+    - email
+    - first_name
+    - industry
+    - last_name
+    type: object
+  get_started.LocsAndSers:
+    properties:
+      locations:
+        items:
+          type: string
+        type: array
+      services:
+        items:
+          type: string
+        type: array
+    type: object
   helpers.Campaign:
     properties:
       id:
@@ -204,6 +243,9 @@ definitions:
       name:
         example: Google LLC
         type: string
+      stripe_id:
+        example: cus_1234567890
+        type: string
       updated_at:
         example: "2020-01-01T00:00:00Z"
         type: string
@@ -258,50 +300,6 @@ definitions:
       updated_at:
         example: "2020-01-01T00:00:00Z"
         type: string
-    type: object
-  models.PreRegLocation:
-    properties:
-      id:
-        example: 1
-        type: integer
-      location:
-        example: Houston, TX
-        type: string
-      pre_registration_id:
-        example: 1
-        type: integer
-    type: object
-  models.PreRegService:
-    properties:
-      id:
-        example: 1
-        type: integer
-      pre_registration_id:
-        example: 1
-        type: integer
-      service:
-        example: Dental Services
-        type: string
-    type: object
-  models.PreRegistration:
-    properties:
-      budget:
-        example: 100
-        type: integer
-      domain:
-        example: example.com
-        type: string
-      id:
-        example: 1
-        type: integer
-      locations:
-        items:
-          $ref: '#/definitions/models.PreRegLocation'
-        type: array
-      services:
-        items:
-          $ref: '#/definitions/models.PreRegService'
-        type: array
     type: object
   models.Service:
     properties:
@@ -387,47 +385,6 @@ definitions:
     - start_at
     - status
     - type
-    type: object
-  preregistration.BudgetRequest:
-    properties:
-      budget:
-        type: integer
-      domain:
-        type: string
-    required:
-    - budget
-    - domain
-    type: object
-  preregistration.CreateRequest:
-    properties:
-      domain:
-        type: string
-    required:
-    - domain
-    type: object
-  preregistration.LocationRequest:
-    properties:
-      domain:
-        type: string
-      location:
-        items:
-          type: string
-        type: array
-    required:
-    - domain
-    - location
-    type: object
-  preregistration.ServiceRequest:
-    properties:
-      domain:
-        type: string
-      service:
-        items:
-          type: string
-        type: array
-    required:
-    - domain
-    - service
     type: object
   service.CreateRequest:
     properties:
@@ -1390,6 +1347,59 @@ paths:
       summary: Get Google Ads Keyword
       tags:
       - Google Ads
+  /get-started:
+    post:
+      consumes:
+      - application/json
+      description: Create account for user
+      parameters:
+      - description: Create Account Request
+        in: body
+        name: create
+        required: true
+        schema:
+          $ref: '#/definitions/get_started.CreateAccountRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.MessageResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Create Account
+      tags:
+      - Getting Started
+  /get-started/location-services/{domain}:
+    get:
+      consumes:
+      - application/json
+      description: Get Locations and Services for domain
+      parameters:
+      - description: Domain URL
+        in: path
+        name: domain
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            items:
+              $ref: '#/definitions/get_started.LocsAndSers'
+            type: array
+      summary: Get Locations and Services
+      tags:
+      - Getting Started
   /industry:
     get:
       consumes:
@@ -1799,305 +1809,6 @@ paths:
       summary: Update Order
       tags:
       - Order
-  /preregistration:
-    get:
-      consumes:
-      - '*/*'
-      description: Get a slice of all preregistration
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/models.PreRegistration'
-            type: array
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/dto.ErrorResponse'
-      summary: Get all preregistration
-      tags:
-      - Preregister
-    post:
-      consumes:
-      - application/json
-      description: preregisters a company
-      parameters:
-      - description: Create Request
-        in: body
-        name: create
-        required: true
-        schema:
-          $ref: '#/definitions/preregistration.CreateRequest'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            items:
-              $ref: '#/definitions/models.PreRegistration'
-            type: array
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/dto.ErrorResponse'
-        "403":
-          description: Forbidden
-          schema:
-            $ref: '#/definitions/dto.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/dto.ErrorResponse'
-      summary: Create Preregistration
-      tags:
-      - Preregister
-  /preregistration/{domain}:
-    get:
-      consumes:
-      - '*/*'
-      description: Get a preregistration domain.
-      parameters:
-      - description: Preregistered Domain
-        in: path
-        name: domain
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/models.PreRegistration'
-            type: array
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/dto.ErrorResponse'
-      summary: Get Preregistration
-      tags:
-      - Preregister
-  /preregistration/budget:
-    post:
-      consumes:
-      - application/json
-      description: Set Budget of a domain.
-      parameters:
-      - description: Budget Request
-        in: body
-        name: create
-        required: true
-        schema:
-          $ref: '#/definitions/preregistration.BudgetRequest'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/dto.MessageResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/dto.ErrorResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/dto.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/dto.ErrorResponse'
-      summary: Set Budget
-      tags:
-      - Preregister
-  /preregistration/locations:
-    delete:
-      consumes:
-      - application/json
-      description: Delete locations from domain.
-      parameters:
-      - description: Location Request
-        in: body
-        name: create
-        required: true
-        schema:
-          $ref: '#/definitions/preregistration.LocationRequest'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/dto.MessageResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/dto.ErrorResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/dto.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/dto.ErrorResponse'
-      summary: Delete Locations
-      tags:
-      - Preregister
-    get:
-      consumes:
-      - '*/*'
-      description: Get locations for preregistration domain
-      parameters:
-      - description: Domain Name
-        in: path
-        name: string
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/dto.MessageResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/dto.ErrorResponse'
-      summary: Get Locations
-      tags:
-      - Preregister
-    post:
-      consumes:
-      - application/json
-      description: Add a location to preregistration domain
-      parameters:
-      - description: Location Request
-        in: body
-        name: create
-        required: true
-        schema:
-          $ref: '#/definitions/preregistration.LocationRequest'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/dto.MessageResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/dto.ErrorResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/dto.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/dto.ErrorResponse'
-      summary: Add Location
-      tags:
-      - Preregister
-  /preregistration/services:
-    delete:
-      consumes:
-      - application/json
-      description: Delete Services from domain.
-      parameters:
-      - description: Service Request
-        in: body
-        name: create
-        required: true
-        schema:
-          $ref: '#/definitions/preregistration.ServiceRequest'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/dto.MessageResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/dto.ErrorResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/dto.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/dto.ErrorResponse'
-      summary: Delete Services
-      tags:
-      - Preregister
-    get:
-      consumes:
-      - '*/*'
-      description: Get services for preregistration domain
-      parameters:
-      - description: Domain Name
-        in: path
-        name: string
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/dto.MessageResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/dto.ErrorResponse'
-      summary: Get Services
-      tags:
-      - Preregister
-    post:
-      consumes:
-      - application/json
-      description: Add services to preregistration domain
-      parameters:
-      - description: Service Request
-        in: body
-        name: create
-        required: true
-        schema:
-          $ref: '#/definitions/preregistration.ServiceRequest'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/dto.MessageResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/dto.ErrorResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/dto.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/dto.ErrorResponse'
-      summary: Add Services
-      tags:
-      - Preregister
   /register:
     post:
       consumes:
