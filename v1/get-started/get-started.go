@@ -15,13 +15,15 @@ import (
 )
 
 type CreateAccountRequest struct {
-	FirstName   string `json:"first_name" binding:"required" example:"John"`
-	LastName    string `json:"last_name" binding:"required" example:"Doe"`
-	Email       string `json:"email" binding:"required" example:"johndoe@adomate.ai"`
-	CompanyName string `json:"company_name" binding:"required" example:"Adomate"`
-	Industry    string `json:"industry" binding:"required" example:"Software"`
-	Domain      string `json:"domain" binding:"required" example:"adomate.ai"`
-	Price       string `json:"price" binding:"required" example:"price_1MzQkOFzHmjFR1Qwa4QajKrY"`
+	FirstName   string   `json:"first_name" binding:"required" example:"John"`
+	LastName    string   `json:"last_name" binding:"required" example:"Doe"`
+	Email       string   `json:"email" binding:"required" example:"johndoe@adomate.ai"`
+	CompanyName string   `json:"company_name" binding:"required" example:"Adomate"`
+	Industry    string   `json:"industry" binding:"required" example:"Software"`
+	Domain      string   `json:"domain" binding:"required" example:"adomate.ai"`
+	Locations   []string `json:"locations" binding:"required" example:"[\"Houston, TX\"]"`
+	Services    []string `json:"services" binding:"required" example:"[\"Google Ads\"]"`
+	Price       string   `json:"price" binding:"required" example:"price_1MzQkOFzHmjFR1Qwa4QajKrY"`
 }
 
 func CreateAccount(c *gin.Context) {

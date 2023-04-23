@@ -63,7 +63,4 @@ func ConnectDatabase(dbConfig *DBConfig, clearDB bool) {
 	DB.AutoMigrate(&Billing{})
 	DB.AutoMigrate(&PasswordReset{})
 	DB.AutoMigrate(&Service{})
-	DB.AutoMigrate(&PreRegistration{})
-	DB.AutoMigrate(&PreRegLocation{})
-	DB.AutoMigrate(&PreRegService{})
 }
