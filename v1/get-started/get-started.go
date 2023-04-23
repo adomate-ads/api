@@ -1,11 +1,9 @@
 package get_started
 
 import (
-	"bytes"
 	"fmt"
 	"github.com/adomate-ads/api/models"
 	"github.com/adomate-ads/api/pkg/discord"
-	"github.com/adomate-ads/api/pkg/email"
 	stripe_pkg "github.com/adomate-ads/api/pkg/stripe"
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
@@ -17,12 +15,15 @@ import (
 )
 
 type CreateAccountRequest struct {
-	FirstName   string `json:"first_name" binding:"required" example:"John"`
-	LastName    string `json:"last_name" binding:"required" example:"Doe"`
-	Email       string `json:"email" binding:"required" example:"johndoe@adomate.ai"`
-	CompanyName string `json:"company_name" binding:"required" example:"Adomate"`
-	Industry    string `json:"industry" binding:"required" example:"Software"`
-	Domain      string `json:"domain" binding:"required" example:"adomate.ai"`
+	FirstName   string   `json:"first_name" binding:"required" example:"John"`
+	LastName    string   `json:"last_name" binding:"required" example:"Doe"`
+	Email       string   `json:"email" binding:"required" example:"johndoe@adomate.ai"`
+	CompanyName string   `json:"company_name" binding:"required" example:"Adomate"`
+	Industry    string   `json:"industry" binding:"required" example:"Software"`
+	Domain      string   `json:"domain" binding:"required" example:"adomate.ai"`
+	Locations   []string `json:"locations" binding:"required" example:"[\"Houston, TX\"]"`
+	Services    []string `json:"services" binding:"required" example:"[\"Google Ads\"]"`
+	Price       string   `json:"price" binding:"required" example:"price_1MzQkOFzHmjFR1Qwa4QajKrY"`
 }
 
 func CreateAccount(c *gin.Context) {
@@ -144,56 +145,16 @@ func CreateAccount(c *gin.Context) {
 		return
 	}
 
-	// Send welcome Email
-	data := email.WelcomeData{
-		FirstName: u.FirstName,
-		Company:   u.Company.Name,
-		Domain:    u.Company.Domain,
-	}
-	body := new(bytes.Buffer)
-	if err := email.Templates["register"].Tmpl.Execute(body, data); err != nil {
+	subscription, err := stripe_pkg.CreateSubscription(stripeCustomer.ID, request.Price, "Adomate - Initial Subscription")
+	if err != nil {
+		msg := fmt.Sprintf("Failed to create a stripe subscription for company %s", newCompany.Name)
+		suggestion := fmt.Sprintf("Create Stripe Subscription, CustomerID:%s, PriceID:%s, CompanyID:%d", stripeCustomer.ID, request.Price, newCompany.ID)
+		discord.SendMessage(discord.Error, msg, suggestion)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	email.SendEmail(u.Email, email.Templates["register"].Subject, body.String())
 
-	c.JSON(http.StatusCreated, gin.H{"message": "Successfully created user and company"})
-	// TODO - In the future, we should send an email to the user with a link to verify their email address
-	// TODO - In the future, we should possibly send a session token back to the user
-}
-
-type CreatePaymentIntentRequest struct {
-	Email  string `json:"email" binding:"required"`
-	Amount int64  `json:"amount" binding:"required"`
-}
-
-func CreatePaymentIntent(c *gin.Context) {
-	var request CreatePaymentIntentRequest
-	if err := c.ShouldBindJSON(&request); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	// Validate form input
-	if strings.Trim(request.Email, " ") == "" || request.Amount <= 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Parameters can't be empty"})
-		return
-	}
-
-	// Check if company exists
-	company, err := models.GetCompanyByEmail(request.Email)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "A company by that email does not exist"})
-		return
-	}
-
-	clientSecret, err := stripe_pkg.CreatePaymentIntent(request.Email, company.StripeID, request.Amount)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error creating payment."})
-		return
-	}
-
-	c.JSON(http.StatusCreated, gin.H{"client_secret": clientSecret})
+	c.JSON(http.StatusCreated, gin.H{"message": subscription})
 }
 
 type LocsAndSers struct {
