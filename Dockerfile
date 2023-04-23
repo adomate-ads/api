@@ -22,6 +22,7 @@ WORKDIR /app
 # Copy the built application from the builder image
 COPY --from=builder /app/main .
 COPY --from=builder /app/pkg/email/templates ./pkg/email/templates
+COPY --from=builder /app/docs ./docs
 
 # Expose port 3000 to the host
 EXPOSE 3000
