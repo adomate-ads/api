@@ -82,6 +82,12 @@ func main() {
 
 	r.Use(auth.Auth)
 
+	r.Static("/static", "./docs/static")
+	r.LoadHTMLGlob("docs/*.html")
+	r.GET("/", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "index.html", nil)
+	})
+
 	// Add router group for v1
 	v1 := r.Group("/v1")
 
