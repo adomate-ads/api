@@ -155,40 +155,6 @@ func CreateAccount(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"message": subscription})
 }
 
-type CreatePaymentIntentRequest struct {
-	Email  string `json:"email" binding:"required"`
-	Amount int64  `json:"amount" binding:"required"`
-}
-
-func CreatePaymentIntent(c *gin.Context) {
-	var request CreatePaymentIntentRequest
-	if err := c.ShouldBindJSON(&request); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	// Validate form input
-	if strings.Trim(request.Email, " ") == "" || request.Amount <= 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Parameters can't be empty"})
-		return
-	}
-
-	// Check if company exists
-	company, err := models.GetCompanyByEmail(request.Email)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "A company by that email does not exist"})
-		return
-	}
-
-	clientSecret, err := stripe_pkg.CreatePaymentIntent(request.Email, company.StripeID, request.Amount)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error creating payment."})
-		return
-	}
-
-	c.JSON(http.StatusCreated, gin.H{"client_secret": clientSecret})
-}
-
 type LocsAndSers struct {
 	Locations []string `json:"locations"`
 	Services  []string `json:"services"`
