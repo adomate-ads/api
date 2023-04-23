@@ -1,11 +1,9 @@
 package get_started
 
 import (
-	"bytes"
 	"fmt"
 	"github.com/adomate-ads/api/models"
 	"github.com/adomate-ads/api/pkg/discord"
-	"github.com/adomate-ads/api/pkg/email"
 	stripe_pkg "github.com/adomate-ads/api/pkg/stripe"
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
@@ -23,6 +21,7 @@ type CreateAccountRequest struct {
 	CompanyName string `json:"company_name" binding:"required" example:"Adomate"`
 	Industry    string `json:"industry" binding:"required" example:"Software"`
 	Domain      string `json:"domain" binding:"required" example:"adomate.ai"`
+	Price       string `json:"price" binding:"required" example:"price_1MzQkOFzHmjFR1Qwa4QajKrY"`
 }
 
 func CreateAccount(c *gin.Context) {
@@ -144,22 +143,16 @@ func CreateAccount(c *gin.Context) {
 		return
 	}
 
-	// Send welcome Email
-	data := email.WelcomeData{
-		FirstName: u.FirstName,
-		Company:   u.Company.Name,
-		Domain:    u.Company.Domain,
-	}
-	body := new(bytes.Buffer)
-	if err := email.Templates["register"].Tmpl.Execute(body, data); err != nil {
+	subscription, err := stripe_pkg.CreateSubscription(stripeCustomer.ID, request.Price, "Adomate - Initial Subscription")
+	if err != nil {
+		msg := fmt.Sprintf("Failed to create a stripe subscription for company %s", newCompany.Name)
+		suggestion := fmt.Sprintf("Create Stripe Subscription, CustomerID:%s, PriceID:%s, CompanyID:%d", stripeCustomer.ID, request.Price, newCompany.ID)
+		discord.SendMessage(discord.Error, msg, suggestion)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	email.SendEmail(u.Email, email.Templates["register"].Subject, body.String())
 
-	c.JSON(http.StatusCreated, gin.H{"message": "Successfully created user and company"})
-	// TODO - In the future, we should send an email to the user with a link to verify their email address
-	// TODO - In the future, we should possibly send a session token back to the user
+	c.JSON(http.StatusCreated, gin.H{"message": subscription})
 }
 
 type CreatePaymentIntentRequest struct {

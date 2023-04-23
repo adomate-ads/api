@@ -67,7 +67,7 @@ func main() {
 	openai.Setup()
 	google_ads.Setup()
 	stripe.Setup()
-	stripe.SetupProducts()
+	//stripe.SetupProducts()
 	website_parse.Setup()
 
 	//stripe.GetSubscriptions()
@@ -120,9 +120,13 @@ func engine() *gin.Engine {
 	r := gin.New()
 
 	// Setup CORS and only allow origin from APP URL
-	corsConfig := cors.DefaultConfig()
-	corsConfig.AllowOrigins = []string{os.Getenv("APP_URL")}
-	corsConfig.AddAllowMethods("OPTIONS")
+	corsConfig := cors.Config{
+		AllowOrigins:     []string{os.Getenv("APP_URL")},
+		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"Origin", "Content-Length", "Content-Type", "Authorization"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+	}
 	r.Use(cors.New(corsConfig))
 
 	// Set up the cookie store for session management
