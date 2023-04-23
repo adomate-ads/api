@@ -4,23 +4,21 @@ go 1.19
 
 require (
 	cloud.google.com/go/longrunning v0.3.0
-	github.com/cgenuity/gowebcrawler v0.0.0-20150601035759-77334f843214
 	github.com/chromedp/chromedp v0.9.1
 	github.com/gin-contrib/cors v1.4.0
 	github.com/gin-gonic/contrib v0.0.0-20221130124618-7e01895a63f2
 	github.com/gin-gonic/gin v1.8.2
-	github.com/go-rod/rod v0.112.8
 	github.com/google/uuid v1.3.0
 	github.com/googleapis/gax-go/v2 v2.7.0
 	github.com/jinzhu/gorm v1.9.16
 	github.com/joho/godotenv v1.5.1
 	github.com/rabbitmq/amqp091-go v1.7.0
+	github.com/sashabaranov/go-openai v1.8.0
 	github.com/stretchr/testify v1.8.1
 	github.com/stripe/stripe-go/v74 v74.7.0
 	github.com/swaggo/files v1.0.0
 	github.com/swaggo/gin-swagger v1.5.3
 	github.com/swaggo/swag v1.8.10
-	github.com/ysmood/gson v0.7.3
 	golang.org/x/crypto v0.6.0
 	golang.org/x/oauth2 v0.0.0-20221014153046-6fdb5e3db783
 	google.golang.org/api v0.103.0
@@ -34,8 +32,6 @@ require (
 	cloud.google.com/go/compute v1.13.0 // indirect
 	cloud.google.com/go/compute/metadata v0.2.1 // indirect
 	github.com/KyleBanks/depth v1.2.1 // indirect
-	github.com/PuerkitoBio/goquery v1.5.1 // indirect
-	github.com/andybalholm/cascadia v1.1.0 // indirect
 	github.com/boj/redistore v0.0.0-20180917114910-cd5dcc76aeff // indirect
 	github.com/chromedp/cdproto v0.0.0-20230220211738-2b1ec77315c9 // indirect
 	github.com/chromedp/sysutil v1.0.0 // indirect
@@ -61,7 +57,6 @@ require (
 	github.com/gorilla/context v1.1.1 // indirect
 	github.com/gorilla/securecookie v1.1.1 // indirect
 	github.com/gorilla/sessions v1.2.1 // indirect
-	github.com/gorilla/websocket v1.5.0 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
@@ -73,10 +68,7 @@ require (
 	github.com/pelletier/go-toml/v2 v2.0.6 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/rogpeppe/go-internal v1.9.0 // indirect
-	github.com/sashabaranov/go-openai v1.8.0 // indirect
 	github.com/ugorji/go/codec v1.2.9 // indirect
-	github.com/ysmood/goob v0.4.0 // indirect
-	github.com/ysmood/leakless v0.8.0 // indirect
 	go.opencensus.io v0.24.0 // indirect
 	golang.org/x/net v0.7.0 // indirect
 	golang.org/x/sys v0.6.0 // indirect
