@@ -111,6 +111,22 @@ definitions:
       last_name:
         example: Doe
         type: string
+      locations:
+        example:
+        - '["Houston'
+        - ' TX"]'
+        items:
+          type: string
+        type: array
+      price:
+        example: price_1MzQkOFzHmjFR1Qwa4QajKrY
+        type: string
+      services:
+        example:
+        - '["Google Ads"]'
+        items:
+          type: string
+        type: array
     required:
     - company_name
     - domain
@@ -118,6 +134,9 @@ definitions:
     - first_name
     - industry
     - last_name
+    - locations
+    - price
+    - services
     type: object
   get_started.LocsAndSers:
     properties:

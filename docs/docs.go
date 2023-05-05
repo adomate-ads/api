@@ -2987,7 +2987,10 @@ const docTemplate = `{
                 "email",
                 "first_name",
                 "industry",
-                "last_name"
+                "last_name",
+                "locations",
+                "price",
+                "services"
             ],
             "properties": {
                 "company_name": {
@@ -3013,6 +3016,29 @@ const docTemplate = `{
                 "last_name": {
                     "type": "string",
                     "example": "Doe"
+                },
+                "locations": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "[\"Houston",
+                        " TX\"]"
+                    ]
+                },
+                "price": {
+                    "type": "string",
+                    "example": "price_1MzQkOFzHmjFR1Qwa4QajKrY"
+                },
+                "services": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "[\"Google Ads\"]"
+                    ]
                 }
             }
         },
