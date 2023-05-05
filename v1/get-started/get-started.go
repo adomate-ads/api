@@ -12,6 +12,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type CreateAccountRequest struct {
@@ -103,6 +104,32 @@ func CreateAccount(c *gin.Context) {
 		return
 	}
 
+	// Create Locations
+	for _, loc := range request.Locations {
+		location := models.Location{
+			Name:      loc,
+			CompanyID: newCompany.ID,
+			Company:   *newCompany,
+		}
+		if err := location.CreateLocation(); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+	}
+
+	// Create Services
+	for _, serv := range request.Services {
+		service := models.Service{
+			Name:      serv,
+			CompanyID: newCompany.ID,
+			Company:   *newCompany,
+		}
+		if err := service.CreateService(); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+	}
+
 	// Create user
 	u := models.User{
 		FirstName: request.FirstName,
@@ -165,6 +192,8 @@ func CreateAccount(c *gin.Context) {
 		return
 	}
 
+	discord.SendMessage(discord.Log, fmt.Sprintf("New Member Registered: %s %s - %s | %s", request.FirstName, request.LastName, request.Email, request.CompanyName), "")
+
 	c.JSON(http.StatusCreated, gin.H{"message": subscription})
 }
 
@@ -199,6 +228,8 @@ func GetLocationsAndServices(c *gin.Context) {
 		Locations: locations,
 		Services:  services,
 	}
+
+	time.Sleep(1 * time.Second)
 
 	c.JSON(http.StatusOK, locationsAndServices)
 }
