@@ -38,6 +38,7 @@ func SetupProducts() bool {
 			},
 			TaxBehavior: stripe.String(string(stripe.PriceCurrencyOptionsTaxBehaviorExclusive)),
 		},
+		TaxCode: stripe.String("txcd_10103001"),
 	}
 	if _, err := product.New(paramsBP); err != nil {
 		log.Fatal(err)
@@ -55,6 +56,7 @@ func SetupProducts() bool {
 			},
 			TaxBehavior: stripe.String(string(stripe.PriceCurrencyOptionsTaxBehaviorExclusive)),
 		},
+		TaxCode: stripe.String("txcd_10103001"),
 	}
 	if _, err := product.New(paramsPP); err != nil {
 		log.Fatal(err)
@@ -72,6 +74,7 @@ func SetupProducts() bool {
 			},
 			TaxBehavior: stripe.String(string(stripe.PriceCurrencyOptionsTaxBehaviorExclusive)),
 		},
+		TaxCode: stripe.String("txcd_10103001"),
 	}
 	if _, err := product.New(paramsEP); err != nil {
 		log.Fatal(err)
