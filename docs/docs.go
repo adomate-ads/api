@@ -1359,7 +1359,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/dto.MessageResponse"
+                            "$ref": "#/definitions/stripe.Subscription"
                         }
                     },
                     "400": {
@@ -3427,6 +3427,40 @@ const docTemplate = `{
                 },
                 "name": {
                     "type": "string"
+                }
+            }
+        },
+        "stripe.Item": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "integer"
+                }
+            }
+        },
+        "stripe.Subscription": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/stripe.Item"
+                    }
+                },
+                "payment_intent": {
+                    "type": "string"
+                },
+                "tax": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
                 }
             }
         },

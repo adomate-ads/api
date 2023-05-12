@@ -34,7 +34,7 @@ type CreateAccountRequest struct {
 // @Accept json
 // @Produce json
 // @Param create body CreateAccountRequest true "Create Account Request"
-// @Success 201 {object} dto.MessageResponse
+// @Success 201 {object} stripe.Subscription
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /get-started [post]

@@ -415,6 +415,28 @@ definitions:
     - company
     - name
     type: object
+  stripe.Item:
+    properties:
+      id:
+        type: string
+      price:
+        type: integer
+    type: object
+  stripe.Subscription:
+    properties:
+      id:
+        type: string
+      items:
+        items:
+          $ref: '#/definitions/stripe.Item'
+        type: array
+      payment_intent:
+        type: string
+      tax:
+        type: integer
+      total:
+        type: integer
+    type: object
   user.CreateRequest:
     properties:
       company:
@@ -1384,7 +1406,7 @@ paths:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/dto.MessageResponse'
+            $ref: '#/definitions/stripe.Subscription'
         "400":
           description: Bad Request
           schema:
