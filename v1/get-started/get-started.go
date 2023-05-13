@@ -24,7 +24,9 @@ type CreateAccountRequest struct {
 	Domain      string   `json:"domain" binding:"required" example:"adomate.ai"`
 	Locations   []string `json:"locations" binding:"required" example:"[\"Houston, TX\"]"`
 	Services    []string `json:"services" binding:"required" example:"[\"Google Ads\"]"`
+	Budget      uint     `json:"budget" binding:"required" example:"1000"`
 	Price       string   `json:"price" binding:"required" example:"price_1MzQkOFzHmjFR1Qwa4QajKrY"`
+	Ip          string   `json:"ip" binding:"required" example:"192.168.1.1"`
 }
 
 // CreateAccount godoc
@@ -165,7 +167,9 @@ func CreateAccount(c *gin.Context) {
 	params := &stripe.CustomerParams{
 		Name:  stripe.String(request.CompanyName),
 		Email: stripe.String(request.Email),
+		Tax:   &stripe.CustomerTaxParams{IPAddress: stripe.String(request.Ip)},
 	}
+	params.AddExpand("tax")
 	params.AddMetadata("company_id", strconv.Itoa(int(newCompany.ID)))
 
 	stripeCustomer, err := customer.New(params)
@@ -183,7 +187,7 @@ func CreateAccount(c *gin.Context) {
 		return
 	}
 
-	subscription, err := stripe_pkg.CreateSubscription(stripeCustomer.ID, request.Price, "Adomate - Initial Subscription")
+	subscription, err := stripe_pkg.CreateSubscription(stripeCustomer.ID, request.Price, "Adomate - Initial Subscription", request.Budget)
 	if err != nil {
 		msg := fmt.Sprintf("Failed to create a stripe subscription for company %s", newCompany.Name)
 		suggestion := fmt.Sprintf("Create Stripe Subscription, CustomerID:%s, PriceID:%s, CompanyID:%d", stripeCustomer.ID, request.Price, newCompany.ID)

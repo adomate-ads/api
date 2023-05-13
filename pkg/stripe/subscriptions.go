@@ -18,11 +18,16 @@ type Item struct {
 	Price int64  `json:"price"`
 }
 
-func CreateSubscription(customerId string, price string, description string) (*Subscription, error) {
+func CreateSubscription(customerId string, price string, description string, adBudget uint) (*Subscription, error) {
 
 	//Automatically save the payment method to the subscription when the first payment is successful.
 	paymentSettings := &stripe.SubscriptionPaymentSettingsParams{
 		SaveDefaultPaymentMethod: stripe.String("on_subscription"),
+	}
+
+	p, err := createPriceID("prod_Ns9ONV54VtPZFF", adBudget)
+	if err != nil {
+		return nil, err
 	}
 
 	//Create the subscription
@@ -33,7 +38,7 @@ func CreateSubscription(customerId string, price string, description string) (*S
 				Price: stripe.String(price), //THIS IS NOT THE PRICE; This is the ID that is associated with the price that is associated with the payment
 			},
 			{
-				Price: stripe.String("price_1N6P5nJSLdyWx69CGXGAmrPn"),
+				Price: stripe.String(p),
 			},
 		},
 		PaymentSettings: paymentSettings,
