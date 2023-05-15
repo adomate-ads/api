@@ -48,8 +48,8 @@ jobs:
       - name: Commit and push changes
         run: |
           cd $GITHUB_WORKSPACE/gitops
-          git config --global user.email "raaj.patel229@gmail.com"
-          git config --global user.name "Raajheer1"
+          git config --global user.email "raaj.patel@adomate.ai"
+          git config --global user.name "Adomate-ai"
           echo ${{ github.sha }}
           git add .
           git commit -m "Update API manifests to ${{ github.sha }}"
@@ -82,8 +82,8 @@ jobs:
       - name: Commit and push changes
         run: |
           cd $GITHUB_WORKSPACE/gitops
-          git config --global user.email "raaj.patel229@gmail.com"
-          git config --global user.name "Raajheer1"
+          git config --global user.email "raaj.patel@adomate.ai"
+          git config --global user.name "Adomate-ai"
           echo ${{ github.sha }}
           git add .
           git commit -m "Update API manifests to ${{ github.sha }}"
