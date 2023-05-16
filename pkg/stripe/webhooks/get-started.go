@@ -10,11 +10,11 @@ import (
 )
 
 func PaymentSucceeded(paymentIntent stripe.PaymentIntent) {
-	discord.SendMessage(discord.Log, "Stripe Webhook", "Payment Succeeded")
+	discord.SendMessage(discord.Log, "Stripe Webhook - Payment Succeeded", "")
 
 	user, err := models.GetUserByEmail(paymentIntent.Customer.Email)
 	if err != nil {
-		discord.SendMessage(discord.Error, "Stripe Webhook Error", err.Error())
+		discord.SendMessage(discord.Error, "Stripe Webhook Error", "Attempted to search for user by email, but no user found: "+paymentIntent.Customer.Email)
 		return
 	}
 
