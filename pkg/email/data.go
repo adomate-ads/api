@@ -8,6 +8,10 @@ type WelcomeData struct {
 	Domain    string `json:"domain" example:"adomate.com"`
 }
 
+type GetStartedData struct {
+	URL string `json:"url" example:"https://app.adomate.com/get-started/1234"`
+}
+
 type PasswordResetData struct {
 	FirstName        string `json:"first_name" example:"John"`
 	Company          string `json:"company" example:"Adomate"`
@@ -43,14 +47,14 @@ type DeleteCompany struct {
 }
 
 type NewInvoice struct {
-	InvoiceID           uint    `json:"invoice_id" example:"1234"` // Check data type
-	Company             string  `json:"company" example:"Adomate"`
-	PaymentMethod       string  `json:"payment_method" example:"3456"`
-	PreTaxAmount        float32 `json:"pre_tax_amount" example:"1230.00"`
-	TaxAmount           float32 `json:"tax_amount" example:"4.56"`
-	InvoiceAmount       float64 `json:"amount" example:"1234.56"` // Check data type
-	Status              string  `json:"status" example:"unpaid"`
-	DueAt               string  `json:"due_at" example:"2020-01-01"` // Check time format
+	InvoiceID     uint    `json:"invoice_id" example:"1234"` // Check data type
+	Company       string  `json:"company" example:"Adomate"`
+	PaymentMethod string  `json:"payment_method" example:"3456"`
+	PreTaxAmount  float32 `json:"pre_tax_amount" example:"1230.00"`
+	TaxAmount     float32 `json:"tax_amount" example:"4.56"`
+	InvoiceAmount float64 `json:"amount" example:"1234.56"` // Check data type
+	Status        string  `json:"status" example:"unpaid"`
+	DueAt         string  `json:"due_at" example:"2020-01-01"` // Check time format
 }
 
 type UnpaidInvoiceReminder struct {
@@ -62,14 +66,14 @@ type UnpaidInvoiceReminder struct {
 }
 
 type PaidInvoice struct {
-	InvoiceID           string  `json:"invoice_id" example:"1234"`
-	Company             string  `json:"company" example:"Adomate"`
-	Product             string  `json:"product" example:"Starter"`
-	ProductPrice        float32 `json:"product_price" example:"20.00"`
-	PaymentMethod       string  `json:"payment_method" example:"3456"`
-	TaxAmount           float32 `json:"tax_amount" example:"1234.56"`
-	InvoiceAmount       float64 `json:"invoice_amount" example:"1234.56"`
-	PaidAt              string  `json:"paid_at" example:"2020-01-01"` // Check time format
+	InvoiceID     string  `json:"invoice_id" example:"1234"`
+	Company       string  `json:"company" example:"Adomate"`
+	Product       string  `json:"product" example:"Starter"`
+	ProductPrice  float32 `json:"product_price" example:"20.00"`
+	PaymentMethod string  `json:"payment_method" example:"3456"`
+	TaxAmount     float32 `json:"tax_amount" example:"1234.56"`
+	InvoiceAmount float64 `json:"invoice_amount" example:"1234.56"`
+	PaidAt        string  `json:"paid_at" example:"2020-01-01"` // Check time format
 }
 
 type NewCampaign struct {

@@ -19,6 +19,7 @@ import (
 	"github.com/adomate-ads/api/v1/industry"
 	"github.com/adomate-ads/api/v1/order"
 	"github.com/adomate-ads/api/v1/service"
+	stripe_v1 "github.com/adomate-ads/api/v1/stripe"
 	"github.com/adomate-ads/api/v1/user"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/contrib/sessions"
@@ -113,6 +114,7 @@ func main() {
 	service.Routes(v1)
 	gads.Routes(v1)
 	get_started.Routes(v1)
+	stripe_v1.Routes(v1)
 
 	// Static files, such as images, css, and js
 	v1.StaticFS("/storage", gin.Dir("./storage", false))

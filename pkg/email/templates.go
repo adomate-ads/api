@@ -15,6 +15,10 @@ var Templates = map[string]Template{
 		Subject: "Welcome to Adomate! Important Next Steps...",
 		Tmpl:    template.Must(template.ParseFiles(dir + "welcome.html")),
 	},
+	"get-started": {
+		Subject: "Get started with Adomate",
+		Tmpl:    template.Must(template.ParseFiles(dir + "get-started.html")),
+	},
 	"forgot-password": {
 		Subject: "Password Reset Request",
 		Tmpl:    template.Must(template.ParseFiles(dir + "forgot-password.html")),
