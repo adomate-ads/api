@@ -13,13 +13,6 @@ import (
 )
 
 func handleWebhook(c *gin.Context) {
-	var event stripe.Event
-	if err := c.ShouldBindJSON(&event); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		discord.SendMessage(discord.Error, "Stripe Webhook Error", err.Error())
-		return
-	}
-
 	endpointSecret := os.Getenv("WEBHOOK_SECRET")
 	signatureHeader := c.GetHeader("Stripe-Signature")
 
@@ -30,10 +23,11 @@ func handleWebhook(c *gin.Context) {
 		return
 	}
 
+	var event stripe.Event
 	event, err = webhook.ConstructEvent(payload, signatureHeader, endpointSecret)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		discord.SendMessage(discord.Error, "Stripe Webhook Error", err.Error())
+		discord.SendMessage(discord.Error, "Stripe Webhook Error - Constructing Event", err.Error())
 		return
 	}
 
