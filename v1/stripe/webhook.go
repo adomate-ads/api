@@ -43,7 +43,7 @@ func handleWebhook(c *gin.Context) {
 		err := json.Unmarshal(event.Data.Raw, &paymentIntent)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			discord.SendMessage(discord.Error, "Stripe Webhook Error", err.Error())
+			discord.SendMessage(discord.Error, "Stripe Webhook Error - PI Created", err.Error())
 			return
 		}
 
@@ -53,7 +53,7 @@ func handleWebhook(c *gin.Context) {
 		err := json.Unmarshal(event.Data.Raw, &paymentIntent)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			discord.SendMessage(discord.Error, "Stripe Webhook Error", err.Error())
+			discord.SendMessage(discord.Error, "Stripe Webhook Error - PI Succeeded", err.Error())
 			return
 		}
 
