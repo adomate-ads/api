@@ -14,7 +14,7 @@ func PaymentSucceeded(paymentIntent stripe.PaymentIntent) {
 
 	user, err := models.GetUserByEmail(paymentIntent.Customer.Email)
 	if err != nil {
-		discord.SendMessage(discord.Error, "Stripe Webhook Error", "Attempted to search for user by email, but no user found: "+paymentIntent.Customer.Email)
+		discord.SendMessage(discord.Error, "Stripe Webhook Payment Error", "Attempted to search for user by email, but no user found: "+paymentIntent.Customer.Email)
 		return
 	}
 
@@ -25,7 +25,7 @@ func PaymentSucceeded(paymentIntent stripe.PaymentIntent) {
 	}
 	pr.UUID = uuid.New().String()
 	if err := pr.CreatePasswordReset(); err != nil {
-		discord.SendMessage(discord.Error, "Stripe Webhook Error", err.Error())
+		discord.SendMessage(discord.Error, "Stripe Webhook Payment Error", err.Error())
 		return
 	}
 
