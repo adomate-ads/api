@@ -23,9 +23,9 @@ type RabbitMQConfig struct {
 }
 
 type Email struct {
-	To      string
-	Subject string
-	Body    string
+	To      string `json:"to"`
+	Subject string `json:"subject"`
+	Body    string `json:"body"`
 }
 
 var RMQConfig RabbitMQConfig
