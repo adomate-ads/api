@@ -12,11 +12,19 @@ import (
 )
 
 func PaymentSucceeded(paymentIntent stripe.PaymentIntent) {
-	user, err := models.GetUserByEmail(paymentIntent.Customer.Email)
+	company, err := models.GetCompanyByStripeID(paymentIntent.Customer.ID)
+	if err != nil {
+		discord.SendMessage(discord.Error, "Stripe Webhook Payment Error", "Attempted to search for company by stripe id, but no company found: "+paymentIntent.Customer.ID)
+		str, _ := json.MarshalIndent(paymentIntent, "", "  ")
+		fmt.Println(string(str))
+		return
+	}
+
+	user, err := models.GetUserByEmail(company.Email)
 	if err != nil {
 		discord.SendMessage(discord.Error, "Stripe Webhook Payment Error", "Attempted to search for user by email, but no user found: "+paymentIntent.Customer.Email)
 		str, _ := json.MarshalIndent(paymentIntent, "", "  ")
-		fmt.Println(str)
+		fmt.Println(string(str))
 		return
 	}
 

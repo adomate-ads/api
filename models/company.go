@@ -57,6 +57,14 @@ func GetCompanyByClientID(clientID int64) (*Company, error) {
 	return &company, nil
 }
 
+func GetCompanyByStripeID(stripeID string) (*Company, error) {
+	var company Company
+	if err := DB.Where("stripe_id = ?", stripeID).Preload("Industry").First(&company).Error; err != nil {
+		return nil, err
+	}
+	return &company, nil
+}
+
 func (c *Company) CreateCompany() error {
 	err := DB.Create(&c).Error
 	if err != nil {
