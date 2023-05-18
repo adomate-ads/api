@@ -23,3 +23,15 @@ func CreatePaymentIntent(customerEmail string, stripeId string, amount int64) (s
 
 	return pi.ClientSecret, nil
 }
+
+func GetPaymentIntent(id string) (*stripe.PaymentIntent, error) {
+	params := &stripe.PaymentIntentParams{}
+	params.AddExpand("customer")
+
+	pi, err := paymentintent.Get(id, params)
+	if err != nil {
+		return nil, err
+	}
+
+	return pi, nil
+}
