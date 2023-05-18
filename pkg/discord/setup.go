@@ -19,11 +19,11 @@ type RabbitMQConfig struct {
 }
 
 type Message struct {
-	Type       string    `json:"type" example:"error/warning/log"`
-	Message    string    `json:"message"`
-	Suggestion string    `json:"suggestion,omitempty"`
-	Time       time.Time `json:"time,omitempty"`
-	Origin     string    `json:"origin,omitempty"`
+	Type    string    `json:"type" example:"error/warning/log"`
+	Title   string    `json:"title"`
+	Message string    `json:"message,omitempty"`
+	Time    time.Time `json:"time,omitempty"`
+	Origin  string    `json:"origin"`
 }
 
 var RMQConfig RabbitMQConfig
@@ -43,7 +43,7 @@ const Warn string = "Warn"
 const Log string = "Log"
 const General string = "General"
 
-func SendMessage(level string, message string, suggestion string) {
+func SendMessage(level string, title string, message string) {
 	conn, err := amqp.Dial(fmt.Sprintf("amqp://%s:%s@%s:%s/", RMQConfig.User, RMQConfig.Password, RMQConfig.Host, RMQConfig.Port))
 	if err != nil {
 		log.Panicf("Failed to connect to RabbitMQ: %s", err)
@@ -72,11 +72,11 @@ func SendMessage(level string, message string, suggestion string) {
 	defer cancel()
 
 	msg := &Message{
-		Type:       level,
-		Message:    message,
-		Suggestion: suggestion,
-		Time:       time.Now(),
-		Origin:     "api",
+		Type:    level,
+		Title:   title,
+		Message: message,
+		Time:    time.Now(),
+		Origin:  "api",
 	}
 
 	msgString, err := json.Marshal(msg)
