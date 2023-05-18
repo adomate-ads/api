@@ -48,6 +48,6 @@ func PaymentSucceeded(paymentIntent stripe.PaymentIntent) {
 		discord.SendMessage(discord.Error, "Email Error - Sending Payment Success", err.Error())
 		return
 	}
-	email.SendEmail(paymentIntent.Customer.Email, email.Templates["get-started"].Subject, body.String())
+	email.SendEmail(user.Email, email.Templates["get-started"].Subject, body.String())
 	discord.SendMessage(discord.Log, "Stripe Webhook - Payment Succeeded", "Sent get-started email to "+paymentIntent.Customer.Email)
 }
