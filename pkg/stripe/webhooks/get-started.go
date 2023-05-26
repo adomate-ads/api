@@ -2,8 +2,6 @@ package webhooks
 
 import (
 	"bytes"
-	"encoding/json"
-	"fmt"
 	"github.com/adomate-ads/api/models"
 	"github.com/adomate-ads/api/pkg/discord"
 	"github.com/adomate-ads/api/pkg/email"
@@ -15,16 +13,12 @@ func PaymentSucceeded(paymentIntent stripe.PaymentIntent) {
 	company, err := models.GetCompanyByStripeID(paymentIntent.Customer.ID)
 	if err != nil {
 		discord.SendMessage(discord.Error, "Stripe Webhook Payment Error", "Attempted to search for company by stripe id, but no company found: "+paymentIntent.Customer.ID)
-		str, _ := json.MarshalIndent(paymentIntent, "", "  ")
-		fmt.Println(string(str))
 		return
 	}
 
 	user, err := models.GetUserByEmail(company.Email)
 	if err != nil {
 		discord.SendMessage(discord.Error, "Stripe Webhook Payment Error", "Attempted to search for user by email, but no user found: "+paymentIntent.Customer.Email)
-		str, _ := json.MarshalIndent(paymentIntent, "", "  ")
-		fmt.Println(string(str))
 		return
 	}
 
@@ -49,5 +43,5 @@ func PaymentSucceeded(paymentIntent stripe.PaymentIntent) {
 		return
 	}
 	email.SendEmail(user.Email, email.Templates["get-started"].Subject, body.String())
-	discord.SendMessage(discord.Log, "Stripe Webhook - Payment Succeeded", "Sent get-started email to "+paymentIntent.Customer.Email)
+	discord.SendMessage(discord.Log, "Stripe Webhook - Payment Succeeded", "Sent get-started email to "+user.Email)
 }
