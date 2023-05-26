@@ -1392,6 +1392,15 @@ const docTemplate = `{
                 "summary": "Get Locations and Services",
                 "parameters": [
                     {
+                        "description": "Cloudflare Token",
+                        "name": "CF_Token",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/cloudflare.SiteVerifyRequest"
+                        }
+                    },
+                    {
                         "type": "string",
                         "description": "Domain URL",
                         "name": "domain",
@@ -2889,6 +2898,14 @@ const docTemplate = `{
                 }
             }
         },
+        "cloudflare.SiteVerifyRequest": {
+            "type": "object",
+            "properties": {
+                "cf_token": {
+                    "type": "string"
+                }
+            }
+        },
         "company.CreateRequest": {
             "type": "object",
             "required": [
@@ -2982,17 +2999,23 @@ const docTemplate = `{
         "get_started.CreateAccountRequest": {
             "type": "object",
             "required": [
+                "budget",
                 "company_name",
                 "domain",
                 "email",
                 "first_name",
                 "industry",
+                "ip",
                 "last_name",
                 "locations",
                 "price",
                 "services"
             ],
             "properties": {
+                "budget": {
+                    "type": "integer",
+                    "example": 1000
+                },
                 "company_name": {
                     "type": "string",
                     "example": "Adomate"
@@ -3012,6 +3035,10 @@ const docTemplate = `{
                 "industry": {
                     "type": "string",
                     "example": "Software"
+                },
+                "ip": {
+                    "type": "string",
+                    "example": "192.168.1.1"
                 },
                 "last_name": {
                     "type": "string",

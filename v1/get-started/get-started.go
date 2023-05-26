@@ -212,6 +212,7 @@ type LocsAndSers struct {
 // @Tags Getting Started
 // @Accept json
 // @Produce json
+// @Param CF_Token body cloudflare.SiteVerifyRequest true "Cloudflare Token"
 // @Param domain path string true "Domain URL"
 // @Success 201 {object} []LocsAndSers
 // @Router /get-started/location-services/{domain} [get]

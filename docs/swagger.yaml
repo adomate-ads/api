@@ -32,6 +32,11 @@ definitions:
     - company
     - resource_name
     type: object
+  cloudflare.SiteVerifyRequest:
+    properties:
+      cf_token:
+        type: string
+    type: object
   company.CreateRequest:
     properties:
       domain:
@@ -93,6 +98,9 @@ definitions:
     type: object
   get_started.CreateAccountRequest:
     properties:
+      budget:
+        example: 1000
+        type: integer
       company_name:
         example: Adomate
         type: string
@@ -107,6 +115,9 @@ definitions:
         type: string
       industry:
         example: Software
+        type: string
+      ip:
+        example: 192.168.1.1
         type: string
       last_name:
         example: Doe
@@ -128,11 +139,13 @@ definitions:
           type: string
         type: array
     required:
+    - budget
     - company_name
     - domain
     - email
     - first_name
     - industry
+    - ip
     - last_name
     - locations
     - price
@@ -1424,6 +1437,12 @@ paths:
       - application/json
       description: Get Locations and Services for domain
       parameters:
+      - description: Cloudflare Token
+        in: body
+        name: CF_Token
+        required: true
+        schema:
+          $ref: '#/definitions/cloudflare.SiteVerifyRequest'
       - description: Domain URL
         in: path
         name: domain
