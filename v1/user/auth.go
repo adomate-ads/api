@@ -28,7 +28,7 @@ type LoginRequest struct {
 // @Accept json
 // @Produce json
 // @Param login body LoginRequest true "Login Request"
-// @Success 201 {object} dto.MessageResponse
+// @Success 200 {object} dto.MessageResponse
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 403 {object} dto.ErrorResponse
@@ -228,7 +228,7 @@ func Register(c *gin.Context) {
 // @Tags Auth
 // @Accept */*
 // @Produce json
-// @Success 201 {object} dto.MessageResponse
+// @Success 200 {object} dto.MessageResponse
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 403 {object} dto.ErrorResponse
