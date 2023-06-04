@@ -8,6 +8,11 @@ type WelcomeData struct {
 	Domain    string `json:"domain" example:"adomate.com"`
 }
 
+type EmailConfirmation struct {
+	FirstName           string `json:"first_name" example:"John"`
+	EmailConfirmtionURL string `json:"url" example:"https://app.adomate.com/confirm-email/1234"`
+}
+
 type GetStartedData struct {
 	URL string `json:"url" example:"https://app.adomate.com/get-started/1234"`
 }
