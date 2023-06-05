@@ -44,14 +44,7 @@
         margin: auto;
     }
 
-    .footer {
-        width: 85%;
-        max-width: 780px;
-        height: auto;
-        border-radius: 10px;
-        box-sizing: border-box;
-        margin: auto;
-    }
+
 
     .foot-note {
         bottom: 0;
@@ -88,12 +81,13 @@
         </div>
         <h3>Dear {{ .FirstName }},</h3>
         <p style="line-height: 1.75;">
-            We have revoked {{ .FirstName }} access to {{ .CompanyName }}'s Adomate Dashboard on {{ .Time }}. If you think this is a mistake, please contact us at 
+            We have revoked {{ .FirstName }} access to {{ .CompanyName }}'s Adomate Dashboard on {{ .Time }}. If you
+            think this is a mistake, please contact us at
             <a href="mailto:support@adomate.ai?subject=Query%20from%20{{ .Company }}" rel="noopener noreferrer"
-            style="border-bottom: 1px dotted #637efe; color: #637efe;">support@adomate.ai</a>.
+                style="border-bottom: 1px dotted #637efe; color: #637efe;">support@adomate.ai</a>.
         </p>
         <p>
-         Team Adomate
+            Team Adomate
         </p>
     </div>
     <!--Footer Section-->
