@@ -81,10 +81,16 @@
         </div>
         <h3>Dear {{ .Company }} Team!</h3>
         <p style="line-height: 1.75;">
-            This is a confirmation that we have deleted your ad campaign from our system as per your request.
+            This is a confirmation that we have deleted your ad campaign, {{ .Campaign }} from our system as per your request.
             <br />
             Please note that deleting your campaign means that your ads will no longer be shown on the platform, and any
             associated data will be permanently deleted from our servers.
+            <br />
+            Please find the report attached for {{ .Month }}.
+            <br />
+            {{ .Metric1 }}
+            {{ .Metric2 }}
+            {{ .Metric3 }}
             <br />
             To start a new campaign, login to your <a href="https://app.adomate.ai/" class="adomate-email"
                 rel="noopener noreferrer" style="color: #637efe;">Adomate Dashboard</a>.
