@@ -1,137 +1,116 @@
 <!DOCTYPE html>
 <html>
-    <head lang="en">
-        <link rel="icon" href="https://raw.githubusercontent.com/adomate-ads/frontend/master/src/assets/logo.png" />
-        <link href="https://fonts.googleapis.com/css?family=Noto Sans" rel="stylesheet" />
-        <title>Adomate | {{ .FirstName }}  Access Revoked</title>
-        <meta charset="utf-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <meta name="viewport" content="width=device-width,initial-scale=1 user-scalable=yes" />
-        <meta name="format-detection" content="telephone=no, date=no, address=no, email=no, url=no" />
-        <meta name="x-apple-disable-message-reformatting" />
-        <meta name="color-scheme" content="light dark" />
-        <meta name="supported-color-schemes" content="light dark" />
-    </head>
 
-    <style>
-        body {
-            font-family: "Noto Sans";
-            font-size: 15px;
-        }
+<head lang="en">
+    <link rel="icon" href="https://raw.githubusercontent.com/adomate-ads/frontend/master/src/assets/logo.png" />
+    <link href="https://fonts.googleapis.com/css?family=Noto Sans" rel="stylesheet" />
+    <title>Adomate | {{ .FirstName }} Access Revoked</title>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width,initial-scale=1 user-scalable=yes" />
+    <meta name="x-apple-disable-message-reformatting" />
+</head>
+<style>
+    body {
+        font-family: "Noto Sans";
+        font-size: 15px;
+        background-color: #E5E7EB;
+    }
 
-        .banner {
-            max-width: 30%;
-            height: auto;
-            display: block;
-            margin: 0 auto;
-        }
+    .header {
+        text-align: center;
+        width: 85%;
+        max-width: 780px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        height: 40px;
+        box-sizing: border-box;
+        margin: auto;
+        background-color: #d8dfff;
+    }
 
-        .right-link {
-            float: right;
-        }
+    a {
+        text-decoration: none;
+        color: inherit;
+    }
 
-        .footer {
-            padding: 1%;
-            text-align: center;
-        }
+    .email-content {
+        background-color: #FAF9F6;
+        width: 85%;
+        max-width: 780px;
+        height: auto;
+        box-sizing: border-box;
+        padding: 10px;
+        margin: auto;
+    }
 
-        a {
-            text-decoration: none;
-            color: inherit;
-        }
 
-        .adomate-email {
-            color: #637efe;
-        }
 
-        .delete-user-header {
-            width: 85%;
-            max-width: 780px;
-            height: auto;
-            border: 4px solid #637efe;
-            border-radius: 10px;
-            box-sizing: border-box;
-            padding: 10px;
-            margin: auto;
-        }
+    .foot-note {
+        bottom: 0;
+        width: auto;
+        height: 20px;
+        display: flex;
+        gap: 10px;
+        box-sizing: border-box;
+        justify-content: center;
+        align-items: center;
+    }
+</style>
 
-        .delete-user-footer {
-            width: 85%;
-            max-width: 780px;
-            height: auto;
-            border: 4px solid #637efe;
-            border-radius: 10px;
-            box-sizing: border-box;
-            padding: 10px;
-            margin: auto;
-        }
-
-        .address {
-            text-align: center;
-        }
-
-        .foot-note {
-            bottom: 0;
-            width: auto;
-            height: 20px;
-            display: flex;
-            gap: 10px;
-            box-sizing: border-box;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .LLC {
-            text-decoration-style: solid;
-        }
-    </style>
-
-    <body>
-        <a href="" target="_blank" rel="noopener noreferrer">View email in browser</a>
-        <a href="javascript:window.print()" class="right-link">Print Email</a>
-
-        <br />
-        <br />
-        <img class="banner" src="https://raw.githubusercontent.com/adomate-ads/frontend/master/src/assets/adomate.svg" alt="Adomate Banner" />
-        <br />
-        <br />
-        <div class="delete-user-header">
-            <h2 style="text-align: center;">Adomate Dashboard user removed</h2>
-            <h3>Dear {{ .Company }},</h3>
-            <p style="line-height: 1.75;">
-               We have revoked {{ .FirstName }}'s access to {{ .CompanyName }}'s Adomate Dashboard on {{ .Time }}.
-              </p>
-            <p>
-                Best Regards,
-                <br />
-                Team Adomate
-            </p>
+<body>
+    <a href="" target="_blank" rel="noopener noreferrer">View email in browser</a>
+    <a href="javascript:window.print()" style=" float: right;">Print Email</a>
+    <br />
+    <br />
+    <!--Header Section-->
+    <div id="header" class="header ">
+        <a href="https://adomate.ai/" target="_blank" rel="noopener noreferrer">
+            <img class="banner" style="height: 100%; width: 50%;"
+                src="https://raw.githubusercontent.com/adomate-ads/frontend/master/src/assets/adomate.svg"
+                alt="Adomate logo" />
+        </a>
+    </div>
+    <!--Body Section-->
+    <div class="email-content">
+        <h2 style="text-align: center;">Adomate Dashboard {{ .FirstName }} access revoked</h2>
+        <div style="text-align: center;">
+            <img style="display: block; height: 40%; width: 50%; margin-left: auto; margin-right: auto;"
+                src="https://png.pngtree.com/png-vector/20220801/ourmid/pngtree-login-access-denied-vector-illustration-png-image_6041385.png"
+                alt="Welcome Banner" />
         </div>
-        <br />
-        <!--Footer Section-->
-        <div class="delete-user-footer">
-            <p class="address">
-                <a href="https://goo.gl/maps/pYFsDxSGkawdB5A18" style="border-bottom: 1px dotted;"> 17350 State Highway 249 STE 220. Houston, Texas 77064 </a>
-                <br />
-                <a href="tel:1244567890" style="border-bottom: 1px dotted;"> (124) 456-7890 </a>
-                <br />
-                Questions? Email us at
-                <a href="mailto:support@adomate.ai?subject=Query%20from%20{{ .Company }}" class="adomate-email" rel="noopener noreferrer" style="border-bottom: 1px dotted #637efe;">support@adomate.ai</a><br />
-                <a href="https://adomate.ai/" target="_blank" rel="noopener noreferrer">
-                    <img class="banner" style="height: auto; width: 10%;" src="https://raw.githubusercontent.com/adomate-ads/frontend/master/src/assets/logo.png" alt="Adomate logo" />
-                </a>
-            </p>
-            <div class="foot-note">
-                <a href="https://adomate.ai/" class="LLC" rel="noopener noreferrer">
-                    © Adomate LLC - 2023
-                </a>
-                <a a href="https://adomate.ai/" rel="noopener noreferrer">
-                    Privacy Policy
-                </a>
-                <a href="https://adomate.ai/" rel="noopener noreferrer">
-                    Terms of Service
-                </a>
-            </div>
+        <h3>Dear {{ .FirstName }},</h3>
+        <p style="line-height: 1.75;">
+            We have revoked {{ .FirstName }} access to {{ .Company }}'s Adomate Dashboard on {{ .Time }}. If you
+            think this is a mistake, please contact us at
+            <a href="mailto:support@adomate.ai?subject=Query%20from%20{{ .Company }}" rel="noopener noreferrer"
+                style="border-bottom: 1px dotted #637efe; color: #637efe;">support@adomate.ai</a>.
+        </p>
+        <p>
+            Team Adomate
+        </p>
+    </div>
+    <!--Footer Section-->
+    <div style="text-align: center;">
+        <p style="text-align: center;">
+            <a href="https://goo.gl/maps/pYFsDxSGkawdB5A18" style="border-bottom: 1px dotted;"> 17350 State Highway 249
+                STE 220. Houston, Texas 77064 </a>
+            <br />
+            <a href="mailto:support@adomate.ai?subject=Query%20from%20{{ .Company }}" rel="noopener noreferrer"
+                style="border-bottom: 1px dotted #637efe; color: #637efe;">support@adomate.ai</a><br />
+        </p>
+        <div class="foot-note">
+            <a href="https://adomate.ai/" style="text-decoration-style: solid;" rel="noopener noreferrer">
+                © 2023 Adomate LLC
+            </a>
+            <a a href="https://adomate.ai/" rel="noopener noreferrer" style="color: #999999;">
+                Privacy Policy
+            </a>
+            <a href="https://adomate.ai/" rel="noopener noreferrer" style="color: #999999;">
+                Terms of Service
+            </a>
         </div>
-    </body>
+    </div>
+</body>
+
 </html>
