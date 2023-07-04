@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/adomate-ads/api/models"
 	"github.com/adomate-ads/api/pkg/discord"
+	site_analyzer "github.com/adomate-ads/api/pkg/site-analyzer"
 	stripe_pkg "github.com/adomate-ads/api/pkg/stripe"
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
@@ -12,7 +13,6 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
-	"time"
 )
 
 type CreateAccountRequest struct {
@@ -214,27 +214,72 @@ type LocsAndSers struct {
 // @Produce json
 // @Param CF_Token body cloudflare.SiteVerifyRequest true "Cloudflare Token"
 // @Param domain path string true "Domain URL"
-// @Success 201 {object} []LocsAndSers
+// @Success 200 {object} []LocsAndSers
+// @Failure 400 {object} dto.ErrorResponse
+// @Failure 500 {object} dto.ErrorResponse
 // @Router /get-started/location-services/{domain} [get]
 func GetLocationsAndServices(c *gin.Context) {
-	// TODO - Uncomment this when microservice is done
-	//domain := c.Param("domain")
-	//
-	//locations, services, err := website_parse.GetLocAndSer(domain)
-	//if err != nil {
-	//	c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-	//	return
-	//}
+	domain := c.Param("domain")
+	if domain == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "domain is required"})
+		return
+	}
 
-	locations := []string{"Houston, TX", "Dallas, TX"}
-	services := []string{"Ad Bot Blocking", "Automatic Google Ads"}
+	services, err := site_analyzer.GetServices(domain)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	var locations []string
 
 	locationsAndServices := LocsAndSers{
 		Locations: locations,
 		Services:  services,
 	}
 
-	time.Sleep(1 * time.Second)
-
 	c.JSON(http.StatusOK, locationsAndServices)
+}
+
+type AdContentRequest struct {
+	Domain   string   `json:"domain" binding:"required" example:"https://adomate.ai"`
+	Services []string `json:"headlines" binding:"required" example:"['Ad Generation', 'Ad Optimization', 'Ad Management']"`
+}
+
+type AdContentResponse struct {
+	Headlines    []string `json:"headlines"`
+	Descriptions []string `json:"descriptions"`
+}
+
+// GetAdContent godoc
+// @Summary Get Ad Headlines and Descriptions
+// @Description Get Headlines and Description for domain given services
+// @Tags Getting Started
+// @Accept json
+// @Produce json
+// @Param CF_Token body cloudflare.SiteVerifyRequest true "Cloudflare Token"
+// @Param create body CreateAccountRequest true "Create Account Request"
+// @Success 200 {object} []AdContentResponse
+// @Failure 400 {object} dto.ErrorResponse
+// @Failure 500 {object} dto.ErrorResponse
+// @Router /get-started/ad-content [post]
+func GetAdContent(c *gin.Context) {
+	var request AdContentRequest
+	if err := c.ShouldBindJSON(&request); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	headlines, descriptions, err := site_analyzer.GetAdContent(request.Domain, request.Services)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	content := AdContentResponse{
+		Headlines:    headlines,
+		Descriptions: descriptions,
+	}
+
+	c.JSON(http.StatusOK, content)
 }

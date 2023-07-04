@@ -9,6 +9,7 @@ import (
 	"github.com/adomate-ads/api/pkg/email"
 	google_ads "github.com/adomate-ads/api/pkg/google-ads"
 	"github.com/adomate-ads/api/pkg/openai"
+	site_analyzer "github.com/adomate-ads/api/pkg/site-analyzer"
 	"github.com/adomate-ads/api/pkg/stripe"
 	website_parse "github.com/adomate-ads/api/pkg/website-parse"
 	"github.com/adomate-ads/api/v1/billing"
@@ -68,15 +69,15 @@ func main() {
 	openai.Setup()
 	google_ads.Setup()
 	stripe.Setup()
-	//stripe.SetupProducts()
 	website_parse.Setup()
+	site_analyzer.Setup()
+	discord.Setup()
+	email.Setup()
 
+	//stripe.SetupProducts()
 	//stripe.GetSubscriptions()
 
-	discord.Setup()
-
 	models.ConnectDatabase(models.Config(), false)
-	email.Setup()
 
 	r := engine()
 	r.Use(gin.Logger())

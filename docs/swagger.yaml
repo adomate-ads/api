@@ -96,6 +96,17 @@ definitions:
       keyword:
         type: string
     type: object
+  get_started.AdContentResponse:
+    properties:
+      descriptions:
+        items:
+          type: string
+        type: array
+      headlines:
+        items:
+          type: string
+        type: array
+    type: object
   get_started.CreateAccountRequest:
     properties:
       budget:
@@ -1431,6 +1442,44 @@ paths:
       summary: Create Account
       tags:
       - Getting Started
+  /get-started/ad-content:
+    post:
+      consumes:
+      - application/json
+      description: Get Headlines and Description for domain given services
+      parameters:
+      - description: Cloudflare Token
+        in: body
+        name: CF_Token
+        required: true
+        schema:
+          $ref: '#/definitions/cloudflare.SiteVerifyRequest'
+      - description: Create Account Request
+        in: body
+        name: create
+        required: true
+        schema:
+          $ref: '#/definitions/get_started.CreateAccountRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/get_started.AdContentResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Get Ad Headlines and Descriptions
+      tags:
+      - Getting Started
   /get-started/location-services/{domain}:
     get:
       consumes:
@@ -1451,12 +1500,20 @@ paths:
       produces:
       - application/json
       responses:
-        "201":
-          description: Created
+        "200":
+          description: OK
           schema:
             items:
               $ref: '#/definitions/get_started.LocsAndSers'
             type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
       summary: Get Locations and Services
       tags:
       - Getting Started
@@ -1646,8 +1703,8 @@ paths:
       produces:
       - application/json
       responses:
-        "201":
-          description: Created
+        "200":
+          description: OK
           schema:
             $ref: '#/definitions/dto.MessageResponse'
         "400":

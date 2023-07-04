@@ -1377,6 +1377,64 @@ const docTemplate = `{
                 }
             }
         },
+        "/get-started/ad-content": {
+            "post": {
+                "description": "Get Headlines and Description for domain given services",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Getting Started"
+                ],
+                "summary": "Get Ad Headlines and Descriptions",
+                "parameters": [
+                    {
+                        "description": "Cloudflare Token",
+                        "name": "CF_Token",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/cloudflare.SiteVerifyRequest"
+                        }
+                    },
+                    {
+                        "description": "Create Account Request",
+                        "name": "create",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/get_started.CreateAccountRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/get_started.AdContentResponse"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/get-started/location-services/{domain}": {
             "get": {
                 "description": "Get Locations and Services for domain",
@@ -1409,13 +1467,25 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "201": {
-                        "description": "Created",
+                    "200": {
+                        "description": "OK",
                         "schema": {
                             "type": "array",
                             "items": {
                                 "$ref": "#/definitions/get_started.LocsAndSers"
                             }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
                         }
                     }
                 }
@@ -1705,8 +1775,8 @@ const docTemplate = `{
                 ],
                 "summary": "Logout User",
                 "responses": {
-                    "201": {
-                        "description": "Created",
+                    "200": {
+                        "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/dto.MessageResponse"
                         }
@@ -2993,6 +3063,23 @@ const docTemplate = `{
                 },
                 "keyword": {
                     "type": "string"
+                }
+            }
+        },
+        "get_started.AdContentResponse": {
+            "type": "object",
+            "properties": {
+                "descriptions": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "headlines": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 }
             }
         },
