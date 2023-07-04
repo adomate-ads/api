@@ -67,7 +67,7 @@ func GetServices(url string) ([]string, error) {
 	defer func(conn *amqp.Connection) {
 		err := conn.Close()
 		if err != nil {
-
+			discord.SendMessage(discord.Error, "Failed to close RabbitMQ connection", err.Error())
 		}
 	}(conn)
 
@@ -79,7 +79,7 @@ func GetServices(url string) ([]string, error) {
 	defer func(ch *amqp.Channel) {
 		err := ch.Close()
 		if err != nil {
-
+			discord.SendMessage(discord.Error, "Failed to close RabbitMQ connection", err.Error())
 		}
 	}(ch)
 
@@ -166,7 +166,7 @@ func GetAdContent(url string, services []string) ([]string, []string, error) {
 	defer func(conn *amqp.Connection) {
 		err := conn.Close()
 		if err != nil {
-
+			discord.SendMessage(discord.Error, "Failed to close RabbitMQ connection", err.Error())
 		}
 	}(conn)
 
@@ -178,7 +178,7 @@ func GetAdContent(url string, services []string) ([]string, []string, error) {
 	defer func(ch *amqp.Channel) {
 		err := ch.Close()
 		if err != nil {
-
+			discord.SendMessage(discord.Error, "Failed to close RabbitMQ connection", err.Error())
 		}
 	}(ch)
 
