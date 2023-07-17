@@ -2,6 +2,9 @@ package google_ads_controller
 
 import (
 	"encoding/json"
+	"fmt"
+	"strconv"
+	"strings"
 )
 
 type AdGroup struct {
@@ -86,4 +89,17 @@ func RemoveAdGroup(adGroup Body) (*AdGroup, error) {
 		return nil, err
 	}
 	return &adGrp, nil
+}
+
+func GetAdGroupID(url string) (uint, error) {
+	p := strings.TrimPrefix(url, "/")
+	parts := strings.Split(p, "/")
+	if len(parts) < 4 {
+		return 0, fmt.Errorf("url does not match the expected structure")
+	}
+	id, err := strconv.ParseUint(parts[5], 10, 64)
+	if err != nil {
+		return 0, err
+	}
+	return uint(id), nil
 }

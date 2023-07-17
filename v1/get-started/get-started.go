@@ -209,9 +209,74 @@ func CreateAccount(c *gin.Context) {
 		return
 	}
 
+	// Update company with Google Ads ID
 	newCompany.GoogleAdsID = gadsCustomer.Id
 	if _, err := newCompany.UpdateCompany(); err != nil {
 		discord.SendMessage(discord.Error, "Failed to update company with Google Ads ID", fmt.Sprintf("Company ID: %d, should have gadsId: %d", newCompany.ID, gadsCustomer.Id))
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Create Google Ads Campaign
+	campaignBody := google_ads_controller.Body{
+		CustomerId:     gadsCustomer.Id,
+		CampaignName:   "Initial Campaign",
+		CampaignBudget: request.Budget,
+	}
+	gadsCampaign, err := google_ads_controller.CreateCampaign(campaignBody)
+	if err != nil {
+		msg := fmt.Sprintf("Failed to create a google ads campaign for company %s", newCompany.Email)
+		suggestion := fmt.Sprintf("Create Google Ads Campaign, Company Email:%s", request.Email)
+		discord.SendMessage(discord.Error, msg, suggestion)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Create Google Ads Ad Group
+	campaignId, err := google_ads_controller.GetCampaignID(gadsCampaign.ResourceName)
+	if err != nil {
+		msg := fmt.Sprintf("Failed to parse google ads campaign id for company %s", newCompany.Email)
+		suggestion := fmt.Sprintf("Get Google Ads Campaign ID, Company Email:%s", request.Email)
+		discord.SendMessage(discord.Error, msg, suggestion)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	adGroupBody := google_ads_controller.Body{
+		CustomerId:  gadsCustomer.Id,
+		CampaignId:  campaignId,
+		AdGroupName: "Initial Ad Group",
+		MinCPCBid:   100000,
+	}
+	gadsAdGroup, err := google_ads_controller.CreateAdGroup(adGroupBody)
+	if err != nil {
+		msg := fmt.Sprintf("Failed to create a google ads ad group for company %s", newCompany.Email)
+		suggestion := fmt.Sprintf("Create Google Ads Ad Group, Company Email:%s", request.Email)
+		discord.SendMessage(discord.Error, msg, suggestion)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Create Google Ads Ad
+	adGroupId, err := google_ads_controller.GetAdGroupID(gadsAdGroup.ResourceName)
+	if err != nil {
+		msg := fmt.Sprintf("Failed to parse google ads ad group id for company %s", newCompany.Email)
+		suggestion := fmt.Sprintf("Get Google Ads Ad Group ID, Company Email:%s", request.Email)
+		discord.SendMessage(discord.Error, msg, suggestion)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	adBody := google_ads_controller.Body{
+		CustomerId:   gadsCustomer.Id,
+		AdGroupId:    adGroupId,
+		Headlines:    request.Headlines,
+		Descriptions: request.Descriptions,
+		FinalURL:     request.Domain,
+	}
+	_, err = google_ads_controller.CreateAdGroupAds(adBody)
+	if err != nil {
+		msg := fmt.Sprintf("Failed to create a google ads ad for company %s", newCompany.Email)
+		suggestion := fmt.Sprintf("Create Google Ads Ad, Company Email:%s", request.Email)
+		discord.SendMessage(discord.Error, msg, suggestion)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}

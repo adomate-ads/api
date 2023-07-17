@@ -2,6 +2,9 @@ package google_ads_controller
 
 import (
 	"encoding/json"
+	"fmt"
+	"strconv"
+	"strings"
 )
 
 type Campaign struct {
@@ -84,4 +87,17 @@ func RemoveCampaign(campaign Body) (*Campaign, error) {
 		return nil, err
 	}
 	return &camp, nil
+}
+
+func GetCampaignID(url string) (uint, error) {
+	p := strings.TrimPrefix(url, "/")
+	parts := strings.Split(p, "/")
+	if len(parts) < 4 {
+		return 0, fmt.Errorf("url does not match the expected structure")
+	}
+	id, err := strconv.ParseUint(parts[3], 10, 64)
+	if err != nil {
+		return 0, err
+	}
+	return uint(id), nil
 }
