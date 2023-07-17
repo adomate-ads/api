@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/adomate-ads/api/models"
 	"github.com/adomate-ads/api/pkg/discord"
+	google_ads_controller "github.com/adomate-ads/api/pkg/google-ads-controller"
 	site_analyzer "github.com/adomate-ads/api/pkg/site-analyzer"
 	stripe_pkg "github.com/adomate-ads/api/pkg/stripe"
 	"github.com/gin-gonic/contrib/sessions"
@@ -199,6 +200,21 @@ func CreateAccount(c *gin.Context) {
 	}
 
 	// Create Google Ads Account
+	gadsCustomer, err := google_ads_controller.CreateCustomer(newCompany.Email)
+	if err != nil {
+		msg := fmt.Sprintf("Failed to create a google ads customer for company %s", newCompany.Email)
+		suggestion := fmt.Sprintf("Create Google Ads Customer, Company Email:%s", request.Email)
+		discord.SendMessage(discord.Error, msg, suggestion)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	newCompany.GoogleAdsID = gadsCustomer.Id
+	if _, err := newCompany.UpdateCompany(); err != nil {
+		discord.SendMessage(discord.Error, "Failed to update company with Google Ads ID", fmt.Sprintf("Company ID: %d, should have gadsId: %d", newCompany.ID, gadsCustomer.Id))
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
 
 	discord.SendMessage(discord.Log, fmt.Sprintf("New Member Registered: %s %s - %s | %s", request.FirstName, request.LastName, request.Email, request.CompanyName), "")
 

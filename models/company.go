@@ -5,16 +5,16 @@ import (
 )
 
 type Company struct {
-	ID         uint      `json:"id" gorm:"primaryKey;autoIncrement" example:"1"`
-	Name       string    `json:"name" gorm:"type:varchar(128)" example:"Google LLC"`
-	Email      string    `json:"email" gorm:"type:varchar(128)" example:"the@raajpatel.dev"`
-	IndustryID uint      `json:"industry_id" gorm:"type:integer" example:"1"`
-	Industry   Industry  `json:"industry" gorm:"foreignKey:IndustryID"`
-	Domain     string    `json:"domain" gorm:"type:varchar(128)" example:"raajpatel.dev"`
-	ClientID   int64     `json:"client_id" gorm:"type:integer" example:"1"`
-	StripeID   string    `json:"stripe_id" gorm:"type:varchar(128)" example:"cus_1234567890"`
-	CreatedAt  time.Time `json:"created_at" example:"2020-01-01T00:00:00Z"`
-	UpdatedAt  time.Time `json:"updated_at" example:"2020-01-01T00:00:00Z"`
+	ID          uint      `json:"id" gorm:"primaryKey;autoIncrement" example:"1"`
+	Name        string    `json:"name" gorm:"type:varchar(128)" example:"Google LLC"`
+	Email       string    `json:"email" gorm:"type:varchar(128)" example:"the@raajpatel.dev"`
+	IndustryID  uint      `json:"industry_id" gorm:"type:integer" example:"1"`
+	Industry    Industry  `json:"industry" gorm:"foreignKey:IndustryID"`
+	Domain      string    `json:"domain" gorm:"type:varchar(128)" example:"raajpatel.dev"`
+	GoogleAdsID uint      `json:"gads_id" gorm:"type:integer" example:"1"`
+	StripeID    string    `json:"stripe_id" gorm:"type:varchar(128)" example:"cus_1234567890"`
+	CreatedAt   time.Time `json:"created_at" example:"2020-01-01T00:00:00Z"`
+	UpdatedAt   time.Time `json:"updated_at" example:"2020-01-01T00:00:00Z"`
 }
 
 func GetCompanies() ([]Company, error) {
@@ -51,7 +51,7 @@ func GetCompanyByEmail(email string) (*Company, error) {
 
 func GetCompanyByClientID(clientID int64) (*Company, error) {
 	var company Company
-	if err := DB.Where("client_id = ?", clientID).Preload("Industry").First(&company).Error; err != nil {
+	if err := DB.Where("gads_id = ?", clientID).Preload("Industry").First(&company).Error; err != nil {
 		return nil, err
 	}
 	return &company, nil
