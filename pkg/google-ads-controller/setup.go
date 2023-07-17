@@ -126,7 +126,6 @@ func SendToQueue(message Message) string {
 		if corrId == d.CorrelationId {
 			res := string(d.Body)
 			return res
-			break
 		}
 	}
 
