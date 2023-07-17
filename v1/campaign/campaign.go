@@ -62,8 +62,6 @@ func CreateCampaign(c *gin.Context) {
 		Company:      *company,
 	}
 
-	// TODO - Fetch and fill keywords
-
 	if err := campaign.CreateCampaign(); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

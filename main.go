@@ -8,6 +8,7 @@ import (
 	"github.com/adomate-ads/api/pkg/discord"
 	"github.com/adomate-ads/api/pkg/email"
 	google_ads "github.com/adomate-ads/api/pkg/google-ads"
+  google_ads_controller "github.com/adomate-ads/api/pkg/google-ads-controller"
 	"github.com/adomate-ads/api/pkg/openai"
 	site_analyzer "github.com/adomate-ads/api/pkg/site-analyzer"
 	"github.com/adomate-ads/api/pkg/stripe"
@@ -70,6 +71,7 @@ func main() {
 	discord.Setup()
 	email.Setup()
 	google_ads.Setup()
+	google_ads_controller.Setup()
 	stripe.Setup()
 	website_parse.Setup()
 	site_analyzer.Setup()
