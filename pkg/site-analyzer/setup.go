@@ -12,8 +12,10 @@ import (
 	"time"
 )
 
+// TODO - get rid of this fail on error stuff as it doesnt return the function so it can lead to unintended consequences
+
 func failOnError(err error, msg string) {
-	discord.SendMessage(discord.Error, fmt.Sprintf("%s: %s", msg, err), "API - Email Fix")
+	discord.SendMessage(discord.Error, fmt.Sprintf("%s: %s", msg, err.Error()), "API - SA Fix")
 }
 
 type RabbitMQConfig struct {
@@ -61,7 +63,7 @@ func GetServices(url string) ([]string, error) {
 	// establish a connection
 	conn, err := amqp.Dial(fmt.Sprintf("amqp://%s:%s@%s:%s/", RMQConfig.User, RMQConfig.Password, RMQConfig.Host, RMQConfig.Port))
 	if err != nil {
-		failOnError(err, "Failed to connect to RabbitMQ")
+		discord.SendMessage(discord.Error, fmt.Sprintf("%s: %s", "Failed to connect to RabbitMQ", err.Error()), "API - Site_Analyzer Fix")
 	}
 
 	defer func(conn *amqp.Connection) {
@@ -74,12 +76,13 @@ func GetServices(url string) ([]string, error) {
 	// create a channel
 	ch, err := conn.Channel()
 	if err != nil {
-		failOnError(err, "Failed to open a channel")
+		discord.SendMessage(discord.Error, fmt.Sprintf("%s: %s", "Failed to open channel", err.Error()), "API - Site_Analyzer Fix")
 	}
+
 	defer func(ch *amqp.Channel) {
 		err := ch.Close()
 		if err != nil {
-			discord.SendMessage(discord.Error, "Failed to close RabbitMQ connection", err.Error())
+			discord.SendMessage(discord.Error, "Failed to close RabbitMQ channel", err.Error())
 		}
 	}(ch)
 
@@ -93,21 +96,7 @@ func GetServices(url string) ([]string, error) {
 		nil,             // arguments
 	)
 	if err != nil {
-		failOnError(err, "Failed to declare a queue")
-	}
-
-	// consume the response
-	msgs, err := ch.Consume(
-		q.Name, // queue
-		"",     // consumer
-		true,   // auto-ack
-		false,  // exclusive
-		false,  // no-local
-		false,  // no-wait
-		nil,    // args
-	)
-	if err != nil {
-		failOnError(err, "Failed to register a consumer")
+		discord.SendMessage(discord.Error, fmt.Sprintf("%s: %s", "Failed to declare a queue", err.Error()), "API - Site_Analyzer Fix")
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
@@ -126,7 +115,7 @@ func GetServices(url string) ([]string, error) {
 
 	message, err := json.Marshal(req)
 	if err != nil {
-		failOnError(err, "Failed to marshal the request")
+		discord.SendMessage(discord.Error, fmt.Sprintf("%s: %s", "Failed to marshal the request", err.Error()), "API - Site_Analyzer Fix")
 	}
 
 	// publish the message
@@ -141,14 +130,32 @@ func GetServices(url string) ([]string, error) {
 			ReplyTo:       q.Name,
 			Body:          []byte(message),
 		})
-	failOnError(err, "Failed to publish a message")
+	if err != nil {
+		discord.SendMessage(discord.Error, fmt.Sprintf("%s: %s", "Failed to publish a message", err.Error()), "API - Site_Analyzer Fix")
+	}
+
+	// consume the response
+	msgs, err := ch.Consume(
+		q.Name, // queue
+		"",     // consumer
+		true,   // auto-ack
+		false,  // exclusive
+		false,  // no-local
+		false,  // no-wait
+		nil,    // args
+	)
+	if err != nil {
+		discord.SendMessage(discord.Error, fmt.Sprintf("%s: %s", "Failed to register a consumer", err.Error()), "API - Site_Analyzer Fix")
+	}
 
 	for d := range msgs {
 		if corrId == d.CorrelationId {
+			fmt.Println("Got a response: ", d.CorrelationId)
+			fmt.Println(string(d.Body))
 			var res Response
 			err := json.Unmarshal(d.Body, &res)
 			if err != nil {
-				failOnError(err, "Failed to unmarshal the response")
+				discord.SendMessage(discord.Error, fmt.Sprintf("%s: %s", "Failed to unmarshal the response", err.Error()), "API - Site_Analyzer Fix")
 			}
 			return res.Body.Services, nil
 		}

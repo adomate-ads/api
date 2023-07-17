@@ -16,17 +16,19 @@ import (
 )
 
 type CreateAccountRequest struct {
-	FirstName   string   `json:"first_name" binding:"required" example:"John"`
-	LastName    string   `json:"last_name" binding:"required" example:"Doe"`
-	Email       string   `json:"email" binding:"required" example:"johndoe@adomate.ai"`
-	CompanyName string   `json:"company_name" binding:"required" example:"Adomate"`
-	Industry    string   `json:"industry" binding:"required" example:"Software"`
-	Domain      string   `json:"domain" binding:"required" example:"adomate.ai"`
-	Locations   []string `json:"locations" binding:"required" example:"[\"Houston, TX\"]"`
-	Services    []string `json:"services" binding:"required" example:"[\"Google Ads\"]"`
-	Budget      uint     `json:"budget" binding:"required" example:"1000"`
-	Price       string   `json:"price" binding:"required" example:"price_1MzQkOFzHmjFR1Qwa4QajKrY"`
-	Ip          string   `json:"ip" binding:"required" example:"192.168.1.1"`
+	FirstName    string   `json:"first_name" binding:"required" example:"John"`
+	LastName     string   `json:"last_name" binding:"required" example:"Doe"`
+	Email        string   `json:"email" binding:"required" example:"johndoe@adomate.ai"`
+	CompanyName  string   `json:"company_name" binding:"required" example:"Adomate"`
+	Industry     string   `json:"industry" binding:"required" example:"Software"`
+	Domain       string   `json:"domain" binding:"required" example:"adomate.ai"`
+	Locations    []string `json:"locations" binding:"required" example:"[\"Houston, TX\"]"`
+	Services     []string `json:"services" binding:"required" example:"[\"Google Ads\"]"`
+	Headlines    []string `json:"headlines" binding:"required" example:"[\"Headline 1\", \"Headline 2\"]"`
+	Descriptions []string `json:"descriptions" binding:"required" example:"[\"Description 1\", \"Description 2\"]"`
+	Budget       uint     `json:"budget" binding:"required" example:"1000"`
+	Price        string   `json:"price" binding:"required" example:"price_1MzQkOFzHmjFR1Qwa4QajKrY"`
+	Ip           string   `json:"ip" binding:"required" example:"192.168.1.1"`
 }
 
 // CreateAccount godoc
@@ -196,6 +198,8 @@ func CreateAccount(c *gin.Context) {
 		return
 	}
 
+	// Create Google Ads Account
+
 	discord.SendMessage(discord.Log, fmt.Sprintf("New Member Registered: %s %s - %s | %s", request.FirstName, request.LastName, request.Email, request.CompanyName), "")
 
 	c.JSON(http.StatusCreated, gin.H{"message": subscription})
@@ -217,7 +221,7 @@ type LocsAndSers struct {
 // @Success 200 {object} []LocsAndSers
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
-// @Router /get-started/location-services/{domain} [get]
+// @Router /get-started/location-service/{domain} [get]
 func GetLocationsAndServices(c *gin.Context) {
 	domain := c.Param("domain")
 	if domain == "" {
@@ -257,7 +261,6 @@ type AdContentResponse struct {
 // @Tags Getting Started
 // @Accept json
 // @Produce json
-// @Param CF_Token body cloudflare.SiteVerifyRequest true "Cloudflare Token"
 // @Param create body CreateAccountRequest true "Create Account Request"
 // @Success 200 {object} []AdContentResponse
 // @Failure 400 {object} dto.ErrorResponse

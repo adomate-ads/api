@@ -15,7 +15,7 @@ require (
 	github.com/rabbitmq/amqp091-go v1.8.1
 	github.com/sashabaranov/go-openai v1.10.1
 	github.com/stretchr/testify v1.8.3
-	github.com/stripe/stripe-go/v74 v74.22.0
+	github.com/stripe/stripe-go/v74 v74.26.0
 	github.com/swaggo/files v1.0.1
 	github.com/swaggo/gin-swagger v1.6.0
 	github.com/swaggo/swag v1.16.1

@@ -67,12 +67,12 @@ func main() {
 	}
 
 	openai.Setup()
+	discord.Setup()
+	email.Setup()
 	google_ads.Setup()
 	stripe.Setup()
 	website_parse.Setup()
 	site_analyzer.Setup()
-	discord.Setup()
-	email.Setup()
 
 	//stripe.SetupProducts()
 	//stripe.GetSubscriptions()
