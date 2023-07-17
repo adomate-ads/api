@@ -1388,15 +1388,6 @@
                 "summary": "Get Ad Headlines and Descriptions",
                 "parameters": [
                     {
-                        "description": "Cloudflare Token",
-                        "name": "CF_Token",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/cloudflare.SiteVerifyRequest"
-                        }
-                    },
-                    {
                         "description": "Create Account Request",
                         "name": "create",
                         "in": "body",
@@ -1431,7 +1422,7 @@
                 }
             }
         },
-        "/get-started/location-services/{domain}": {
+        "/get-started/location-service/{domain}": {
             "get": {
                 "description": "Get Locations and Services for domain",
                 "consumes": [
@@ -3084,9 +3075,11 @@
             "required": [
                 "budget",
                 "company_name",
+                "descriptions",
                 "domain",
                 "email",
                 "first_name",
+                "headlines",
                 "industry",
                 "ip",
                 "last_name",
@@ -3103,6 +3096,16 @@
                     "type": "string",
                     "example": "Adomate"
                 },
+                "descriptions": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "[\"Description 1\"",
+                        " \"Description 2\"]"
+                    ]
+                },
                 "domain": {
                     "type": "string",
                     "example": "adomate.ai"
@@ -3114,6 +3117,16 @@
                 "first_name": {
                     "type": "string",
                     "example": "John"
+                },
+                "headlines": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "[\"Headline 1\"",
+                        " \"Headline 2\"]"
+                    ]
                 },
                 "industry": {
                     "type": "string",
@@ -3296,10 +3309,6 @@
         "models.Company": {
             "type": "object",
             "properties": {
-                "client_id": {
-                    "type": "integer",
-                    "example": 1
-                },
                 "created_at": {
                     "type": "string",
                     "example": "2020-01-01T00:00:00Z"
@@ -3311,6 +3320,10 @@
                 "email": {
                     "type": "string",
                     "example": "the@raajpatel.dev"
+                },
+                "gads_id": {
+                    "type": "integer",
+                    "example": 1
                 },
                 "id": {
                     "type": "integer",

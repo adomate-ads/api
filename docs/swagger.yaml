@@ -115,6 +115,13 @@ definitions:
       company_name:
         example: Adomate
         type: string
+      descriptions:
+        example:
+        - '["Description 1"'
+        - ' "Description 2"]'
+        items:
+          type: string
+        type: array
       domain:
         example: adomate.ai
         type: string
@@ -124,6 +131,13 @@ definitions:
       first_name:
         example: John
         type: string
+      headlines:
+        example:
+        - '["Headline 1"'
+        - ' "Headline 2"]'
+        items:
+          type: string
+        type: array
       industry:
         example: Software
         type: string
@@ -152,9 +166,11 @@ definitions:
     required:
     - budget
     - company_name
+    - descriptions
     - domain
     - email
     - first_name
+    - headlines
     - industry
     - ip
     - last_name
@@ -263,9 +279,6 @@ definitions:
     type: object
   models.Company:
     properties:
-      client_id:
-        example: 1
-        type: integer
       created_at:
         example: "2020-01-01T00:00:00Z"
         type: string
@@ -275,6 +288,9 @@ definitions:
       email:
         example: the@raajpatel.dev
         type: string
+      gads_id:
+        example: 1
+        type: integer
       id:
         example: 1
         type: integer
@@ -1448,12 +1464,6 @@ paths:
       - application/json
       description: Get Headlines and Description for domain given services
       parameters:
-      - description: Cloudflare Token
-        in: body
-        name: CF_Token
-        required: true
-        schema:
-          $ref: '#/definitions/cloudflare.SiteVerifyRequest'
       - description: Create Account Request
         in: body
         name: create
@@ -1480,7 +1490,7 @@ paths:
       summary: Get Ad Headlines and Descriptions
       tags:
       - Getting Started
-  /get-started/location-services/{domain}:
+  /get-started/location-service/{domain}:
     get:
       consumes:
       - application/json
