@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <link rel="icon" href="https://raw.githubusercontent.com/adomate-ads/frontend/master/src/assets/logo.png" />
+    <link href="https://fonts.googleapis.com/css?family=Noto Sans" rel="stylesheet" />
+    <title>Adomate | Get Started</title>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width,initial-scale=1 user-scalable=yes" />
+    <meta name="x-apple-disable-message-reformatting" />
+</head>
+<style>
+    body {
+        font-family: "Noto Sans";
+        font-size: 15px;
+        background-color: #E5E7EB;
+    }
+
+    .header {
+        text-align: center;
+        width: 85%;
+        max-width: 780px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        height: 40px;
+        box-sizing: border-box;
+        margin: auto;
+        background-color: #d8dfff;
+    }
+
+    a {
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .email-content {
+        background-color: #FAF9F6;
+        width: 85%;
+        max-width: 780px;
+        height: auto;
+        box-sizing: border-box;
+        padding: 10px;
+        margin: auto;
+    }
+
+
+
+    .foot-note {
+        bottom: 0;
+        width: auto;
+        height: 20px;
+        display: flex;
+        gap: 10px;
+        box-sizing: border-box;
+        justify-content: center;
+        align-items: center;
+    }
+</style>
+
+<body>
+    <a href="" target="_blank" rel="noopener noreferrer">View email in browser</a>
+    <a href="javascript:window.print()" style=" float: right;">Print Email</a>
+    <br />
+    <br />
+    <!--Header Section-->
+    <div id="header" class="header ">
+        <a href="https://adomate.ai/" target="_blank" rel="noopener noreferrer">
+            <img class="banner" style="height: 100%; width: 50%;"
+                src="https://raw.githubusercontent.com/adomate-ads/frontend/master/src/assets/adomate.svg"
+                alt="Adomate logo" />
+        </a>
+    </div>
+    <!--Body Section-->
+    <div class="email-content">
+        <h2 style="text-align: center;">Welcome to Adomate!</h2>
+        <div style="text-align: center;">
+            <img style="display: block; height: 40%; width: 50%; margin-left: auto; margin-right: auto;"
+                src="https://img.freepik.com/premium-vector/create-new-password-isolated-cartoon-vector-illustrations_107173-21573.jpg?w=826"
+                alt="Welcome Banner" />
+        </div>
+        <h3>Dear {{ .FirstName }},</h3>
+        <p style="line-height: 1.75;">
+            Adomate is the easiest way to start running ads for your business and we're excited to have you on board.
+            Click the button below to set a password and sign into the <a href="https://app.adomate.ai/"
+                class="adomate-email" rel="noopener noreferrer" style="color: #637efe;">Adomate Dashboard</a>.
+        <div style="text-align: center;">
+            <button
+                style="background-color: #637efe; color: white; border: none; border-radius: 5px; padding: 10px; margin: 10px 0px; display: inline-block;">
+                <a href="{{ .URL }}" style="text-decoration: none; color: inherit;">Create Password</a>
+            </button>
+        </div>
+        </p>
+        <p>
+            Team Adomate
+        </p>
+    </div>
+    <!--Footer Section-->
+    <div style="text-align: center;">
+        <p style="text-align: center;">
+            <a href="https://goo.gl/maps/pYFsDxSGkawdB5A18" style="border-bottom: 1px dotted;"> 17350 State Highway 249
+                STE 220. Houston, Texas 77064 </a>
+            <br />
+            <a href="mailto:support@adomate.ai?subject=Query%20from%20{{ .Company }}" rel="noopener noreferrer"
+                style="border-bottom: 1px dotted #637efe; color: #637efe;">support@adomate.ai</a><br />
+        </p>
+        <div class="foot-note">
+            <a href="https://adomate.ai/" style="text-decoration-style: solid;" rel="noopener noreferrer">
+                © 2023 Adomate LLC
+            </a>
+            <a a href="https://adomate.ai/" rel="noopener noreferrer" style="color: #999999;">
+                Privacy Policy
+            </a>
+            <a href="https://adomate.ai/" rel="noopener noreferrer" style="color: #999999;">
+                Terms of Service
+            </a>
+        </div>
+    </div>
+</body>
+
+</html>

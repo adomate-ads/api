@@ -113,7 +113,10 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/dto.MessageResponse"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Billing"
+                            }
                         }
                     },
                     "400": {
@@ -454,8 +457,8 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "201": {
+                        "description": "Created",
                         "schema": {
                             "type": "array",
                             "items": {
@@ -697,7 +700,7 @@ const docTemplate = `{
                 }
             },
             "post": {
-                "description": "creates a company that can start campaigns, etc",
+                "description": "creates a company that can start campaigns, etc.",
                 "consumes": [
                     "application/json"
                 ],
@@ -720,8 +723,8 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "201": {
+                        "description": "Created",
                         "schema": {
                             "type": "array",
                             "items": {
@@ -1103,7 +1106,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/gads.Campaign"
+                            "$ref": "#/definitions/helpers.Campaign"
                         }
                     },
                     "400": {
@@ -1140,7 +1143,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/gads.Campaign"
+                                "$ref": "#/definitions/helpers.Campaign"
                             }
                         }
                     },
@@ -1181,7 +1184,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/gads.Campaign"
+                                "$ref": "#/definitions/helpers.Campaign"
                             }
                         }
                     },
@@ -1213,7 +1216,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/gads.Client"
+                                "$ref": "#/definitions/helpers.Client"
                             }
                         }
                     },
@@ -1252,7 +1255,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/gads.Client"
+                            "$ref": "#/definitions/helpers.Client"
                         }
                     },
                     "400": {
@@ -1311,6 +1314,166 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/gads.Keyword"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/get-started": {
+            "post": {
+                "description": "Create account for user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Getting Started"
+                ],
+                "summary": "Create Account",
+                "parameters": [
+                    {
+                        "description": "Create Account Request",
+                        "name": "create",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/get_started.CreateAccountRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/stripe.Subscription"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/get-started/ad-content": {
+            "post": {
+                "description": "Get Headlines and Description for domain given services",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Getting Started"
+                ],
+                "summary": "Get Ad Headlines and Descriptions",
+                "parameters": [
+                    {
+                        "description": "Cloudflare Token",
+                        "name": "CF_Token",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/cloudflare.SiteVerifyRequest"
+                        }
+                    },
+                    {
+                        "description": "Create Account Request",
+                        "name": "create",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/get_started.CreateAccountRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/get_started.AdContentResponse"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/get-started/location-services/{domain}": {
+            "get": {
+                "description": "Get Locations and Services for domain",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Getting Started"
+                ],
+                "summary": "Get Locations and Services",
+                "parameters": [
+                    {
+                        "description": "Cloudflare Token",
+                        "name": "CF_Token",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/cloudflare.SiteVerifyRequest"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Domain URL",
+                        "name": "domain",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/get_started.LocsAndSers"
+                            }
                         }
                     },
                     "400": {
@@ -1395,8 +1558,8 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "201": {
+                        "description": "Created",
                         "schema": {
                             "type": "array",
                             "items": {
@@ -1565,8 +1728,8 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "201": {
-                        "description": "Created",
+                    "200": {
+                        "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/dto.MessageResponse"
                         }
@@ -1612,8 +1775,8 @@ const docTemplate = `{
                 ],
                 "summary": "Logout User",
                 "responses": {
-                    "201": {
-                        "description": "Created",
+                    "200": {
+                        "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/dto.MessageResponse"
                         }
@@ -2793,22 +2956,22 @@ const docTemplate = `{
         "campaign.CreateRequest": {
             "type": "object",
             "required": [
-                "bidding_strategy",
-                "budget",
                 "company",
-                "name"
+                "resource_name"
             ],
             "properties": {
-                "bidding_strategy": {
-                    "type": "string"
-                },
-                "budget": {
-                    "type": "integer"
-                },
                 "company": {
                     "type": "string"
                 },
-                "name": {
+                "resource_name": {
+                    "type": "string"
+                }
+            }
+        },
+        "cloudflare.SiteVerifyRequest": {
+            "type": "object",
+            "properties": {
+                "cf_token": {
                     "type": "string"
                 }
             }
@@ -2892,7 +3055,125 @@ const docTemplate = `{
                 }
             }
         },
-        "gads.Campaign": {
+        "gads.Keyword": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "keyword": {
+                    "type": "string"
+                }
+            }
+        },
+        "get_started.AdContentResponse": {
+            "type": "object",
+            "properties": {
+                "descriptions": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "headlines": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "get_started.CreateAccountRequest": {
+            "type": "object",
+            "required": [
+                "budget",
+                "company_name",
+                "domain",
+                "email",
+                "first_name",
+                "industry",
+                "ip",
+                "last_name",
+                "locations",
+                "price",
+                "services"
+            ],
+            "properties": {
+                "budget": {
+                    "type": "integer",
+                    "example": 1000
+                },
+                "company_name": {
+                    "type": "string",
+                    "example": "Adomate"
+                },
+                "domain": {
+                    "type": "string",
+                    "example": "adomate.ai"
+                },
+                "email": {
+                    "type": "string",
+                    "example": "johndoe@adomate.ai"
+                },
+                "first_name": {
+                    "type": "string",
+                    "example": "John"
+                },
+                "industry": {
+                    "type": "string",
+                    "example": "Software"
+                },
+                "ip": {
+                    "type": "string",
+                    "example": "192.168.1.1"
+                },
+                "last_name": {
+                    "type": "string",
+                    "example": "Doe"
+                },
+                "locations": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "[\"Houston",
+                        " TX\"]"
+                    ]
+                },
+                "price": {
+                    "type": "string",
+                    "example": "price_1MzQkOFzHmjFR1Qwa4QajKrY"
+                },
+                "services": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "[\"Google Ads\"]"
+                    ]
+                }
+            }
+        },
+        "get_started.LocsAndSers": {
+            "type": "object",
+            "properties": {
+                "locations": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "services": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "helpers.Campaign": {
             "type": "object",
             "properties": {
                 "id": {
@@ -2906,7 +3187,7 @@ const docTemplate = `{
                 }
             }
         },
-        "gads.Client": {
+        "helpers.Client": {
             "type": "object",
             "properties": {
                 "current_code": {
@@ -2923,17 +3204,6 @@ const docTemplate = `{
                 }
             }
         },
-        "gads.Keyword": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer"
-                },
-                "keyword": {
-                    "type": "string"
-                }
-            }
-        },
         "industry.CreateRequest": {
             "type": "object",
             "required": [
@@ -2942,27 +3212,6 @@ const docTemplate = `{
             "properties": {
                 "industry": {
                     "type": "string"
-                }
-            }
-        },
-        "models.BiddingStrategy": {
-            "type": "object",
-            "properties": {
-                "created_at": {
-                    "type": "string",
-                    "example": "2020-01-01T00:00:00Z"
-                },
-                "id": {
-                    "type": "integer",
-                    "example": 1
-                },
-                "strategy": {
-                    "type": "string",
-                    "example": "Cost Optimize"
-                },
-                "updated_at": {
-                    "type": "string",
-                    "example": "2020-01-01T00:00:00Z"
                 }
             }
         },
@@ -3019,17 +3268,6 @@ const docTemplate = `{
         "models.Campaign": {
             "type": "object",
             "properties": {
-                "bidding_strategy": {
-                    "$ref": "#/definitions/models.BiddingStrategy"
-                },
-                "bidding_strategy_id": {
-                    "type": "integer",
-                    "example": 1
-                },
-                "budget": {
-                    "type": "integer",
-                    "example": 1000
-                },
                 "company": {
                     "$ref": "#/definitions/models.Company"
                 },
@@ -3041,17 +3279,15 @@ const docTemplate = `{
                     "type": "string",
                     "example": "2020-01-01T00:00:00Z"
                 },
+                "google_id": {
+                    "type": "integer",
+                    "example": 1
+                },
                 "id": {
                     "type": "integer",
                     "example": 1
                 },
-                "keywords": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.Keyword"
-                    }
-                },
-                "name": {
+                "resource_name": {
                     "type": "string",
                     "example": "Primary Monthly"
                 },
@@ -3064,6 +3300,10 @@ const docTemplate = `{
         "models.Company": {
             "type": "object",
             "properties": {
+                "client_id": {
+                    "type": "integer",
+                    "example": 1
+                },
                 "created_at": {
                     "type": "string",
                     "example": "2020-01-01T00:00:00Z"
@@ -3091,6 +3331,10 @@ const docTemplate = `{
                     "type": "string",
                     "example": "Google LLC"
                 },
+                "stripe_id": {
+                    "type": "string",
+                    "example": "cus_1234567890"
+                },
                 "updated_at": {
                     "type": "string",
                     "example": "2020-01-01T00:00:00Z"
@@ -3111,32 +3355,6 @@ const docTemplate = `{
                 "id": {
                     "type": "integer",
                     "example": 1
-                },
-                "updated_at": {
-                    "type": "string",
-                    "example": "2020-01-01T00:00:00Z"
-                }
-            }
-        },
-        "models.Keyword": {
-            "type": "object",
-            "properties": {
-                "cpc": {
-                    "description": "TODO - Add Location",
-                    "type": "number",
-                    "example": 9.25
-                },
-                "created_at": {
-                    "type": "string",
-                    "example": "2020-01-01T00:00:00Z"
-                },
-                "id": {
-                    "type": "integer",
-                    "example": 1
-                },
-                "keyword": {
-                    "type": "string",
-                    "example": "Dentistry"
                 },
                 "updated_at": {
                     "type": "string",
@@ -3326,6 +3544,40 @@ const docTemplate = `{
                 }
             }
         },
+        "stripe.Item": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "integer"
+                }
+            }
+        },
+        "stripe.Subscription": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/stripe.Item"
+                    }
+                },
+                "payment_intent": {
+                    "type": "string"
+                },
+                "tax": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
         "user.CreateRequest": {
             "type": "object",
             "required": [
@@ -3435,9 +3687,9 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "localhost:3000",
+	Host:             "api.adomate.ai",
 	BasePath:         "/",
-	Schemes:          []string{"http", "https"},
+	Schemes:          []string{"https"},
 	Title:            "Adomate API",
 	Description:      "Adomate Monolithic API",
 	InfoInstanceName: "swagger",

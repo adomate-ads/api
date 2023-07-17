@@ -9,7 +9,7 @@ import (
 )
 
 type SiteVerifyRequest struct {
-	Token string `json:"token"`
+	Token string `json:"cf_token"`
 }
 
 type SiteVerifyResponse struct {

@@ -12,7 +12,7 @@ import (
 // @Tags Google Ads
 // @Accept */*
 // @Produce json
-// @Success 200 {object} []Client
+// @Success 200 {object} []helpers.Client
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /gads/client [get]
 func GetClients(c *gin.Context) {
@@ -27,7 +27,7 @@ func GetClients(c *gin.Context) {
 // @Accept */*
 // @Produce json
 // @Param clientId path int true "Client ID"
-// @Success 200 {object} Client
+// @Success 200 {object} helpers.Client
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /gads/client/{clientId} [get]

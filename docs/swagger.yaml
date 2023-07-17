@@ -24,19 +24,18 @@ definitions:
     type: object
   campaign.CreateRequest:
     properties:
-      bidding_strategy:
-        type: string
-      budget:
-        type: integer
       company:
         type: string
-      name:
+      resource_name:
         type: string
     required:
-    - bidding_strategy
-    - budget
     - company
-    - name
+    - resource_name
+    type: object
+  cloudflare.SiteVerifyRequest:
+    properties:
+      cf_token:
+        type: string
     type: object
   company.CreateRequest:
     properties:
@@ -90,7 +89,91 @@ definitions:
       resource_name:
         type: string
     type: object
-  gads.Campaign:
+  gads.Keyword:
+    properties:
+      id:
+        type: integer
+      keyword:
+        type: string
+    type: object
+  get_started.AdContentResponse:
+    properties:
+      descriptions:
+        items:
+          type: string
+        type: array
+      headlines:
+        items:
+          type: string
+        type: array
+    type: object
+  get_started.CreateAccountRequest:
+    properties:
+      budget:
+        example: 1000
+        type: integer
+      company_name:
+        example: Adomate
+        type: string
+      domain:
+        example: adomate.ai
+        type: string
+      email:
+        example: johndoe@adomate.ai
+        type: string
+      first_name:
+        example: John
+        type: string
+      industry:
+        example: Software
+        type: string
+      ip:
+        example: 192.168.1.1
+        type: string
+      last_name:
+        example: Doe
+        type: string
+      locations:
+        example:
+        - '["Houston'
+        - ' TX"]'
+        items:
+          type: string
+        type: array
+      price:
+        example: price_1MzQkOFzHmjFR1Qwa4QajKrY
+        type: string
+      services:
+        example:
+        - '["Google Ads"]'
+        items:
+          type: string
+        type: array
+    required:
+    - budget
+    - company_name
+    - domain
+    - email
+    - first_name
+    - industry
+    - ip
+    - last_name
+    - locations
+    - price
+    - services
+    type: object
+  get_started.LocsAndSers:
+    properties:
+      locations:
+        items:
+          type: string
+        type: array
+      services:
+        items:
+          type: string
+        type: array
+    type: object
+  helpers.Campaign:
     properties:
       id:
         type: integer
@@ -99,7 +182,7 @@ definitions:
       resource_name:
         type: string
     type: object
-  gads.Client:
+  helpers.Client:
     properties:
       current_code:
         type: string
@@ -110,34 +193,12 @@ definitions:
       timezone:
         type: string
     type: object
-  gads.Keyword:
-    properties:
-      id:
-        type: integer
-      keyword:
-        type: string
-    type: object
   industry.CreateRequest:
     properties:
       industry:
         type: string
     required:
     - industry
-    type: object
-  models.BiddingStrategy:
-    properties:
-      created_at:
-        example: "2020-01-01T00:00:00Z"
-        type: string
-      id:
-        example: 1
-        type: integer
-      strategy:
-        example: Cost Optimize
-        type: string
-      updated_at:
-        example: "2020-01-01T00:00:00Z"
-        type: string
     type: object
   models.Billing:
     properties:
@@ -179,14 +240,6 @@ definitions:
     type: object
   models.Campaign:
     properties:
-      bidding_strategy:
-        $ref: '#/definitions/models.BiddingStrategy'
-      bidding_strategy_id:
-        example: 1
-        type: integer
-      budget:
-        example: 1000
-        type: integer
       company:
         $ref: '#/definitions/models.Company'
       company_id:
@@ -195,14 +248,13 @@ definitions:
       created_at:
         example: "2020-01-01T00:00:00Z"
         type: string
+      google_id:
+        example: 1
+        type: integer
       id:
         example: 1
         type: integer
-      keywords:
-        items:
-          $ref: '#/definitions/models.Keyword'
-        type: array
-      name:
+      resource_name:
         example: Primary Monthly
         type: string
       updated_at:
@@ -211,6 +263,9 @@ definitions:
     type: object
   models.Company:
     properties:
+      client_id:
+        example: 1
+        type: integer
       created_at:
         example: "2020-01-01T00:00:00Z"
         type: string
@@ -231,6 +286,9 @@ definitions:
       name:
         example: Google LLC
         type: string
+      stripe_id:
+        example: cus_1234567890
+        type: string
       updated_at:
         example: "2020-01-01T00:00:00Z"
         type: string
@@ -246,25 +304,6 @@ definitions:
       id:
         example: 1
         type: integer
-      updated_at:
-        example: "2020-01-01T00:00:00Z"
-        type: string
-    type: object
-  models.Keyword:
-    properties:
-      cpc:
-        description: TODO - Add Location
-        example: 9.25
-        type: number
-      created_at:
-        example: "2020-01-01T00:00:00Z"
-        type: string
-      id:
-        example: 1
-        type: integer
-      keyword:
-        example: Dentistry
-        type: string
       updated_at:
         example: "2020-01-01T00:00:00Z"
         type: string
@@ -390,7 +429,7 @@ definitions:
     - status
     - type
     type: object
-  services.CreateRequest:
+  service.CreateRequest:
     properties:
       company:
         type: string
@@ -399,6 +438,28 @@ definitions:
     required:
     - company
     - name
+    type: object
+  stripe.Item:
+    properties:
+      id:
+        type: string
+      price:
+        type: integer
+    type: object
+  stripe.Subscription:
+    properties:
+      id:
+        type: string
+      items:
+        items:
+          $ref: '#/definitions/stripe.Item'
+        type: array
+      payment_intent:
+        type: string
+      tax:
+        type: integer
+      total:
+        type: integer
     type: object
   user.CreateRequest:
     properties:
@@ -471,7 +532,7 @@ definitions:
     required:
     - password
     type: object
-host: localhost:3000
+host: api.adomate.ai
 info:
   contact:
     email: support@adomate.com
@@ -542,7 +603,9 @@ paths:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/dto.MessageResponse'
+            items:
+              $ref: '#/definitions/models.Billing'
+            type: array
         "400":
           description: Bad Request
           schema:
@@ -767,8 +830,8 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Created
           schema:
             items:
               $ref: '#/definitions/models.Campaign'
@@ -932,7 +995,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: creates a company that can start campaigns, etc
+      description: creates a company that can start campaigns, etc.
       parameters:
       - description: Create Request
         in: body
@@ -943,8 +1006,8 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Created
           schema:
             items:
               $ref: '#/definitions/models.Company'
@@ -1200,7 +1263,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/gads.Campaign'
+            $ref: '#/definitions/helpers.Campaign'
         "400":
           description: Bad Request
           schema:
@@ -1224,7 +1287,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/gads.Campaign'
+              $ref: '#/definitions/helpers.Campaign'
             type: array
         "500":
           description: Internal Server Error
@@ -1251,7 +1314,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/gads.Campaign'
+              $ref: '#/definitions/helpers.Campaign'
             type: array
         "500":
           description: Internal Server Error
@@ -1272,7 +1335,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/gads.Client'
+              $ref: '#/definitions/helpers.Client'
             type: array
         "500":
           description: Internal Server Error
@@ -1298,7 +1361,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/gads.Client'
+            $ref: '#/definitions/helpers.Client'
         "400":
           description: Bad Request
           schema:
@@ -1349,6 +1412,111 @@ paths:
       summary: Get Google Ads Keyword
       tags:
       - Google Ads
+  /get-started:
+    post:
+      consumes:
+      - application/json
+      description: Create account for user
+      parameters:
+      - description: Create Account Request
+        in: body
+        name: create
+        required: true
+        schema:
+          $ref: '#/definitions/get_started.CreateAccountRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/stripe.Subscription'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Create Account
+      tags:
+      - Getting Started
+  /get-started/ad-content:
+    post:
+      consumes:
+      - application/json
+      description: Get Headlines and Description for domain given services
+      parameters:
+      - description: Cloudflare Token
+        in: body
+        name: CF_Token
+        required: true
+        schema:
+          $ref: '#/definitions/cloudflare.SiteVerifyRequest'
+      - description: Create Account Request
+        in: body
+        name: create
+        required: true
+        schema:
+          $ref: '#/definitions/get_started.CreateAccountRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/get_started.AdContentResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Get Ad Headlines and Descriptions
+      tags:
+      - Getting Started
+  /get-started/location-services/{domain}:
+    get:
+      consumes:
+      - application/json
+      description: Get Locations and Services for domain
+      parameters:
+      - description: Cloudflare Token
+        in: body
+        name: CF_Token
+        required: true
+        schema:
+          $ref: '#/definitions/cloudflare.SiteVerifyRequest'
+      - description: Domain URL
+        in: path
+        name: domain
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/get_started.LocsAndSers'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Get Locations and Services
+      tags:
+      - Getting Started
   /industry:
     get:
       consumes:
@@ -1392,8 +1560,8 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Created
           schema:
             items:
               $ref: '#/definitions/models.Industry'
@@ -1504,8 +1672,8 @@ paths:
       produces:
       - application/json
       responses:
-        "201":
-          description: Created
+        "200":
+          description: OK
           schema:
             $ref: '#/definitions/dto.MessageResponse'
         "400":
@@ -1535,8 +1703,8 @@ paths:
       produces:
       - application/json
       responses:
-        "201":
-          description: Created
+        "200":
+          description: OK
           schema:
             $ref: '#/definitions/dto.MessageResponse'
         "400":
@@ -1867,7 +2035,7 @@ paths:
         name: create
         required: true
         schema:
-          $ref: '#/definitions/services.CreateRequest'
+          $ref: '#/definitions/service.CreateRequest'
       produces:
       - application/json
       responses:
@@ -1981,7 +2149,7 @@ paths:
         name: update
         required: true
         schema:
-          $ref: '#/definitions/services.CreateRequest'
+          $ref: '#/definitions/service.CreateRequest'
       - description: Service ID
         in: path
         name: id
@@ -2296,6 +2464,5 @@ paths:
       tags:
       - User
 schemes:
-- http
 - https
 swagger: "2.0"

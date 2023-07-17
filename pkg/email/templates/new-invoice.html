@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <link rel="icon" href="https://raw.githubusercontent.com/adomate-ads/frontend/master/src/assets/logo.png" />
+    <link href="https://fonts.googleapis.com/css?family=Noto Sans" rel="stylesheet" />
+    <title>Adomate | Invoice # {{ .InvoiceID }}</title>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width,initial-scale=1 user-scalable=yes" />
+    <meta name="x-apple-disable-message-reformatting" />
+</head>
+<style>
+    body {
+        font-family: "Noto Sans";
+        font-size: 15px;
+        background-color: #E5E7EB;
+    }
+
+    .header {
+        text-align: center;
+        width: 85%;
+        max-width: 780px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        height: 40px;
+        box-sizing: border-box;
+        margin: auto;
+        background-color: #d8dfff;
+    }
+
+
+
+    a {
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .email-content {
+        background-color: #FAF9F6;
+        width: 85%;
+        max-width: 780px;
+        height: auto;
+        box-sizing: border-box;
+        padding: 10px;
+        margin: auto;
+    }
+
+    .payment-details {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .payment-details img {
+        width: 25px;
+        height: auto;
+    }
+
+    .payment-details-2 {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .payment-details-2 img {
+        width: 25px;
+        height: auto;
+    }
+
+    .table-container {
+        display: flex;
+        justify-content: center;
+    }
+
+    .invoice-table {
+        border-collapse: separate;
+        border-spacing: 0;
+        border-radius: 10px;
+        overflow: hidden;
+        width: 90%;
+        max-width: 90%;
+        height: auto;
+        overflow-x: auto;
+    }
+
+    .invoice-table th,
+    .invoice-table td {
+        padding: 10px;
+        text-align: center;
+        border-bottom: 1px solid #faf9f6;
+    }
+
+    .invoice-table th:first-child,
+    .invoice-table td:first-child {
+        border-left: 1px solid #faf9f6;
+    }
+
+    .invoice-table th:last-child,
+    .invoice-table td:last-child {
+        border-right: 1px solid #faf9f6;
+    }
+
+    .invoice-table tr:last-child {
+        background-color: #faf9f6;
+        font-weight: bold;
+        color: #31394d;
+    }
+
+    .invoice-table th {
+        background-color: #faf9f6;
+        font-weight: bold;
+        color: #31394d;
+    }
+
+    .invoice-table tr {
+        height: auto;
+    }
+
+
+    .foot-note {
+        bottom: 0;
+        width: auto;
+        height: 20px;
+        display: flex;
+        gap: 10px;
+        box-sizing: border-box;
+        justify-content: center;
+        align-items: center;
+    }
+</style>
+
+<body>
+    <a href="" target="_blank" rel="noopener noreferrer">View email in browser</a>
+    <a href="javascript:window.print()" class="right-link" style=" float: right;">Print Invoice</a>
+    <br />
+    <br />
+    <!--Header Section-->
+    <div id="header" class="header ">
+        <a href="https://adomate.ai/" target="_blank" rel="noopener noreferrer">
+            <img class="banner" style="height: 100%; width: 50%;"
+                src="https://raw.githubusercontent.com/adomate-ads/frontend/master/src/assets/adomate.svg"
+                alt="Adomate logo" />
+        </a>
+    </div>
+    <!--Body Section-->
+    <div class="email-content">
+        <h2 style="text-align: center;">Adomate Invoice #{{ .InvoiceID }}</h2>
+        <h3>Dear {{ .Company }} Team!</h3>
+        <p style="line-height: 1.75;">
+            Thank you for subscribing to the following the following plan(s) for {{ .Company }}. We are looking
+            forward to see your business grow!
+        </p>
+        <h3>Payment Details</h3>
+        <div class="payment-details">
+            <img class src=" https://cdn-icons-png.flaticon.com/512/10075/10075270.png" alt="cc" />
+            {{ .Status }}
+            <br />
+            Due on {{ .DueAt }}
+        </div>
+        <br />
+        <div class="payment-details-2">
+            <img class src=" https://cdn-icons-png.flaticon.com/512/10075/10075308.png" alt="cc" />
+            {{ .Company }}
+        </div>
+        <br />
+        <div class="table-container">
+            <table class="invoice-table">
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ .Product }}</td>
+                        <td>$ {{ .ProductPrice }}</td>
+                    </tr>
+                    <tr>
+                        <td>Sub Total</td>
+                        <td>$ {{ .PreTaxAmount }}</td>
+                    </tr>
+                    <tr>
+                        <td>Sales Tax (8.25%)</td>
+                        <td>$ {{ .TaxAmount }}</td>
+                    </tr>
+                    <tr>
+                        <td>Total</td>
+                        <td>$ {{ .InvoiceAmount }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <p>
+            To manage your subscriptions, login to your <a href="https://app.adomate.ai/" rel="noopener noreferrer"
+                style="color: #637efe;">Adomate Dashboard</a>.<br />
+            Team Adomate
+        </p>
+    </div>
+    <br />
+    <!--Footer Section-->
+    <div style="text-align: center;">
+        <p style="text-align: center;">
+            <a href="https://goo.gl/maps/pYFsDxSGkawdB5A18" style="border-bottom: 1px dotted;"> 17350 State Highway 249
+                STE 220. Houston, Texas 77064 </a>
+            <br />
+            <a href="mailto:support@adomate.ai?subject=Query%20from%20{{ .Company }}" rel="noopener noreferrer"
+                style="border-bottom: 1px dotted #637efe; color: #637efe;">support@adomate.ai</a><br />
+        </p>
+        <div class="foot-note">
+            <a href="https://adomate.ai/" style="text-decoration-style: solid;" rel="noopener noreferrer">
+                © 2023 Adomate LLC
+            </a>
+            <a a href="https://adomate.ai/" rel="noopener noreferrer" style="color: #999999;">
+                Privacy Policy
+            </a>
+            <a href="https://adomate.ai/" rel="noopener noreferrer" style="color: #999999;">
+                Terms of Service
+            </a>
+        </div>
+</body>
+
+</html>

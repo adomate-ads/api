@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta
+                name="viewport"
+                content="width=device-width,minimum-scale=1,initial-scale=1,user-scalable=yes"
+        />
+        <link rel="icon" type="image/png" href="https://adomate.ai/logo.png">
+        <title>Adomate API</title>
+        <link
+                rel="stylesheet"
+                href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.18.1/build/styles/default.min.css"
+        />
+        <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.18.1/build/highlight.min.js"></script>
+        <script type="module" src="/static/rapidoc.js"></script>
+    </head>
+    <body style="background-color: #14191f">
+        <rapi-doc
+                spec-url="/swagger/doc.json"
+                id="thedoc"
+                theme="dark"
+                bg-color="#343434"
+                text-color="#FAF9F6"
+                primary-color="#637EFE"
+                render-style="view"
+                show-side-nav="true"
+                show-header="false"
+        >
+            <div
+                slot="nav-logo"
+                style="display: flex; align-items: center; justify-content: center"
+            >
+                <img
+                        src="https://raw.githubusercontent.com/adomate-ads/frontend/master/src/assets/adomate%20-%20light.svg"
+                        style="height: 50px; margin-right: 20px"
+                />
+            </div>
+        </rapi-doc>
+    </body>
+</html>

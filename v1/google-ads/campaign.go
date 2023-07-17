@@ -25,7 +25,7 @@ type Campaign struct {
 // @Tags Google Ads
 // @Accept */*
 // @Produce json
-// @Success 200 {object} []Campaign
+// @Success 200 {object} []helpers.Campaign
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /gads/campaigns/ [get]
 func GetCampaigns(c *gin.Context) {
@@ -99,7 +99,7 @@ func GetCampaigns(c *gin.Context) {
 // @Accept */*
 // @Produce json
 // @Param clientId path int true "Client ID"
-// @Success 200 {object} []Campaign
+// @Success 200 {object} []helpers.Campaign
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /gads/campaigns/{clientId} [get]
 func GetCampaignsInClient(c *gin.Context) {
@@ -124,7 +124,7 @@ func GetCampaignsInClient(c *gin.Context) {
 // @Produce json
 // @Param clientId path int true "Client ID"
 // @Param campaignId path int true "Campaign ID"
-// @Success 200 {object} Campaign
+// @Success 200 {object} helpers.Campaign
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /gads/campaign/{clientId}/{campaignId} [get]
