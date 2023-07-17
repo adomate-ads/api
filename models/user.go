@@ -53,6 +53,9 @@ func GetUsers() ([]User, error) {
 	if err := DB.Preload("Company.Industry").Find(&users).Error; err != nil {
 		return nil, err
 	}
+	for _, user := range users {
+		user.RemovePassword()
+	}
 	return users, nil
 }
 
@@ -61,6 +64,9 @@ func GetUsersByCompanyID(id uint) ([]User, error) {
 	err := DB.Where("company_id = ?", id).Preload("Company.Industry").Find(&users).Error
 	if err != nil {
 		return nil, err
+	}
+	for _, user := range users {
+		user.RemovePassword()
 	}
 	return users, nil
 }
@@ -71,6 +77,8 @@ func GetUser(id uint) (*User, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	user.RemovePassword()
 	return &user, nil
 }
 
@@ -80,6 +88,8 @@ func GetUserByEmail(email string) (*User, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	user.RemovePassword()
 	return &user, nil
 }
 
@@ -88,6 +98,8 @@ func (u *User) UpdateUser() (*User, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	u.RemovePassword()
 	return u, nil
 }
 
