@@ -9,9 +9,11 @@ import (
 	stripe_pkg "github.com/adomate-ads/api/pkg/stripe"
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
+	ipdata "github.com/ipdata/go"
 	"github.com/stripe/stripe-go/v74"
 	"github.com/stripe/stripe-go/v74/customer"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
 )
@@ -367,4 +369,35 @@ func GetAdContent(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, content)
+}
+
+type IPInfo struct {
+	IP     string `json:"ip"`
+	City   string `json:"city"`
+	Region string `json:"region"`
+}
+
+// GetIpInfo godoc
+// @Summary Get IP Information
+// @Description Get IP and related info
+// @Tags Getting Started
+// @Produce json
+// @Success 200 {object} []IPInfo
+// @Failure 500 {object} dto.ErrorResponse
+// @Router /get-started/ip-info [post]
+func GetIpInfo(c *gin.Context) {
+	ipd, _ := ipdata.NewClient(os.Getenv("IPDATA_API_KEY"))
+
+	data, err := ipd.Lookup(c.ClientIP())
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	resp := IPInfo{
+		IP:     data.IP,
+		City:   data.City,
+		Region: data.Region,
+	}
+	c.JSON(http.StatusOK, resp)
 }
