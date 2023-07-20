@@ -22,6 +22,9 @@ func GetCompanies() ([]Company, error) {
 	if err := DB.Preload("Industry").Find(&companies).Error; err != nil {
 		return nil, err
 	}
+	for _, company := range companies {
+		company.sanitize()
+	}
 	return companies, nil
 }
 
@@ -30,6 +33,7 @@ func GetCompany(id uint) (*Company, error) {
 	if err := DB.Preload("Industry").First(&company, id).Error; err != nil {
 		return nil, err
 	}
+	company.sanitize()
 	return &company, nil
 }
 
@@ -38,6 +42,7 @@ func GetCompanyByName(name string) (*Company, error) {
 	if err := DB.Where("name = ?", name).Preload("Industry").First(&company).Error; err != nil {
 		return nil, err
 	}
+	company.sanitize()
 	return &company, nil
 }
 
@@ -46,6 +51,7 @@ func GetCompanyByEmail(email string) (*Company, error) {
 	if err := DB.Where("email = ?", email).Preload("Industry").First(&company).Error; err != nil {
 		return nil, err
 	}
+	company.sanitize()
 	return &company, nil
 }
 
@@ -54,6 +60,7 @@ func GetCompanyByClientID(clientID int64) (*Company, error) {
 	if err := DB.Where("gads_id = ?", clientID).Preload("Industry").First(&company).Error; err != nil {
 		return nil, err
 	}
+	company.sanitize()
 	return &company, nil
 }
 
@@ -62,6 +69,7 @@ func GetCompanyByStripeID(stripeID string) (*Company, error) {
 	if err := DB.Where("stripe_id = ?", stripeID).Preload("Industry").First(&company).Error; err != nil {
 		return nil, err
 	}
+	company.sanitize()
 	return &company, nil
 }
 
@@ -78,6 +86,7 @@ func (c *Company) UpdateCompany() (*Company, error) {
 	if err != nil {
 		return nil, err
 	}
+	c.sanitize()
 	return c, nil
 }
 
@@ -87,4 +96,9 @@ func (c *Company) DeleteCompany() error {
 		return err
 	}
 	return nil
+}
+
+func (c *Company) sanitize() {
+	c.GoogleAdsID = 0
+	c.StripeID = ""
 }

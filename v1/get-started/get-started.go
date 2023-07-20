@@ -68,12 +68,13 @@ func CreateAccount(c *gin.Context) {
 		return
 	}
 
-	// Check if company already exists by name - TODO should we allow this?
-	_, err = models.GetCompanyByName(request.CompanyName)
-	if err == nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "A company by that name already exists"})
-		return
-	}
+	// TODO should we allow this?
+	// Check if company already exists by name
+	//_, err = models.GetCompanyByName(request.CompanyName)
+	//if err == nil {
+	//	c.JSON(http.StatusBadRequest, gin.H{"error": "A company by that name already exists"})
+	//	return
+	//}
 
 	// Check if company already exists by email
 	_, err = models.GetCompanyByEmail(request.Email)
@@ -316,7 +317,7 @@ func GetLocationsAndServices(c *gin.Context) {
 		return
 	}
 
-	var locations []string
+	locations := []string{}
 
 	locationsAndServices := LocsAndSers{
 		Locations: locations,
@@ -327,8 +328,8 @@ func GetLocationsAndServices(c *gin.Context) {
 }
 
 type AdContentRequest struct {
-	Domain   string   `json:"domain" binding:"required" example:"https://adomate.ai"`
-	Services []string `json:"headlines" binding:"required" example:"['Ad Generation', 'Ad Optimization', 'Ad Management']"`
+	Domain   string   `json:"domain" binding:"required" example:"adomate.ai"`
+	Services []string `json:"services" binding:"required" example:"['Ad Generation', 'Ad Optimization', 'Ad Management']"`
 }
 
 type AdContentResponse struct {

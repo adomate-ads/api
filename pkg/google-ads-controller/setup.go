@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/adomate-ads/api/pkg/discord"
 	"github.com/google/uuid"
 	amqp "github.com/rabbitmq/amqp091-go"
 	"os"
@@ -56,42 +57,55 @@ func Setup() {
 func SendToQueue(message Message) string {
 	conn, err := amqp.Dial(fmt.Sprintf("amqp://%s:%s@%s:%s/", RMQConfig.User, RMQConfig.Password, RMQConfig.Host, RMQConfig.Port))
 	if err != nil {
-		fmt.Println("Failed to connect to RabbitMQ")
+		discord.SendMessage(discord.Error, fmt.Sprintf("%s: %s", "Failed to connect to RabbitMQ", err.Error()), "API - Google_Ads_Controller Fix")
 		return ""
 	}
 	defer conn.Close()
 
 	ch, err := conn.Channel()
 	if err != nil {
-		fmt.Println("Failed to open a channel")
+		discord.SendMessage(discord.Error, fmt.Sprintf("%s: %s", "Failed to open a channel", err.Error()), "API - Google_Ads_Controller Fix")
 		return ""
 	}
 	defer ch.Close()
 
 	q, err := ch.QueueDeclare(
 		RMQConfig.Queue, // name
-		false,           // durable
+		true,            // durable
 		false,           // delete when unused
 		false,           // exclusive
 		false,           // noWait
 		nil,             // arguments
 	)
 	if err != nil {
-		fmt.Println("Failed to declare a queue")
+		discord.SendMessage(discord.Error, fmt.Sprintf("%s: %s", "Failed to declare a queue", err.Error()), "API - Google_Ads_Controller Fix")
+		return ""
+	}
+
+	replyQ, err := ch.QueueDeclare(
+		fmt.Sprintf("reply_%s", q.Name),
+		true,
+		false,
+		false,
+		false,
+		nil,
+	)
+	if err != nil {
+		discord.SendMessage(discord.Error, fmt.Sprintf("%s: %s", "Failed to declare a reply queue", err.Error()), "API - Google_Ads_Controller Fix")
 		return ""
 	}
 
 	msgs, err := ch.Consume(
-		q.Name, // queue
-		"",     // consumer
-		true,   // auto-ack
-		false,  // exclusive
-		false,  // no-local
-		false,  // no-wait
-		nil,    // args
+		replyQ.Name, // queue
+		"",          // consumer
+		true,        // auto-ack
+		false,       // exclusive
+		false,       // no-local
+		false,       // no-wait
+		nil,         // args
 	)
 	if err != nil {
-		fmt.Println("Failed to register a consumer")
+		discord.SendMessage(discord.Error, fmt.Sprintf("%s: %s", "Failed to register a consumer", err.Error()), "API - Google_Ads_Controller Fix")
 		return ""
 	}
 
@@ -102,7 +116,7 @@ func SendToQueue(message Message) string {
 
 	msg, err := json.Marshal(message)
 	if err != nil {
-		fmt.Println("Failed to marshal message")
+		discord.SendMessage(discord.Error, fmt.Sprintf("%s: %s", "Failed to marshal message", err.Error()), "API - Google_Ads_Controller Fix")
 		return ""
 	}
 
@@ -114,11 +128,11 @@ func SendToQueue(message Message) string {
 		amqp.Publishing{
 			ContentType:   "text/plain",
 			CorrelationId: corrId,
-			ReplyTo:       q.Name,
+			ReplyTo:       replyQ.Name,
 			Body:          msg,
 		})
 	if err != nil {
-		fmt.Println("Failed to publish a message")
+		discord.SendMessage(discord.Error, fmt.Sprintf("%s: %s", "Failed to publish a message", err.Error()), "API - Google_Ads_Controller Fix")
 		return ""
 	}
 

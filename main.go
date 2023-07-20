@@ -8,7 +8,7 @@ import (
 	"github.com/adomate-ads/api/pkg/discord"
 	"github.com/adomate-ads/api/pkg/email"
 	google_ads "github.com/adomate-ads/api/pkg/google-ads"
-  google_ads_controller "github.com/adomate-ads/api/pkg/google-ads-controller"
+	google_ads_controller "github.com/adomate-ads/api/pkg/google-ads-controller"
 	"github.com/adomate-ads/api/pkg/openai"
 	site_analyzer "github.com/adomate-ads/api/pkg/site-analyzer"
 	"github.com/adomate-ads/api/pkg/stripe"
@@ -124,7 +124,10 @@ func main() {
 
 	if err := r.Run(fmt.Sprintf(":%s", os.Getenv("PORT"))); err != nil {
 		log.Fatal("Unable to start server:", err)
+		discord.SendMessage(discord.Error, "An API Instance has failed to start.", err.Error())
 	}
+
+	discord.SendMessage(discord.Log, "API Started.", "An API Instance has started.")
 }
 
 func engine() *gin.Engine {

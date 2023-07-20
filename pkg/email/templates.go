@@ -1,6 +1,11 @@
 package email
 
-import "html/template"
+import (
+	"bytes"
+	"fmt"
+	"github.com/adomate-ads/api/pkg/discord"
+	"html/template"
+)
 
 type Template struct {
 	Subject string             `json:"subject" example:"Account Registered"`
@@ -83,4 +88,12 @@ var Templates = map[string]Template{
 		Subject: "Re: Support Request #%s", // SupportID
 		Tmpl:    template.Must(template.ParseFiles(dir + "support-manual-response.html")),
 	},
+}
+
+func (t Template) Execute(data interface{}) {
+	body := new(bytes.Buffer)
+	err := t.Tmpl.Execute(body, data)
+	if err != nil {
+		discord.SendMessage(discord.Error, fmt.Sprintf("Email Error - Sending %s", t.Subject), err.Error())
+	}
 }

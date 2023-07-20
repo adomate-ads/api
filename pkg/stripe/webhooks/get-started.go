@@ -1,7 +1,6 @@
 package webhooks
 
 import (
-	"bytes"
 	"github.com/adomate-ads/api/models"
 	"github.com/adomate-ads/api/pkg/discord"
 	"github.com/adomate-ads/api/pkg/email"
@@ -37,11 +36,7 @@ func PaymentSucceeded(paymentIntent stripe.PaymentIntent) {
 	data := email.GetStartedData{
 		URL: "https://app.adomate.com/setup/" + pr.UUID,
 	}
-	body := new(bytes.Buffer)
-	if err := email.Templates["get-started"].Tmpl.Execute(body, data); err != nil {
-		discord.SendMessage(discord.Error, "Email Error - Sending Payment Success", err.Error())
-		return
-	}
-	email.SendEmail(user.Email, email.Templates["get-started"].Subject, body.String())
+	email.Templates["get-started"].Execute(data)
+
 	discord.SendMessage(discord.Log, "Stripe Webhook - Payment Succeeded", "Sent get-started email to "+user.Email)
 }
