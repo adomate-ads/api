@@ -5,22 +5,22 @@ import "time"
 type WelcomeData struct {
 	FirstName string `json:"user" example:"John"`
 	Company   string `json:"company" example:"Adomate"`
-	Domain    string `json:"domain" example:"adomate.com"`
+	Domain    string `json:"domain" example:"adomate.ai"`
 }
 
 type EmailConfirmation struct {
 	FirstName           string `json:"first_name" example:"John"`
-	EmailConfirmtionURL string `json:"url" example:"https://app.adomate.com/confirm-email/1234"`
+	EmailConfirmtionURL string `json:"url" example:"https://app.adomate.ai/confirm-email/1234"`
 }
 
 type GetStartedData struct {
-	URL string `json:"url" example:"https://app.adomate.com/get-started/1234"`
+	URL string `json:"url" example:"https://app.adomate.ai/get-started/1234"`
 }
 
 type PasswordResetData struct {
 	FirstName        string `json:"first_name" example:"John"`
 	Company          string `json:"company" example:"Adomate"`
-	PasswordResetURL string `json:"password_reset_URL" example:"https://adomate.com/reset-password/1234"`
+	PasswordResetURL string `json:"password_reset_URL" example:"https://adomate.ai/reset-password/1234"`
 }
 
 type NewUser struct {
@@ -66,7 +66,7 @@ type UnpaidInvoiceReminder struct {
 	InvoiceID     string  `json:"invoice_id" example:"1234"`
 	Company       string  `json:"company" example:"Adomate"`
 	InvoiceAmount float64 `json:"invoice_amount" example:"1234.56"`
-	Domain        string  `json:"domain" example:"adomate.com"`
+	Domain        string  `json:"domain" example:"adomate.ai"`
 	DueAt         string  `json:"due_at" example:"2020-01-01"` // Check time format
 }
 

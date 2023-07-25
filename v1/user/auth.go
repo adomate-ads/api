@@ -48,20 +48,14 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	// Check for username and password match
-	u, err := models.GetUserByEmail(request.Email)
+	userID, err := models.VerifyPassword(request.Password, request.Email)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "An account by that email does not exist"})
-		return
-	}
-
-	if err := models.VerifyPassword(request.Password, u.Password); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Incorrect password"})
 		return
 	}
 
 	// Save the ID in the session
-	session.Set("user-id", u.ID)
+	session.Set("user-id", userID)
 	if err := session.Save(); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save session"})
 		return
@@ -288,7 +282,7 @@ func ForgotPassword(c *gin.Context) {
 
 	data := email.PasswordResetData{
 		FirstName:        user.FirstName,
-		PasswordResetURL: fmt.Sprintf("https://adomate.com/reset/%s", pr.UUID),
+		PasswordResetURL: fmt.Sprintf("https://adomate.ai/reset/%s", pr.UUID),
 	}
 	body := new(bytes.Buffer)
 	if err := email.Templates["reset-password"].Tmpl.Execute(body, data); err != nil {
@@ -355,6 +349,11 @@ func ResetPassword(c *gin.Context) {
 
 	_, err = user.UpdateUser()
 	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	if err := pr.DeletePasswordReset(); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}

@@ -12,8 +12,8 @@ const docTemplate = `{
         "title": "{{.Title}}",
         "contact": {
             "name": "Adomate API Support",
-            "url": "https://adomate.com/support",
-            "email": "support@adomate.com"
+            "url": "https://adomate.ai/support",
+            "email": "support@adomate.ai"
         },
         "version": "{{.Version}}"
     },

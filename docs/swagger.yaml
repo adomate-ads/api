@@ -551,9 +551,9 @@ definitions:
 host: api.adomate.ai
 info:
   contact:
-    email: support@adomate.com
+    email: support@adomate.ai
     name: Adomate API Support
-    url: https://adomate.com/support
+    url: https://adomate.ai/support
   description: Adomate Monolithic API
   title: Adomate API
   version: "1.0"

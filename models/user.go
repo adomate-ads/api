@@ -18,8 +18,13 @@ type User struct {
 	UpdatedAt time.Time `json:"updated_at" example:"2020-01-01T00:00:00Z"`
 }
 
-func VerifyPassword(password, hashedPassword string) error {
-	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
+func VerifyPassword(password, userEmail string) (uint, error) {
+	var user User
+	err := DB.Where("email = ?", userEmail).First(&user).Error
+	if err != nil {
+		return 0, err
+	}
+	return user.ID, bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 }
 
 func (u *User) HashPassword() error {

@@ -25,8 +25,8 @@ func PaymentSucceeded(paymentIntent stripe.PaymentIntent) {
 	pr := models.PasswordReset{
 		UserID: user.ID,
 		User:   *user,
+		UUID:   uuid.New().String(),
 	}
-	pr.UUID = uuid.New().String()
 	if err := pr.CreatePasswordReset(); err != nil {
 		discord.SendMessage(discord.Error, "Stripe Webhook Payment Error", err.Error())
 		return
@@ -34,7 +34,7 @@ func PaymentSucceeded(paymentIntent stripe.PaymentIntent) {
 
 	// Send get-started welcome email
 	data := email.GetStartedData{
-		URL: "https://app.adomate.com/setup/" + pr.UUID,
+		URL: "https://app.adomate.ai/setup/" + pr.UUID,
 	}
 	email.Templates["get-started"].Execute(data)
 

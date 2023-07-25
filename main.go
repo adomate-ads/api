@@ -51,8 +51,8 @@ func OnlineCheck(c *gin.Context) {
 // @description Adomate Monolithic API
 
 // @contact.name Adomate API Support
-// @contact.url https://adomate.com/support
-// @contact.email support@adomate.com
+// @contact.url https://adomate.ai/support
+// @contact.email support@adomate.ai
 
 // @host api.adomate.ai
 // @BasePath /
