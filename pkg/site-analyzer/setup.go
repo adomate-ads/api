@@ -147,6 +147,8 @@ func GetServices(url string) ([]string, error) {
 		return nil, err
 	}
 
+	timeout := time.After(90 * time.Second)
+
 	// consume the response
 	msgs, err := ch.Consume(
 		replyQ.Name, // queue
@@ -162,15 +164,23 @@ func GetServices(url string) ([]string, error) {
 		return nil, err
 	}
 
-	for d := range msgs {
-		if corrId == d.CorrelationId {
-			var res Response
-			err := json.Unmarshal(d.Body, &res)
-			if err != nil {
-				discord.SendMessage(discord.Error, fmt.Sprintf("%s: %s", "Failed to unmarshal the response", err.Error()), "API - Site_Analyzer Fix")
-				return nil, err
+	for {
+		select {
+		case d, ok := <-msgs:
+			if !ok {
+				return nil, errors.New("failed to get services: messages channel closed")
 			}
-			return res.Body.Services, nil
+			if corrId == d.CorrelationId {
+				var res Response
+				err := json.Unmarshal(d.Body, &res)
+				if err != nil {
+					discord.SendMessage(discord.Error, fmt.Sprintf("%s: %s", "Failed to unmarshal the response", err.Error()), "API - Site_Analyzer Fix")
+					return nil, err
+				}
+				return res.Body.Services, nil
+			}
+		case <-timeout:
+			return nil, errors.New("failed to get services: timed out after 90 seconds")
 		}
 	}
 
