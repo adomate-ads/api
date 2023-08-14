@@ -140,7 +140,7 @@ func GetServices(url string) ([]string, error) {
 			ContentType:   "text/plain",
 			CorrelationId: corrId,
 			ReplyTo:       replyQ.Name,
-			Body:          []byte(message),
+			Body:          message,
 		})
 	if err != nil {
 		discord.SendMessage(discord.Error, fmt.Sprintf("%s: %s", "Failed to publish a message", err.Error()), "API - Site_Analyzer Fix")
@@ -183,8 +183,6 @@ func GetServices(url string) ([]string, error) {
 			return nil, errors.New("failed to get services: timed out after 90 seconds")
 		}
 	}
-
-	return nil, errors.New("failed to get services")
 }
 
 func GetAdContent(url string, services []string) ([]string, []string, error) {
@@ -288,7 +286,7 @@ func GetAdContent(url string, services []string) ([]string, []string, error) {
 			ContentType:   "text/plain",
 			CorrelationId: corrId,
 			ReplyTo:       replyQ.Name,
-			Body:          []byte(message),
+			Body:          message,
 		})
 	if err != nil {
 		discord.SendMessage(discord.Error, fmt.Sprintf("%s: %s", "Failed to publish a message", err.Error()), "API - Site_Analyzer Fix")
