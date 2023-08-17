@@ -41,29 +41,8 @@ func ConnectDatabase(dbConfig *DBConfig, clearDB bool) {
 		fmt.Println("Connected to database.")
 	}
 
-	//if clearDB {
-	//	DB.DropTableIfExists(&User{})
-	//	DB.DropTableIfExists(&Company{})
-	//	DB.DropTableIfExists(&Industry{})
-	//	DB.DropTableIfExists(&EmailTemplate{})
-	//	DB.DropTableIfExists(&Email{})
-	//	DB.DropTableIfExists(&Campaign{})
-	//	DB.DropTableIfExists(&Order{})
-	//	DB.DropTableIfExists(&Billing{})
-	//	DB.DropTableIfExists(&PasswordReset{})
-	//	DB.DropTableIfExists(&Location{})
-	//	DB.DropTableIfExists(&Service{})
-	//}
-
-	DB.AutoMigrate(&User{})
-	DB.AutoMigrate(&Company{})
-	DB.AutoMigrate(&Industry{})
-	DB.AutoMigrate(&EmailTemplate{})
-	DB.AutoMigrate(&Email{})
-	DB.AutoMigrate(&Campaign{})
-	DB.AutoMigrate(&Order{})
-	DB.AutoMigrate(&Billing{})
-	DB.AutoMigrate(&PasswordReset{})
-	DB.AutoMigrate(&Location{})
-	DB.AutoMigrate(&Service{})
+	err = DB.AutoMigrate(&User{}, &Company{}, &Industry{}, &EmailTemplate{}, &Email{}, &Campaign{}, &Order{}, &Billing{}, &PasswordReset{}, &Location{}, &Service{})
+	if err != nil {
+		log.Fatal("Cannot auto-migrate db:", err)
+	}
 }
