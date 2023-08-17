@@ -22,13 +22,13 @@ Coming Soon...
 
 ### Local
 
-To run locally, you'll need to set up both a MySQL instance and a RabbitMQ instance.
+To run locally, you'll need to set up both a PostreSQL instance and a RabbitMQ instance.
 
 The easiest way to do this is to use Docker.  You can use the following commands to get both instances up and running:
 
-MySQL Instance:
+PostreSQL Instance:
 ```bash
-docker run -d --name mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=password mysql:8.0
+docker run -d --name postgresql -p 5432:5432 -e POSTGRES_PASSWORD=mysecretpassword postgres
 ```
 
 RabbitMQ Instance:
@@ -37,7 +37,7 @@ docker run -d --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-management
 ```
 
 1. Download the desired release from github
-2. Create a database, user and password in MySQL for the API to utilize
+2. Create a database, user and password in PostgreSQL for the API to utilize
 3. Rename .env.example and edit filling in the values as appropriate
 4. Run `go run main.go` to bootstrap the database and start the webserver
 

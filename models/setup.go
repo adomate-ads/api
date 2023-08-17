@@ -2,8 +2,8 @@ package models
 
 import (
 	"fmt"
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/mysql"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 	"log"
 	"os"
 )
@@ -29,10 +29,11 @@ func Config() *DBConfig {
 }
 
 func ConnectDatabase(dbConfig *DBConfig, clearDB bool) {
-	DBURL := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local", dbConfig.User, dbConfig.Password, dbConfig.Host, dbConfig.Port, dbConfig.Database)
+	//DBURL := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local", dbConfig.User, dbConfig.Password, dbConfig.Host, dbConfig.Port, dbConfig.Database)
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable", dbConfig.Host, dbConfig.User, dbConfig.Password, dbConfig.Database, dbConfig.Port)
 
 	var err error
-	DB, err = gorm.Open("mysql", DBURL)
+	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		fmt.Println("Cannot connect to database.")
 		log.Fatal("Connection Error:", err)
@@ -40,19 +41,19 @@ func ConnectDatabase(dbConfig *DBConfig, clearDB bool) {
 		fmt.Println("Connected to database.")
 	}
 
-	if clearDB {
-		DB.DropTableIfExists(&User{})
-		DB.DropTableIfExists(&Company{})
-		DB.DropTableIfExists(&Industry{})
-		DB.DropTableIfExists(&EmailTemplate{})
-		DB.DropTableIfExists(&Email{})
-		DB.DropTableIfExists(&Campaign{})
-		DB.DropTableIfExists(&Order{})
-		DB.DropTableIfExists(&Billing{})
-		DB.DropTableIfExists(&PasswordReset{})
-		DB.DropTableIfExists(&Location{})
-		DB.DropTableIfExists(&Service{})
-	}
+	//if clearDB {
+	//	DB.DropTableIfExists(&User{})
+	//	DB.DropTableIfExists(&Company{})
+	//	DB.DropTableIfExists(&Industry{})
+	//	DB.DropTableIfExists(&EmailTemplate{})
+	//	DB.DropTableIfExists(&Email{})
+	//	DB.DropTableIfExists(&Campaign{})
+	//	DB.DropTableIfExists(&Order{})
+	//	DB.DropTableIfExists(&Billing{})
+	//	DB.DropTableIfExists(&PasswordReset{})
+	//	DB.DropTableIfExists(&Location{})
+	//	DB.DropTableIfExists(&Service{})
+	//}
 
 	DB.AutoMigrate(&User{})
 	DB.AutoMigrate(&Company{})
