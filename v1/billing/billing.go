@@ -1,10 +1,8 @@
 package billing
 
 import (
-	"bytes"
 	"github.com/adomate-ads/api/models"
 	"github.com/adomate-ads/api/pkg/auth"
-	"github.com/adomate-ads/api/pkg/email"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -86,20 +84,6 @@ func CreateBilling(c *gin.Context) {
 	//	Customer:    stripe.String(customerID),
 	//	Description: "10/12-12/10 something like that..",
 	//}
-
-	data := email.NewInvoice{
-		InvoiceID:     b.ID,
-		Company:       company.Name,
-		InvoiceAmount: b.Amount,
-		Status:        b.Status,
-		DueAt:         b.DueAt.Format("2006-01-02"),
-	}
-	body := new(bytes.Buffer)
-	if err := email.Templates["new-invoice"].Tmpl.Execute(body, data); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-	email.SendEmail(company.Email, email.Templates["new-invoice"].Subject, body.String())
 
 	c.JSON(http.StatusCreated, gin.H{"message": "Successfully created bill"})
 }

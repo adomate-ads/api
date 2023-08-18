@@ -23,9 +23,10 @@ type RabbitMQConfig struct {
 }
 
 type Email struct {
-	To      string `json:"to"`
-	Subject string `json:"subject"`
-	Body    string `json:"body"`
+	To        string `json:"to"`
+	Subject   string `json:"subject"`
+	Template  string `json:"template"`
+	Variables string `json:"variables"`
 }
 
 var RMQConfig RabbitMQConfig
@@ -40,7 +41,7 @@ func Setup() {
 	}
 }
 
-func SendEmail(to, subject, body string) {
+func SendEmail(body Email) {
 	conn, err := amqp.Dial(fmt.Sprintf("amqp://%s:%s@%s:%s/", RMQConfig.User, RMQConfig.Password, RMQConfig.Host, RMQConfig.Port))
 	if err != nil {
 		failOnError(err, "Failed to connect to RabbitMQ")
@@ -68,13 +69,7 @@ func SendEmail(to, subject, body string) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	email := Email{
-		To:      to,
-		Subject: subject,
-		Body:    body,
-	}
-
-	message, err := json.Marshal(email)
+	message, err := json.Marshal(body)
 	if err != nil {
 		failOnError(err, "Failed to marshal email")
 	}
@@ -87,7 +82,7 @@ func SendEmail(to, subject, body string) {
 		amqp.Publishing{
 			DeliveryMode: amqp.Persistent,
 			ContentType:  "text/plain",
-			Body:         []byte(message),
+			Body:         message,
 		})
 	if err != nil {
 		failOnError(err, "Failed to publish a message")

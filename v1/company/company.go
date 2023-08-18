@@ -1,10 +1,8 @@
 package company
 
 import (
-	"bytes"
 	"github.com/adomate-ads/api/models"
 	"github.com/adomate-ads/api/pkg/auth"
-	"github.com/adomate-ads/api/pkg/email"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -70,18 +68,6 @@ func CreateCompany(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-
-	data := email.WelcomeData{
-		FirstName: company.Name,
-		Company:   company.Name,
-		Domain:    company.Domain,
-	}
-	body := new(bytes.Buffer)
-	if err := email.Templates["welcome"].Tmpl.Execute(body, data); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-	email.SendEmail(company.Email, email.Templates["welcome"].Subject, body.String())
 
 	c.JSON(http.StatusCreated, gin.H{"message": "Successfully registered company"})
 }
@@ -181,16 +167,6 @@ func DeleteCompany(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-
-	data := email.DeleteCompany{
-		// TODO - Add params
-	}
-	body := new(bytes.Buffer)
-	if err := email.Templates["delete-company"].Tmpl.Execute(body, data); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-	email.SendEmail(company.Email, email.Templates["delete-company"].Subject, body.String())
 
 	c.JSON(http.StatusOK, gin.H{"message": "Company deleted successfully"})
 }

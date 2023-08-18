@@ -1,7 +1,7 @@
 package user
 
 import (
-	"bytes"
+	"encoding/json"
 	"fmt"
 	"github.com/adomate-ads/api/models"
 	"github.com/adomate-ads/api/pkg/discord"
@@ -198,19 +198,6 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	// Send welcome Email
-	data := email.WelcomeData{
-		FirstName: u.FirstName,
-		Company:   u.Company.Name,
-		Domain:    u.Company.Domain,
-	}
-	body := new(bytes.Buffer)
-	if err := email.Templates["register"].Tmpl.Execute(body, data); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-	email.SendEmail(u.Email, email.Templates["register"].Subject, body.String())
-
 	c.JSON(http.StatusCreated, gin.H{"message": "Successfully created user and company"})
 	// TODO - In the future, we should send an email to the user with a link to verify their email address
 	// TODO - In the future, we should possibly send a session token back to the user
@@ -280,16 +267,25 @@ func ForgotPassword(c *gin.Context) {
 		return
 	}
 
-	data := email.PasswordResetData{
-		FirstName:        user.FirstName,
-		PasswordResetURL: fmt.Sprintf("https://adomate.ai/reset/%s", pr.UUID),
+	variables := email.PasswordResetData{
+		FirstName: user.FirstName,
+		Company:   user.Company.Name,
+		ResetLink: fmt.Sprintf("https://app.adomate.ai/reset-password/%s", pr.UUID),
 	}
-	body := new(bytes.Buffer)
-	if err := email.Templates["reset-password"].Tmpl.Execute(body, data); err != nil {
+	variablesString, err := json.Marshal(variables)
+	if err != nil {
+		discord.SendMessage(discord.Error, "Failed to marshal welcome email variables", fmt.Sprintf("User ID: %d", user.ID))
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	email.SendEmail(user.Email, email.Templates["reset-password"].Subject, body.String())
+
+	emailBody := email.Email{
+		To:        request.Email,
+		Subject:   "Adomate Password Reset Request",
+		Template:  "password reset",
+		Variables: string(variablesString),
+	}
+	email.SendEmail(emailBody)
 
 	discord.SendMessage(discord.Log, fmt.Sprintf("User %s has requested a password reset.", user.Email), "NA")
 
