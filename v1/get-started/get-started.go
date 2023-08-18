@@ -1,11 +1,9 @@
 package get_started
 
 import (
-	"encoding/json"
 	"fmt"
 	"github.com/adomate-ads/api/models"
 	"github.com/adomate-ads/api/pkg/discord"
-	"github.com/adomate-ads/api/pkg/email"
 	google_ads_controller "github.com/adomate-ads/api/pkg/google-ads-controller"
 	site_analyzer "github.com/adomate-ads/api/pkg/site-analyzer"
 	stripe_pkg "github.com/adomate-ads/api/pkg/stripe"
@@ -287,35 +285,6 @@ func CreateAccount(c *gin.Context) {
 	}
 
 	discord.SendMessage(discord.Log, fmt.Sprintf("New Member Registered: %s %s - %s | %s", request.FirstName, request.LastName, request.Email, request.CompanyName), "")
-
-	pwdResetToken, err := u.GeneratePasswordResetToken()
-	if err != nil {
-		discord.SendMessage(discord.Error, "Failed to generate password reset token", fmt.Sprintf("User ID: %d", u.ID))
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	variables := email.WelcomeData{
-		Company:      request.CompanyName,
-		Domain:       request.Domain,
-		CreationLink: fmt.Sprintf("%s/new-user/%s", os.Getenv("FRONTEND_URL"), pwdResetToken),
-	}
-
-	variablesString, err := json.Marshal(variables)
-	if err != nil {
-		discord.SendMessage(discord.Error, "Failed to marshal welcome email variables", fmt.Sprintf("User ID: %d", u.ID))
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	emailBody := email.Email{
-		To:        request.Email,
-		Subject:   fmt.Sprintf("Welcome to Adomate, %s!", request.FirstName),
-		Template:  "welcome email",
-		Variables: string(variablesString),
-	}
-
-	email.SendEmail(emailBody)
 
 	c.JSON(http.StatusCreated, gin.H{"message": subscription})
 }

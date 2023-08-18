@@ -1,11 +1,14 @@
 package webhooks
 
 import (
+	"encoding/json"
+	"fmt"
 	"github.com/adomate-ads/api/models"
 	"github.com/adomate-ads/api/pkg/discord"
 	"github.com/adomate-ads/api/pkg/email"
 	"github.com/google/uuid"
 	"github.com/stripe/stripe-go/v74"
+	"os"
 )
 
 func PaymentSucceeded(paymentIntent stripe.PaymentIntent) {
@@ -33,10 +36,26 @@ func PaymentSucceeded(paymentIntent stripe.PaymentIntent) {
 	}
 
 	// Send get-started welcome email
-	data := email.GetStartedData{
-		URL: "https://app.adomate.ai/setup/" + pr.UUID,
+	variables := email.WelcomeData{
+		Company:      user.Company.Name,
+		Domain:       user.Company.Domain,
+		CreationLink: fmt.Sprintf("%s/new-user/%s", os.Getenv("FRONTEND_URL"), pr.UUID),
 	}
-	email.Templates["get-started"].Execute(data)
+
+	variablesString, err := json.Marshal(variables)
+	if err != nil {
+		discord.SendMessage(discord.Error, "Failed to marshal welcome email variables", fmt.Sprintf("User ID: %d", user.ID))
+		return
+	}
+
+	emailBody := email.Email{
+		To:        user.Email,
+		Subject:   fmt.Sprintf("Welcome to Adomate, %s!", user.FirstName),
+		Template:  "welcome email",
+		Variables: string(variablesString),
+	}
+
+	email.SendEmail(emailBody)
 
 	discord.SendMessage(discord.Log, "Stripe Webhook - Payment Succeeded", "Sent get-started email to "+user.Email)
 }
