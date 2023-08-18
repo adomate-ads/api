@@ -1,5 +1,7 @@
 package email
 
+import "time"
+
 type WelcomeData struct {
 	Company      string `json:"company" example:"Adomate"`
 	Domain       string `json:"domain" example:"adomate.ai"`
@@ -10,4 +12,20 @@ type PasswordResetData struct {
 	FirstName string `json:"first_name" example:"John"`
 	Company   string `json:"company" example:"Adomate"`
 	ResetLink string `json:"reset_link" example:"https://app.adomate.ai/reset-password/1234"`
+}
+
+type InvoiceCreatedData struct {
+	Company            string    `json:"company" example:"Adomate"`
+	AmountDue          float64   `json:"amount_due" example:"18.34"`
+	DueAt              time.Time `json:"due_at" example:"2020-01-01T00:00:00Z"`
+	InvoiceLink        string    `json:"invoice_link" example:"https://app.adomate.ai/reset-password/1234"`
+	InvoiceDescription string    `json:"invoice_description" example:"August monthly service charge"`
+}
+
+type InvoicePaidData struct {
+	Company            string  `json:"company" example:"Adomate"`
+	AmountPaid         float64 `json:"amount_paid" example:"18.34"`
+	AmountRemaining    float64 `json:"amount_remaining" example:"18.34"`
+	InvoiceLink        string  `json:"invoice_link" example:"https://app.adomate.ai/reset-password/1234"`
+	InvoiceDescription string  `json:"invoice_description" example:"August monthly service charge"`
 }
