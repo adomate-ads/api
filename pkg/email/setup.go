@@ -10,10 +10,6 @@ import (
 	"time"
 )
 
-func failOnError(err error, msg string) {
-	discord.SendMessage(discord.Error, fmt.Sprintf("%s: %s", msg, err), "API - Email Fix")
-}
-
 type RabbitMQConfig struct {
 	Host     string
 	Port     string
@@ -44,13 +40,15 @@ func Setup() {
 func SendEmail(body Email) {
 	conn, err := amqp.Dial(fmt.Sprintf("amqp://%s:%s@%s:%s/", RMQConfig.User, RMQConfig.Password, RMQConfig.Host, RMQConfig.Port))
 	if err != nil {
-		failOnError(err, "Failed to connect to RabbitMQ")
+		discord.SendMessage(discord.Error, fmt.Sprintf("Failed to connect to RabbitMQ: %s", err), "Mail-Server")
+		return
 	}
 	defer conn.Close()
 
 	ch, err := conn.Channel()
 	if err != nil {
-		failOnError(err, "Failed to open a channel")
+		discord.SendMessage(discord.Error, fmt.Sprintf("Failed to open a channel: %s", err), "Mail-Server")
+		return
 	}
 	defer ch.Close()
 
@@ -63,7 +61,8 @@ func SendEmail(body Email) {
 		nil,             // arguments
 	)
 	if err != nil {
-		failOnError(err, "Failed to declare a queue")
+		discord.SendMessage(discord.Error, fmt.Sprintf("Failed to declare a queue: %s", err), "Mail-Server")
+		return
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
@@ -71,7 +70,8 @@ func SendEmail(body Email) {
 
 	message, err := json.Marshal(body)
 	if err != nil {
-		failOnError(err, "Failed to marshal email")
+		discord.SendMessage(discord.Error, fmt.Sprintf("Failed to marshal message: %s", err), "Mail-Server")
+		return
 	}
 
 	err = ch.PublishWithContext(ctx,
@@ -85,6 +85,7 @@ func SendEmail(body Email) {
 			Body:         message,
 		})
 	if err != nil {
-		failOnError(err, "Failed to publish a message")
+		discord.SendMessage(discord.Error, fmt.Sprintf("Failed to publish a message: %s", err), "Mail-Server")
+		return
 	}
 }
