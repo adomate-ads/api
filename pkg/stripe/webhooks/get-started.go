@@ -8,6 +8,7 @@ import (
 	"github.com/adomate-ads/api/pkg/email"
 	"github.com/google/uuid"
 	"github.com/stripe/stripe-go/v74"
+	"github.com/stripe/stripe-go/v74/customer"
 	"os"
 )
 
@@ -36,26 +37,37 @@ func PaymentSucceeded(paymentIntent stripe.PaymentIntent) {
 	}
 
 	// Send get-started welcome email
-	variables := email.WelcomeData{
-		Company:      user.Company.Name,
-		Domain:       user.Company.Domain,
-		CreationLink: fmt.Sprintf("%s/new-user/%s", os.Getenv("FRONTEND_URL"), pr.UUID),
-	}
+	if paymentIntent.Customer.Metadata["sent_welcome_email"] == "false" {
+		variables := email.WelcomeData{
+			Company:      user.Company.Name,
+			Domain:       user.Company.Domain,
+			CreationLink: fmt.Sprintf("%s/new-user/%s", os.Getenv("FRONTEND_URL"), pr.UUID),
+		}
 
-	variablesString, err := json.Marshal(variables)
-	if err != nil {
-		discord.SendMessage(discord.Error, "Failed to marshal welcome email variables", fmt.Sprintf("User ID: %d", user.ID))
-		return
-	}
+		variablesString, err := json.Marshal(variables)
+		if err != nil {
+			discord.SendMessage(discord.Error, "Failed to marshal welcome email variables", fmt.Sprintf("User ID: %d", user.ID))
+			return
+		}
 
-	emailBody := email.Email{
-		To:        user.Email,
-		Subject:   fmt.Sprintf("Welcome to Adomate, %s!", user.FirstName),
-		Template:  "welcome email",
-		Variables: string(variablesString),
-	}
+		emailBody := email.Email{
+			To:        user.Email,
+			Subject:   fmt.Sprintf("Welcome to Adomate, %s!", user.FirstName),
+			Template:  "welcome email",
+			Variables: string(variablesString),
+		}
 
-	email.SendEmail(emailBody)
+		email.SendEmail(emailBody)
+
+		// Update metadata
+		params := &stripe.CustomerParams{}
+		params.AddMetadata("sent_welcome_email", "true")
+		_, err = customer.Update(paymentIntent.Customer.ID, params)
+		if err != nil {
+			discord.SendMessage(discord.Error, fmt.Sprintf("Failed to update customer: %s metadata: sent_welcome_email should be 'true'.", paymentIntent.Customer.ID), err.Error())
+			return
+		}
+	}
 
 	discord.SendMessage(discord.Log, "Stripe Webhook - Payment Succeeded", "Sent get-started email to "+user.Email)
 }

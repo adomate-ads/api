@@ -177,6 +177,7 @@ func CreateAccount(c *gin.Context) {
 	}
 	params.AddExpand("tax")
 	params.AddMetadata("company_id", strconv.Itoa(int(newCompany.ID)))
+	params.AddMetadata("sent_welcome_email", "false")
 
 	stripeCustomer, err := customer.New(params)
 	if err != nil {
