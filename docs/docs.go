@@ -1426,8 +1426,37 @@ const docTemplate = `{
                 }
             }
         },
+        "/get-started/ip-info": {
+            "post": {
+                "description": "Get IP and related info",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Getting Started"
+                ],
+                "summary": "Get IP Information",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/get_started.IPInfo"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/get-started/location-service/{domain}": {
-            "get": {
+            "post": {
                 "description": "Get Locations and Services for domain",
                 "consumes": [
                     "application/json"
@@ -3166,6 +3195,20 @@ const docTemplate = `{
                     "example": [
                         "[\"Google Ads\"]"
                     ]
+                }
+            }
+        },
+        "get_started.IPInfo": {
+            "type": "object",
+            "properties": {
+                "city": {
+                    "type": "string"
+                },
+                "ip": {
+                    "type": "string"
+                },
+                "region": {
+                    "type": "string"
                 }
             }
         },

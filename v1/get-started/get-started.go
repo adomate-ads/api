@@ -306,7 +306,7 @@ type LocsAndSers struct {
 // @Success 200 {object} []LocsAndSers
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
-// @Router /get-started/location-service/{domain} [get]
+// @Router /get-started/location-service/{domain} [post]
 func GetLocationsAndServices(c *gin.Context) {
 	domain := c.Param("domain")
 	if domain == "" {

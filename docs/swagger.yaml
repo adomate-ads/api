@@ -178,6 +178,15 @@ definitions:
     - price
     - services
     type: object
+  get_started.IPInfo:
+    properties:
+      city:
+        type: string
+      ip:
+        type: string
+      region:
+        type: string
+    type: object
   get_started.LocsAndSers:
     properties:
       locations:
@@ -1490,8 +1499,27 @@ paths:
       summary: Get Ad Headlines and Descriptions
       tags:
       - Getting Started
+  /get-started/ip-info:
+    post:
+      description: Get IP and related info
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/get_started.IPInfo'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Get IP Information
+      tags:
+      - Getting Started
   /get-started/location-service/{domain}:
-    get:
+    post:
       consumes:
       - application/json
       description: Get Locations and Services for domain
