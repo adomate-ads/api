@@ -22,7 +22,7 @@ func CreateAdGroup(adGroup Body) (*AdGroup, error) {
 		Body:  adGroup,
 	}
 
-	resp := SendToQueue(msg)
+	resp := SendToGAC(msg)
 	var adGrp AdGroup
 	err := json.Unmarshal([]byte(resp), &adGrp)
 	if err != nil {
@@ -37,7 +37,7 @@ func GetAdGroups(adGroup Body) ([]AdGroup, error) {
 		Body:  adGroup,
 	}
 
-	resp := SendToQueue(msg)
+	resp := SendToGAC(msg)
 	var adGroups []AdGroup
 	err := json.Unmarshal([]byte(resp), &adGroups)
 	if err != nil {
@@ -52,7 +52,7 @@ func EnableAdGroup(adGroup Body) (*AdGroup, error) {
 		Body:  adGroup,
 	}
 
-	resp := SendToQueue(msg)
+	resp := SendToGAC(msg)
 	var adGrp AdGroup
 	err := json.Unmarshal([]byte(resp), &adGrp)
 	if err != nil {
@@ -67,7 +67,7 @@ func PauseAdGroup(adGroup Body) (*AdGroup, error) {
 		Body:  adGroup,
 	}
 
-	resp := SendToQueue(msg)
+	resp := SendToGAC(msg)
 	var adGrp AdGroup
 	err := json.Unmarshal([]byte(resp), &adGrp)
 	if err != nil {
@@ -82,7 +82,7 @@ func RemoveAdGroup(adGroup Body) (*AdGroup, error) {
 		Body:  adGroup,
 	}
 
-	resp := SendToQueue(msg)
+	resp := SendToGAC(msg)
 	var adGrp AdGroup
 	err := json.Unmarshal([]byte(resp), &adGrp)
 	if err != nil {

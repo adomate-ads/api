@@ -6,13 +6,9 @@ import (
 	"github.com/adomate-ads/api/middleware/auth"
 	"github.com/adomate-ads/api/models"
 	"github.com/adomate-ads/api/pkg/discord"
-	"github.com/adomate-ads/api/pkg/email"
 	google_ads "github.com/adomate-ads/api/pkg/google-ads"
-	google_ads_controller "github.com/adomate-ads/api/pkg/google-ads-controller"
-	"github.com/adomate-ads/api/pkg/openai"
-	site_analyzer "github.com/adomate-ads/api/pkg/site-analyzer"
+	"github.com/adomate-ads/api/pkg/rabbitmq"
 	"github.com/adomate-ads/api/pkg/stripe"
-	website_parse "github.com/adomate-ads/api/pkg/website-parse"
 	"github.com/adomate-ads/api/v1/billing"
 	"github.com/adomate-ads/api/v1/campaign"
 	"github.com/adomate-ads/api/v1/company"
@@ -67,14 +63,9 @@ func main() {
 		log.Fatalf("Error loading .env file.")
 	}
 
-	openai.Setup()
-	discord.Setup()
-	email.Setup()
+	rabbitmq.Setup()
 	google_ads.Setup()
-	google_ads_controller.Setup()
 	stripe.Setup()
-	website_parse.Setup()
-	site_analyzer.Setup()
 
 	//stripe.SetupProducts()
 	//stripe.GetSubscriptions()
@@ -122,12 +113,12 @@ func main() {
 	// Static files, such as images, css, and js
 	v1.StaticFS("/storage", gin.Dir("./storage", false))
 
-	if err := r.Run(fmt.Sprintf(":%s", os.Getenv("PORT"))); err != nil {
-		log.Fatal("Unable to start server:", err)
-		discord.SendMessage(discord.Error, "An API Instance has failed to start.", err.Error())
-	}
+	discord.SendMessage(discord.Log, "[API] Starting...", "An API Instance is starting.")
 
-	discord.SendMessage(discord.Log, "API Started.", "An API Instance has started.")
+	if err := r.Run(fmt.Sprintf(":%s", os.Getenv("PORT"))); err != nil {
+		discord.SendMessage(discord.Error, "An API Instance has failed to start.", err.Error())
+		log.Fatal("Unable to start server:", err)
+	}
 }
 
 func engine() *gin.Engine {
