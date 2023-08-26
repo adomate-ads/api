@@ -4,24 +4,23 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/adomate-ads/api/pkg/discord"
 	"github.com/google/uuid"
 	amqp "github.com/rabbitmq/amqp091-go"
 	"os"
 	"time"
 )
 
-type RabbitMQConfig struct {
+type Config struct {
 	Host     string
 	Port     string
 	User     string
 	Password string
 }
 
-var RMQConfig RabbitMQConfig
+var RMQConfig Config
 
 func Setup() {
-	RMQConfig = RabbitMQConfig{
+	RMQConfig = Config{
 		Host:     os.Getenv("RABBIT_HOST"),
 		Port:     os.Getenv("RABBIT_PORT"),
 		User:     os.Getenv("RABBIT_USER"),
@@ -29,29 +28,17 @@ func Setup() {
 	}
 }
 
-func isDiscordQueue(queue string) bool {
-	return queue == discord.Queue
-}
-
 func SendMessage(body []byte, queue string) error {
 	conn, err := amqp.Dial(fmt.Sprintf("amqp://%s:%s@%s:%s/", RMQConfig.User, RMQConfig.Password, RMQConfig.Host, RMQConfig.Port))
 	if err != nil {
-		if isDiscordQueue(queue) {
-			fmt.Printf("failed to connect to RabbitMQ: %s", err)
-			return err
-		}
-		discord.SendMessage(discord.Error, "[RabbitMQ] Failed to connect to RabbitMQ", fmt.Sprintf("Error: %s", err.Error()))
+		fmt.Printf("[RabbitMQ] Failed to connect to RabbitMQ: %s", err)
 		return err
 	}
 	defer conn.Close()
 
 	ch, err := conn.Channel()
 	if err != nil {
-		if isDiscordQueue(queue) {
-			fmt.Printf("failed to open a channel: %s", err)
-			return err
-		}
-		discord.SendMessage(discord.Error, "[RabbitMQ] Failed to open a channel", fmt.Sprintf("Error: %s", err.Error()))
+		fmt.Printf("[RabbitMQ] Failed to open a channel: %s", err)
 		return err
 	}
 	defer ch.Close()
@@ -65,11 +52,7 @@ func SendMessage(body []byte, queue string) error {
 		nil,   // arguments
 	)
 	if err != nil {
-		if isDiscordQueue(queue) {
-			fmt.Printf("failed to declare a queue: %s", err)
-			return err
-		}
-		discord.SendMessage(discord.Error, "[RabbitMQ] Failed to declare a queue", fmt.Sprintf("Error: %s", err.Error()))
+		fmt.Printf("[RabbitMQ] Failed to declare a queue: %s", err)
 		return err
 	}
 
@@ -87,11 +70,7 @@ func SendMessage(body []byte, queue string) error {
 			Body:         body,
 		})
 	if err != nil {
-		if isDiscordQueue(queue) {
-			fmt.Printf("failed to publish a message: %s", err)
-			return err
-		}
-		discord.SendMessage(discord.Error, "[RabbitMQ] Failed to publish a message", fmt.Sprintf("Error: %s", err.Error()))
+		fmt.Printf("[RabbitMQ] Failed to publish a message: %s", err)
 		return err
 	}
 	return nil
@@ -100,22 +79,14 @@ func SendMessage(body []byte, queue string) error {
 func SendMessageWithResponse(body []byte, queue string) (string, error) {
 	conn, err := amqp.Dial(fmt.Sprintf("amqp://%s:%s@%s:%s/", RMQConfig.User, RMQConfig.Password, RMQConfig.Host, RMQConfig.Port))
 	if err != nil {
-		if isDiscordQueue(queue) {
-			fmt.Printf("failed to connect to RabbitMQ: %s", err)
-			return "", err
-		}
-		discord.SendMessage(discord.Error, "[RabbitMQ] Failed to connect to RabbitMQ", fmt.Sprintf("Error: %s", err.Error()))
+		fmt.Printf("failed to connect to RabbitMQ: %s", err)
 		return "", err
 	}
 	defer conn.Close()
 
 	ch, err := conn.Channel()
 	if err != nil {
-		if isDiscordQueue(queue) {
-			fmt.Printf("failed to open a channel: %s", err)
-			return "", err
-		}
-		discord.SendMessage(discord.Error, "[RabbitMQ] Failed to open a channel", fmt.Sprintf("Error: %s", err.Error()))
+		fmt.Printf("failed to open a channel: %s", err)
 		return "", err
 	}
 	defer ch.Close()
@@ -129,11 +100,7 @@ func SendMessageWithResponse(body []byte, queue string) (string, error) {
 		nil,   // arguments
 	)
 	if err != nil {
-		if isDiscordQueue(queue) {
-			fmt.Printf("failed to declare a queue: %s", err)
-			return "", err
-		}
-		discord.SendMessage(discord.Error, "[RabbitMQ] Failed to declare a queue", fmt.Sprintf("Error: %s", err.Error()))
+		fmt.Printf("failed to declare a queue: %s", err)
 		return "", err
 	}
 
@@ -146,11 +113,7 @@ func SendMessageWithResponse(body []byte, queue string) (string, error) {
 		nil,
 	)
 	if err != nil {
-		if isDiscordQueue(queue) {
-			fmt.Printf("failed to declare a reply queue: %s", err)
-			return "", err
-		}
-		discord.SendMessage(discord.Error, "[RabbitMQ] Failed to declare a reply queue", fmt.Sprintf("Error: %s", err.Error()))
+		fmt.Printf("failed to declare a queue: %s", err)
 		return "", err
 	}
 
@@ -164,11 +127,7 @@ func SendMessageWithResponse(body []byte, queue string) (string, error) {
 		nil,         // args
 	)
 	if err != nil {
-		if isDiscordQueue(queue) {
-			fmt.Printf("failed to register a consumer: %s", err)
-			return "", err
-		}
-		discord.SendMessage(discord.Error, "[RabbitMQ] Failed to register a consumer", fmt.Sprintf("Error: %s", err.Error()))
+		fmt.Printf("failed to register a consumer: %s", err)
 		return "", err
 	}
 
@@ -189,11 +148,7 @@ func SendMessageWithResponse(body []byte, queue string) (string, error) {
 			Body:          body,
 		})
 	if err != nil {
-		if isDiscordQueue(queue) {
-			fmt.Printf("failed to publish a message: %s", err)
-			return "", err
-		}
-		discord.SendMessage(discord.Error, "[RabbitMQ] Failed to publish a message", fmt.Sprintf("Error: %s", err.Error()))
+		fmt.Printf("failed to publish a message: %s", err)
 		return "", err
 	}
 
