@@ -19,7 +19,7 @@ func CreateAdGroupAds(adGroupAds Body) (*AdGroupAds, error) {
 		Body:  adGroupAds,
 	}
 
-	resp := SendToQueue(msg)
+	resp := SendToGAC(msg)
 	var adGrpAd AdGroupAds
 	err := json.Unmarshal([]byte(resp), &adGrpAd)
 	if err != nil {
@@ -34,7 +34,7 @@ func GetAdGroupAds(adGroupAds Body) ([]AdGroupAds, error) {
 		Body:  adGroupAds,
 	}
 
-	resp := SendToQueue(msg)
+	resp := SendToGAC(msg)
 	var adGrpAds []AdGroupAds
 	err := json.Unmarshal([]byte(resp), &adGrpAds)
 	if err != nil {
@@ -49,7 +49,7 @@ func RemoveAdGroupAd(adGroupAds Body) (*AdGroupAds, error) {
 		Body:  adGroupAds,
 	}
 
-	resp := SendToQueue(msg)
+	resp := SendToGAC(msg)
 	var adGrpAd AdGroupAds
 	err := json.Unmarshal([]byte(resp), &adGrpAd)
 	if err != nil {

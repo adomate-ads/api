@@ -20,7 +20,7 @@ func CreateCampaign(campaign Body) (*Campaign, error) {
 		Body:  campaign,
 	}
 
-	resp := SendToQueue(msg)
+	resp := SendToGAC(msg)
 	var camp Campaign
 	err := json.Unmarshal([]byte(resp), &camp)
 	if err != nil {
@@ -35,7 +35,7 @@ func GetCampaigns(campaign Body) ([]Campaign, error) {
 		Body:  campaign,
 	}
 
-	resp := SendToQueue(msg)
+	resp := SendToGAC(msg)
 	var campaigns []Campaign
 	err := json.Unmarshal([]byte(resp), &campaigns)
 	if err != nil {
@@ -50,7 +50,7 @@ func EnableCampaign(campaign Body) (*Campaign, error) {
 		Body:  campaign,
 	}
 
-	resp := SendToQueue(msg)
+	resp := SendToGAC(msg)
 	var camp Campaign
 	err := json.Unmarshal([]byte(resp), &camp)
 	if err != nil {
@@ -65,7 +65,7 @@ func PauseCampaign(campaign Body) (*Campaign, error) {
 		Body:  campaign,
 	}
 
-	resp := SendToQueue(msg)
+	resp := SendToGAC(msg)
 	var camp Campaign
 	err := json.Unmarshal([]byte(resp), &camp)
 	if err != nil {
@@ -80,7 +80,7 @@ func RemoveCampaign(campaign Body) (*Campaign, error) {
 		Body:  campaign,
 	}
 
-	resp := SendToQueue(msg)
+	resp := SendToGAC(msg)
 	var camp Campaign
 	err := json.Unmarshal([]byte(resp), &camp)
 	if err != nil {

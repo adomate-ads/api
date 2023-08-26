@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"github.com/adomate-ads/api/middleware/auth"
 	"github.com/adomate-ads/api/models"
-	"github.com/adomate-ads/api/pkg/email"
 	"github.com/adomate-ads/api/pkg/stripe"
 	"github.com/adomate-ads/api/v1/billing"
 	"github.com/adomate-ads/api/v1/campaign"
@@ -36,7 +35,6 @@ func SetUpRouter() *gin.Engine {
 		log.Fatalf("Error loading .env file.")
 	}
 
-	email.Setup()
 	stripe.Setup()
 	models.ConnectDatabase(models.Config(), true)
 

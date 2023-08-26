@@ -22,7 +22,7 @@ func CreateCustomer(customerName string) (*Customer, error) {
 		},
 	}
 
-	resp := SendToQueue(msg)
+	resp := SendToGAC(msg)
 	var customer Customer
 	err := json.Unmarshal([]byte(resp), &customer)
 	if err != nil {
@@ -36,7 +36,7 @@ func GetCustomers() ([]Customer, error) {
 		Route: "/get_customers",
 	}
 
-	resp := SendToQueue(msg)
+	resp := SendToGAC(msg)
 	var customers []Customer
 	err := json.Unmarshal([]byte(resp), &customers)
 	if err != nil {
