@@ -11,3 +11,19 @@ type PasswordResetData struct {
 	Company   string `json:"company" example:"Adomate"`
 	ResetLink string `json:"reset_link" example:"https://app.adomate.ai/reset-password/1234"`
 }
+
+type InvoiceCreatedData struct {
+	Company            string `json:"company" example:"Adomate"`
+	AmountDue          string `json:"amount_due" example:"18.34"`
+	DueAt              string `json:"due_at" example:"Thursday august 18th, 2023"`
+	InvoiceLink        string `json:"invoice_link" example:"https://app.adomate.ai/reset-password/1234"`
+	InvoiceDescription string `json:"invoice_description" example:"August monthly service charge"`
+}
+
+type InvoicePaidData struct {
+	Company            string `json:"company" example:"Adomate"`
+	AmountPaid         string `json:"amount_paid" example:"18.34"`
+	AmountRemaining    string `json:"amount_remaining" example:"18.34"`
+	InvoiceLink        string `json:"invoice_link" example:"https://app.adomate.ai/reset-password/1234"`
+	InvoiceDescription string `json:"invoice_description" example:"August monthly service charge"`
+}
