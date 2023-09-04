@@ -14,7 +14,6 @@ import (
 	"github.com/adomate-ads/api/v1/company"
 	get_started "github.com/adomate-ads/api/v1/get-started"
 	gads "github.com/adomate-ads/api/v1/google-ads"
-	"github.com/adomate-ads/api/v1/industry"
 	"github.com/adomate-ads/api/v1/order"
 	"github.com/adomate-ads/api/v1/service"
 	stripe_v1 "github.com/adomate-ads/api/v1/stripe"
@@ -70,7 +69,7 @@ func main() {
 	//stripe.SetupProducts()
 	//stripe.GetSubscriptions()
 
-	models.ConnectDatabase(models.Config(), false)
+	models.ConnectDatabase(models.Config())
 
 	r := engine()
 	r.Use(gin.Logger())
@@ -101,7 +100,6 @@ func main() {
 
 	user.Routes(v1)
 	company.Routes(v1)
-	industry.Routes(v1)
 	billing.Routes(v1)
 	campaign.Routes(v1)
 	order.Routes(v1)

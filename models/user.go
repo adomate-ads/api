@@ -55,7 +55,7 @@ func (u *User) CreateUser() error {
 
 func GetUsers() ([]User, error) {
 	var users []User
-	if err := DB.Preload("Company.Industry").Find(&users).Error; err != nil {
+	if err := DB.Preload("Company").Find(&users).Error; err != nil {
 		return nil, err
 	}
 	for _, user := range users {
@@ -66,7 +66,7 @@ func GetUsers() ([]User, error) {
 
 func GetUsersByCompanyID(id uint) ([]User, error) {
 	var users []User
-	err := DB.Where("company_id = ?", id).Preload("Company.Industry").Find(&users).Error
+	err := DB.Where("company_id = ?", id).Preload("Company").Find(&users).Error
 	if err != nil {
 		return nil, err
 	}
@@ -78,7 +78,7 @@ func GetUsersByCompanyID(id uint) ([]User, error) {
 
 func GetUser(id uint) (*User, error) {
 	var user User
-	err := DB.Where("id = ?", id).Preload("Company.Industry").First(&user).Error
+	err := DB.Where("id = ?", id).Preload("Company").First(&user).Error
 	if err != nil {
 		return nil, err
 	}
@@ -89,7 +89,7 @@ func GetUser(id uint) (*User, error) {
 
 func GetUserByEmail(email string) (*User, error) {
 	var user User
-	err := DB.Where("email = ?", email).Preload("Company.Industry").First(&user).Error
+	err := DB.Where("email = ?", email).Preload("Company").First(&user).Error
 	if err != nil {
 		return nil, err
 	}

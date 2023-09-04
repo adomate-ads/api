@@ -69,7 +69,6 @@ type RegisterRequest struct {
 	Email       string `json:"email" binding:"required"`
 	Password    string `json:"password" binding:"required"`
 	CompanyName string `json:"company_name" binding:"required"`
-	Industry    string `json:"industry" binding:"required"`
 	Domain      string `json:"domain" binding:"required"`
 }
 
@@ -99,7 +98,7 @@ func Register(c *gin.Context) {
 		return
 	}
 	// Validate Company form input
-	if strings.Trim(request.CompanyName, " ") == "" || strings.Trim(request.Industry, " ") == "" || strings.Trim(request.Domain, " ") == "" {
+	if strings.Trim(request.CompanyName, " ") == "" || strings.Trim(request.Domain, " ") == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Parameters can't be empty"})
 		return
 	}
@@ -125,20 +124,11 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	// Get Industry ID
-	industry, err := models.GetIndustryByName(request.Industry)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "An industry by that name does not exist"})
-		return
-	}
-
 	// Create company
 	company := models.Company{
-		Name:       request.CompanyName,
-		Email:      request.Email,
-		IndustryID: industry.ID,
-		Industry:   *industry,
-		Domain:     request.Domain,
+		Name:   request.CompanyName,
+		Email:  request.Email,
+		Domain: request.Domain,
 	}
 
 	if err := company.CreateCompany(); err != nil {

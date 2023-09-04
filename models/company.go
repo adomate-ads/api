@@ -8,8 +8,6 @@ type Company struct {
 	ID          uint      `json:"id" gorm:"primaryKey;autoIncrement" example:"1"`
 	Name        string    `json:"name" gorm:"type:varchar(128)" example:"Google LLC"`
 	Email       string    `json:"email" gorm:"type:varchar(128)" example:"the@raajpatel.dev"`
-	IndustryID  uint      `json:"industry_id" gorm:"type:integer" example:"1"`
-	Industry    Industry  `json:"industry" gorm:"foreignKey:IndustryID"`
 	Domain      string    `json:"domain" gorm:"type:varchar(128)" example:"raajpatel.dev"`
 	GoogleAdsID uint      `json:"gads_id" gorm:"type:integer" example:"1"`
 	StripeID    string    `json:"stripe_id" gorm:"type:varchar(128)" example:"cus_1234567890"`
@@ -19,7 +17,7 @@ type Company struct {
 
 func GetCompanies() ([]Company, error) {
 	var companies []Company
-	if err := DB.Preload("Industry").Find(&companies).Error; err != nil {
+	if err := DB.Find(&companies).Error; err != nil {
 		return nil, err
 	}
 	for _, company := range companies {
@@ -30,7 +28,7 @@ func GetCompanies() ([]Company, error) {
 
 func GetCompany(id uint) (*Company, error) {
 	var company Company
-	if err := DB.Preload("Industry").First(&company, id).Error; err != nil {
+	if err := DB.First(&company, id).Error; err != nil {
 		return nil, err
 	}
 	company.sanitize()
@@ -39,7 +37,7 @@ func GetCompany(id uint) (*Company, error) {
 
 func GetCompanyByName(name string) (*Company, error) {
 	var company Company
-	if err := DB.Where("name = ?", name).Preload("Industry").First(&company).Error; err != nil {
+	if err := DB.Where("name = ?", name).First(&company).Error; err != nil {
 		return nil, err
 	}
 	company.sanitize()
@@ -48,7 +46,7 @@ func GetCompanyByName(name string) (*Company, error) {
 
 func GetCompanyByEmail(email string) (*Company, error) {
 	var company Company
-	if err := DB.Where("email = ?", email).Preload("Industry").First(&company).Error; err != nil {
+	if err := DB.Where("email = ?", email).First(&company).Error; err != nil {
 		return nil, err
 	}
 	company.sanitize()
@@ -57,7 +55,7 @@ func GetCompanyByEmail(email string) (*Company, error) {
 
 func GetCompanyByClientID(clientID int64) (*Company, error) {
 	var company Company
-	if err := DB.Where("gads_id = ?", clientID).Preload("Industry").First(&company).Error; err != nil {
+	if err := DB.Where("gads_id = ?", clientID).First(&company).Error; err != nil {
 		return nil, err
 	}
 	company.sanitize()
@@ -66,7 +64,7 @@ func GetCompanyByClientID(clientID int64) (*Company, error) {
 
 func GetCompanyByStripeID(stripeID string) (*Company, error) {
 	var company Company
-	if err := DB.Where("stripe_id = ?", stripeID).Preload("Industry").First(&company).Error; err != nil {
+	if err := DB.Where("stripe_id = ?", stripeID).First(&company).Error; err != nil {
 		return nil, err
 	}
 	company.sanitize()

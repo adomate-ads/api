@@ -10,10 +10,9 @@ import (
 )
 
 type CreateRequest struct {
-	Name     string `json:"name" binding:"required"`
-	Email    string `json:"email" binding:"required"`
-	Industry string `json:"industry" binding:"required"`
-	Domain   string `json:"domain" binding:"required"`
+	Name   string `json:"name" binding:"required"`
+	Email  string `json:"email" binding:"required"`
+	Domain string `json:"domain" binding:"required"`
 }
 
 // CreateCompany godoc
@@ -36,7 +35,7 @@ func CreateCompany(c *gin.Context) {
 	}
 
 	// Validate form input
-	if strings.Trim(request.Name, " ") == "" || strings.Trim(request.Email, " ") == "" || strings.Trim(request.Industry, " ") == "" || strings.Trim(request.Domain, " ") == "" {
+	if strings.Trim(request.Name, " ") == "" || strings.Trim(request.Email, " ") == "" || strings.Trim(request.Domain, " ") == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Parameters can't be empty"})
 		return
 	}
@@ -48,20 +47,11 @@ func CreateCompany(c *gin.Context) {
 		return
 	}
 
-	// Get Industry ID
-	industry, err := models.GetIndustryByName(request.Industry)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "An industry by that name does not exist"})
-		return
-	}
-
 	// Create company
 	company := models.Company{
-		Name:       request.Name,
-		Email:      request.Email,
-		IndustryID: industry.ID,
-		Industry:   *industry,
-		Domain:     request.Domain,
+		Name:   request.Name,
+		Email:  request.Email,
+		Domain: request.Domain,
 	}
 
 	if err := company.CreateCompany(); err != nil {

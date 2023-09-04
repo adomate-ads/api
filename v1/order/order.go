@@ -26,7 +26,7 @@ type CreateRequest struct {
 // @Accept json
 // @Produce json
 // @Param create body CreateRequest true "Create Request"
-// @Success 200 {object} []models.Industry
+// @Success 200 {object} []models.Order
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 403 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
