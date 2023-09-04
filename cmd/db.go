@@ -28,7 +28,7 @@ func Config() *DBConfig {
 	}
 }
 
-func main() {
+func SetupDatabase() {
 	err := godotenv.Load(".env")
 	if err != nil && os.Getenv("GIN_MODE") != "release" {
 		log.Fatalf("Error loading .env file.")
