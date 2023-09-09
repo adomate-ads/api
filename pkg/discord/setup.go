@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/adomate-ads/api/pkg/rabbitmq"
-	"os"
 	"time"
 )
 
@@ -19,8 +18,6 @@ type Message struct {
 const Error string = "Error"
 const Warn string = "Warning"
 const Log string = "Log"
-
-var Queue string = os.Getenv("RABBIT_DISCORD_QUEUE")
 
 func SendMessage(level string, title string, message string) {
 	msg := &Message{
@@ -37,7 +34,7 @@ func SendMessage(level string, title string, message string) {
 		return
 	}
 
-	if err := rabbitmq.SendMessage(msgBody, Queue); err != nil {
+	if err := rabbitmq.SendMessage(msgBody, rabbitmq.RMQConfig.DiscordQueue); err != nil {
 		fmt.Println("[Discord] Failed to send message to queue")
 		return
 	}

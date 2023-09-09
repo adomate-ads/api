@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/adomate-ads/api/pkg/discord"
 	"github.com/adomate-ads/api/pkg/rabbitmq"
-	"os"
 )
 
 type Request struct {
@@ -29,8 +28,6 @@ type ResponseBody struct {
 	Descriptions []string `json:"descriptions"`
 }
 
-var Queue string = os.Getenv("RABBIT_SA_QUEUE")
-
 func GetServices(url string) ([]string, error) {
 	msg := Request{
 		Route: "GuessServices",
@@ -45,7 +42,7 @@ func GetServices(url string) ([]string, error) {
 		return nil, err
 	}
 
-	resp, err := rabbitmq.SendMessageWithResponse(msgBody, Queue)
+	resp, err := rabbitmq.SendMessageWithResponse(msgBody, rabbitmq.RMQConfig.SAQueue)
 	if err != nil {
 		discord.SendMessage(discord.Error, "[SA] Failed to send message", fmt.Sprintf("Error: %s", err.Error()))
 		return nil, err
@@ -76,7 +73,7 @@ func GetAdContent(url string, services []string) ([]string, []string, error) {
 		return nil, nil, err
 	}
 
-	resp, err := rabbitmq.SendMessageWithResponse(msgBody, Queue)
+	resp, err := rabbitmq.SendMessageWithResponse(msgBody, rabbitmq.RMQConfig.SAQueue)
 	if err != nil {
 		discord.SendMessage(discord.Error, "[SA] Failed to send message", fmt.Sprintf("Error: %s", err.Error()))
 		return nil, nil, err

@@ -15,6 +15,11 @@ type Config struct {
 	Port     string
 	User     string
 	Password string
+
+	DiscordQueue string
+	MailQueue    string
+	GacQueue     string
+	SAQueue      string
 }
 
 var RMQConfig Config
@@ -25,7 +30,11 @@ func Setup() {
 		Port:     os.Getenv("RABBIT_PORT"),
 		User:     os.Getenv("RABBIT_USER"),
 		Password: os.Getenv("RABBIT_PASS"),
-	}
+
+		DiscordQueue: os.Getenv("RABBIT_DISCORD_QUEUE"),
+		MailQueue:    os.Getenv("RABBIT_MAIL_QUEUE"),
+		GacQueue:     os.Getenv("RABBIT_GAC_QUEUE"),
+		SAQueue:      os.Getenv("RABBIT_SA_QUEUE")}
 }
 
 func SendMessage(body []byte, queue string) error {

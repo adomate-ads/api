@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/adomate-ads/api/pkg/discord"
 	"github.com/adomate-ads/api/pkg/rabbitmq"
-	"os"
 )
 
 type Message struct {
@@ -31,8 +30,6 @@ type Body struct {
 	MinCPCBid   uint   `json:"min_cpc_bid,omitempty"`
 }
 
-var Queue string = os.Getenv("RABBIT_GAC_QUEUE")
-
 func SendToGAC(message Message) string {
 	msgBody, err := json.Marshal(message)
 	if err != nil {
@@ -40,7 +37,7 @@ func SendToGAC(message Message) string {
 		return ""
 	}
 
-	resp, err := rabbitmq.SendMessageWithResponse(msgBody, Queue)
+	resp, err := rabbitmq.SendMessageWithResponse(msgBody, rabbitmq.RMQConfig.GacQueue)
 	if err != nil {
 		discord.SendMessage(discord.Error, "[GAC] Failed to send message", fmt.Sprintf("Error: %s", err.Error()))
 		return ""

@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/adomate-ads/api/pkg/discord"
 	"github.com/adomate-ads/api/pkg/rabbitmq"
-	"os"
 )
 
 type Email struct {
@@ -15,8 +14,6 @@ type Email struct {
 	Variables string `json:"variables"`
 }
 
-var Queue string = os.Getenv("RABBIT_MAIL_QUEUE")
-
 func SendEmail(body Email) {
 	msgBody, err := json.Marshal(body)
 	if err != nil {
@@ -24,7 +21,7 @@ func SendEmail(body Email) {
 		return
 	}
 
-	if err := rabbitmq.SendMessage(msgBody, Queue); err != nil {
+	if err := rabbitmq.SendMessage(msgBody, rabbitmq.RMQConfig.MailQueue); err != nil {
 		discord.SendMessage(discord.Error, "[Email] Failed to send message", fmt.Sprintf("Error: %s", err.Error()))
 		return
 	}
