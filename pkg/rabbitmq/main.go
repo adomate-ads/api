@@ -146,10 +146,10 @@ func SendMessageWithResponse(body []byte, queue string) (string, error) {
 	defer cancel()
 
 	err = ch.PublishWithContext(ctx,
-		"",          // exchange
-		"gac_queue", // routing key
-		false,       // mandatory
-		false,       // immediate
+		"",     // exchange
+		q.Name, // routing key
+		false,  // mandatory
+		false,  // immediate
 		amqp.Publishing{
 			ContentType:   "text/plain",
 			CorrelationId: corrId,
