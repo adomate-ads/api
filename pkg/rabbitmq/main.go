@@ -6,50 +6,12 @@ import (
 	"fmt"
 	"github.com/google/uuid"
 	amqp "github.com/rabbitmq/amqp091-go"
-	"os"
 	"time"
 )
 
-type Config struct {
-	Host     string
-	Port     string
-	User     string
-	Password string
-
-	DiscordQueue string
-	MailQueue    string
-	GacQueue     string
-	SAQueue      string
-}
-
-var RMQConfig Config
-
-func Setup() {
-	RMQConfig = Config{
-		Host:     os.Getenv("RABBIT_HOST"),
-		Port:     os.Getenv("RABBIT_PORT"),
-		User:     os.Getenv("RABBIT_USER"),
-		Password: os.Getenv("RABBIT_PASS"),
-
-		DiscordQueue: os.Getenv("RABBIT_DISCORD_QUEUE"),
-		MailQueue:    os.Getenv("RABBIT_MAIL_QUEUE"),
-		GacQueue:     os.Getenv("RABBIT_GAC_QUEUE"),
-		SAQueue:      os.Getenv("RABBIT_SA_QUEUE")}
-}
-
 func SendMessage(body []byte, queue string) error {
-	conn, err := amqp.Dial(fmt.Sprintf("amqp://%s:%s@%s:%s/", RMQConfig.User, RMQConfig.Password, RMQConfig.Host, RMQConfig.Port))
-	if err != nil {
-		fmt.Printf("[RabbitMQ] Failed to connect to RabbitMQ: %s", err)
-		return err
-	}
+	conn, ch := handleReconnection()
 	defer conn.Close()
-
-	ch, err := conn.Channel()
-	if err != nil {
-		fmt.Printf("[RabbitMQ] Failed to open a channel: %s", err)
-		return err
-	}
 	defer ch.Close()
 
 	q, err := ch.QueueDeclare(
@@ -86,18 +48,8 @@ func SendMessage(body []byte, queue string) error {
 }
 
 func SendMessageWithResponse(body []byte, queue string) (string, error) {
-	conn, err := amqp.Dial(fmt.Sprintf("amqp://%s:%s@%s:%s/", RMQConfig.User, RMQConfig.Password, RMQConfig.Host, RMQConfig.Port))
-	if err != nil {
-		fmt.Printf("failed to connect to RabbitMQ: %s", err)
-		return "", err
-	}
+	conn, ch := handleReconnection()
 	defer conn.Close()
-
-	ch, err := conn.Channel()
-	if err != nil {
-		fmt.Printf("failed to open a channel: %s", err)
-		return "", err
-	}
 	defer ch.Close()
 
 	q, err := ch.QueueDeclare(
