@@ -43,14 +43,11 @@ definitions:
         type: string
       email:
         type: string
-      industry:
-        type: string
       name:
         type: string
     required:
     - domain
     - email
-    - industry
     - name
     type: object
   dto.ErrorResponse:
@@ -138,9 +135,6 @@ definitions:
         items:
           type: string
         type: array
-      industry:
-        example: Software
-        type: string
       ip:
         example: 192.168.1.1
         type: string
@@ -171,7 +165,6 @@ definitions:
     - email
     - first_name
     - headlines
-    - industry
     - ip
     - last_name
     - locations
@@ -218,12 +211,36 @@ definitions:
       timezone:
         type: string
     type: object
-  industry.CreateRequest:
+  models.AdGroup:
     properties:
-      industry:
+      campaign:
+        $ref: '#/definitions/models.Campaign'
+      campaign_id:
+        example: 1
+        type: integer
+      company:
+        $ref: '#/definitions/models.Company'
+      company_id:
+        example: 1
+        type: integer
+      created_at:
+        example: "2020-01-01T00:00:00Z"
         type: string
-    required:
-    - industry
+      google_id:
+        example: 1
+        type: integer
+      id:
+        example: 1
+        type: integer
+      name:
+        example: Primary Monthly
+        type: string
+      resource_name:
+        example: /customers/1234567890/adGroups/1234567890
+        type: string
+      updated_at:
+        example: "2020-01-01T00:00:00Z"
+        type: string
     type: object
   models.Billing:
     properties:
@@ -298,14 +315,10 @@ definitions:
         example: the@raajpatel.dev
         type: string
       gads_id:
+        description: Google Customer ID
         example: 1
         type: integer
       id:
-        example: 1
-        type: integer
-      industry:
-        $ref: '#/definitions/models.Industry'
-      industry_id:
         example: 1
         type: integer
       name:
@@ -314,21 +327,6 @@ definitions:
       stripe_id:
         example: cus_1234567890
         type: string
-      updated_at:
-        example: "2020-01-01T00:00:00Z"
-        type: string
-    type: object
-  models.Industry:
-    properties:
-      Industry:
-        example: Health Care
-        type: string
-      created_at:
-        example: "2020-01-01T00:00:00Z"
-        type: string
-      id:
-        example: 1
-        type: integer
       updated_at:
         example: "2020-01-01T00:00:00Z"
         type: string
@@ -535,8 +533,6 @@ definitions:
         type: string
       first_name:
         type: string
-      industry:
-        type: string
       last_name:
         type: string
       password:
@@ -546,7 +542,6 @@ definitions:
     - domain
     - email
     - first_name
-    - industry
     - last_name
     - password
     type: object
@@ -582,6 +577,70 @@ paths:
       summary: Show the status of server.
       tags:
       - General
+  /adgroup:
+    get:
+      consumes:
+      - '*/*'
+      description: Get a slice of all adgroups
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.AdGroup'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Get all adgroups
+      tags:
+      - AdGroup
+  /adgroup/company/{id}:
+    get:
+      consumes:
+      - '*/*'
+      description: get a slice of all adgroup for certain company
+      parameters:
+      - description: AdGroup ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.AdGroup'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Get all adgroup for a company
+      tags:
+      - AdGroup
   /billing:
     get:
       consumes:
@@ -1555,146 +1614,6 @@ paths:
       summary: Get Locations and Services
       tags:
       - Getting Started
-  /industry:
-    get:
-      consumes:
-      - '*/*'
-      description: Get a slice of all industries
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/models.Industry'
-            type: array
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/dto.ErrorResponse'
-        "403":
-          description: Forbidden
-          schema:
-            $ref: '#/definitions/dto.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/dto.ErrorResponse'
-      summary: Get all industries
-      tags:
-      - Industry
-    post:
-      consumes:
-      - application/json
-      description: creates an industry category
-      parameters:
-      - description: Create Request
-        in: body
-        name: create
-        required: true
-        schema:
-          $ref: '#/definitions/industry.CreateRequest'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            items:
-              $ref: '#/definitions/models.Industry'
-            type: array
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/dto.ErrorResponse'
-        "403":
-          description: Forbidden
-          schema:
-            $ref: '#/definitions/dto.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/dto.ErrorResponse'
-      summary: Create Industry
-      tags:
-      - Industry
-  /industry/{id}:
-    delete:
-      consumes:
-      - '*/*'
-      description: Delete an industry.
-      parameters:
-      - description: Industry ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/dto.MessageResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/dto.ErrorResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/dto.ErrorResponse'
-        "403":
-          description: Forbidden
-          schema:
-            $ref: '#/definitions/dto.ErrorResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/dto.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/dto.ErrorResponse'
-      summary: Delete Industry
-      tags:
-      - Industry
-  /industry/{industry}:
-    get:
-      consumes:
-      - '*/*'
-      description: Gets all information about specific industry
-      parameters:
-      - description: Industry Name
-        in: path
-        name: industry
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/models.Industry'
-            type: array
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/dto.ErrorResponse'
-        "403":
-          description: Forbidden
-          schema:
-            $ref: '#/definitions/dto.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/dto.ErrorResponse'
-      summary: Gets an industry by name
-      tags:
-      - Industry
   /login:
     post:
       consumes:
@@ -1826,7 +1745,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/models.Industry'
+              $ref: '#/definitions/models.Order'
             type: array
         "401":
           description: Unauthorized

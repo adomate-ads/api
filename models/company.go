@@ -9,7 +9,7 @@ type Company struct {
 	Name        string    `json:"name" gorm:"type:varchar(128)" example:"Google LLC"`
 	Email       string    `json:"email" gorm:"type:varchar(128)" example:"the@raajpatel.dev"`
 	Domain      string    `json:"domain" gorm:"type:varchar(128)" example:"raajpatel.dev"`
-	GoogleAdsID uint      `json:"gads_id" gorm:"type:integer" example:"1"`
+	GoogleAdsID uint      `json:"gads_id" gorm:"type:integer" example:"1"` // Google Customer ID
 	StripeID    string    `json:"stripe_id" gorm:"type:varchar(128)" example:"cus_1234567890"`
 	CreatedAt   time.Time `json:"created_at" example:"2020-01-01T00:00:00Z"`
 	UpdatedAt   time.Time `json:"updated_at" example:"2020-01-01T00:00:00Z"`

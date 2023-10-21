@@ -43,6 +43,103 @@ const docTemplate = `{
                 }
             }
         },
+        "/adgroup": {
+            "get": {
+                "description": "Get a slice of all adgroups",
+                "consumes": [
+                    "*/*"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "AdGroup"
+                ],
+                "summary": "Get all adgroups",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.AdGroup"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/adgroup/company/{id}": {
+            "get": {
+                "description": "get a slice of all adgroup for certain company",
+                "consumes": [
+                    "*/*"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "AdGroup"
+                ],
+                "summary": "Get all adgroup for a company",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "AdGroup ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.AdGroup"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/billing": {
             "get": {
                 "description": "Gets a slice of all bills.",
@@ -1511,218 +1608,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/industry": {
-            "get": {
-                "description": "Get a slice of all industries",
-                "consumes": [
-                    "*/*"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Industry"
-                ],
-                "summary": "Get all industries",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/models.Industry"
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/dto.ErrorResponse"
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden",
-                        "schema": {
-                            "$ref": "#/definitions/dto.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/dto.ErrorResponse"
-                        }
-                    }
-                }
-            },
-            "post": {
-                "description": "creates an industry category",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Industry"
-                ],
-                "summary": "Create Industry",
-                "parameters": [
-                    {
-                        "description": "Create Request",
-                        "name": "create",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/industry.CreateRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/models.Industry"
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/dto.ErrorResponse"
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden",
-                        "schema": {
-                            "$ref": "#/definitions/dto.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/dto.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/industry/{id}": {
-            "delete": {
-                "description": "Delete an industry.",
-                "consumes": [
-                    "*/*"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Industry"
-                ],
-                "summary": "Delete Industry",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Industry ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/dto.MessageResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/dto.ErrorResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/dto.ErrorResponse"
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden",
-                        "schema": {
-                            "$ref": "#/definitions/dto.ErrorResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/dto.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/dto.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/industry/{industry}": {
-            "get": {
-                "description": "Gets all information about specific industry",
-                "consumes": [
-                    "*/*"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Industry"
-                ],
-                "summary": "Gets an industry by name",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Industry Name",
-                        "name": "industry",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/models.Industry"
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/dto.ErrorResponse"
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden",
-                        "schema": {
-                            "$ref": "#/definitions/dto.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/dto.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
         "/login": {
             "post": {
                 "description": "Login using user credentials.",
@@ -1923,7 +1808,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/models.Industry"
+                                "$ref": "#/definitions/models.Order"
                             }
                         }
                     },
@@ -3001,7 +2886,6 @@ const docTemplate = `{
             "required": [
                 "domain",
                 "email",
-                "industry",
                 "name"
             ],
             "properties": {
@@ -3009,9 +2893,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "email": {
-                    "type": "string"
-                },
-                "industry": {
                     "type": "string"
                 },
                 "name": {
@@ -3113,7 +2994,6 @@ const docTemplate = `{
                 "email",
                 "first_name",
                 "headlines",
-                "industry",
                 "ip",
                 "last_name",
                 "locations",
@@ -3160,10 +3040,6 @@ const docTemplate = `{
                         "[\"Headline 1\"",
                         " \"Headline 2\"]"
                     ]
-                },
-                "industry": {
-                    "type": "string",
-                    "example": "Software"
                 },
                 "ip": {
                     "type": "string",
@@ -3260,14 +3136,46 @@ const docTemplate = `{
                 }
             }
         },
-        "industry.CreateRequest": {
+        "models.AdGroup": {
             "type": "object",
-            "required": [
-                "industry"
-            ],
             "properties": {
-                "industry": {
-                    "type": "string"
+                "campaign": {
+                    "$ref": "#/definitions/models.Campaign"
+                },
+                "campaign_id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "company": {
+                    "$ref": "#/definitions/models.Company"
+                },
+                "company_id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "created_at": {
+                    "type": "string",
+                    "example": "2020-01-01T00:00:00Z"
+                },
+                "google_id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Primary Monthly"
+                },
+                "resource_name": {
+                    "type": "string",
+                    "example": "/customers/1234567890/adGroups/1234567890"
+                },
+                "updated_at": {
+                    "type": "string",
+                    "example": "2020-01-01T00:00:00Z"
                 }
             }
         },
@@ -3369,17 +3277,11 @@ const docTemplate = `{
                     "example": "the@raajpatel.dev"
                 },
                 "gads_id": {
+                    "description": "Google Customer ID",
                     "type": "integer",
                     "example": 1
                 },
                 "id": {
-                    "type": "integer",
-                    "example": 1
-                },
-                "industry": {
-                    "$ref": "#/definitions/models.Industry"
-                },
-                "industry_id": {
                     "type": "integer",
                     "example": 1
                 },
@@ -3390,27 +3292,6 @@ const docTemplate = `{
                 "stripe_id": {
                     "type": "string",
                     "example": "cus_1234567890"
-                },
-                "updated_at": {
-                    "type": "string",
-                    "example": "2020-01-01T00:00:00Z"
-                }
-            }
-        },
-        "models.Industry": {
-            "type": "object",
-            "properties": {
-                "Industry": {
-                    "type": "string",
-                    "example": "Health Care"
-                },
-                "created_at": {
-                    "type": "string",
-                    "example": "2020-01-01T00:00:00Z"
-                },
-                "id": {
-                    "type": "integer",
-                    "example": 1
                 },
                 "updated_at": {
                     "type": "string",
@@ -3698,7 +3579,6 @@ const docTemplate = `{
                 "domain",
                 "email",
                 "first_name",
-                "industry",
                 "last_name",
                 "password"
             ],
@@ -3713,9 +3593,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "first_name": {
-                    "type": "string"
-                },
-                "industry": {
                     "type": "string"
                 },
                 "last_name": {
