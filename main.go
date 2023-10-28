@@ -124,7 +124,7 @@ func engine() *gin.Engine {
 
 	// Setup CORS and only allow origin from APP URL
 	corsConfig := cors.Config{
-		AllowOrigins:     []string{os.Getenv("FRONTEND_URL"), os.Getenv("DASHBOARD_URL")},
+		AllowOrigins:     []string{os.Getenv("FRONTEND_URL"), os.Getenv("DASHBOARD_URL"), "http://app.adomate.local"},
 		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Content-Length", "Content-Type", "Authorization"},
 		ExposeHeaders:    []string{"Content-Length"},
